@@ -8,6 +8,9 @@ import "dart:ui" as ui;
 void main() async {
   Public.textureFilter = PublicK.TEXTURE_FILTER_NONE;
   await GameRoot.I.loadBuiltinItems();
+  Shared.logger
+      .config("LAYERS: ${ItemsRegistry.I.layers[Layers.OVERLAY.index].values.join(",")}");
+  Shared.logger.config("LAYERS_3_0: ${ItemsRegistry.I.layers[Layers.OVERLAY.index][0]}");
   runApp(AppRoot());
 }
 
@@ -18,31 +21,62 @@ class CullingReactorGridPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    Shared.logger.fine("Hit$hashCode: < ${hitLocation?.$1} , ${hitLocation?.$2} >");
     Paint paint = G.fasterPainter;
-    List<RSTransform> transforms = <RSTransform>[];
-    List<Rect> src = <Rect>[];
-    ui.Image atlas = TextureRegistry.getTexture("content")!.atlasImage;
-    for (int i = 0; i < GameRoot.I.reactor.rows; i++) {
-      for (int j = 0; j < GameRoot.I.reactor.columns; j++) {
-        double x = j * (Shared.kTileSize + Shared.kTileSpacing);
-        double y = i * (Shared.kTileSize + Shared.kTileSpacing);
-        AtlasSprite sprite =
-            GameRoot.I.reactor.at(i, j).findItemDefinition().sprite().findTexture();
-        transforms.add(RSTransform.fromComponents(
-            rotation: 0,
-            scale: Shared.tileInitialZoom,
-            anchorX: 0,
-            anchorY: 0,
-            translateX: x,
-            translateY: y));
-        // src.add(Rect.fromLTWH(
-        //     sprite.offsetX, sprite.offsetY, sprite.packedWidth, sprite.packedHeight));
-        src.add(sprite.src);
+    for (Layers layer in Layers.zeroDrawable) {
+      List<RSTransform> transforms = <RSTransform>[];
+      List<Rect> src = <Rect>[];
+      ui.Image atlas = TextureRegistry.getTexture("content")!.atlasImage;
+      for (int i = 0; i < GameRoot.I.reactor.rows; i++) {
+        for (int j = 0; j < GameRoot.I.reactor.columns; j++) {
+          double x = j * (Shared.kTileSize + Shared.kTileSpacing);
+          double y = i * (Shared.kTileSize + Shared.kTileSpacing);
+          ItemDefinition definition =
+              GameRoot.I.reactor.at(i, j).at(layer).findItemDefinition(layer);
+          AtlasSprite sprite = definition.sprite().findTexture();
+          transforms.add(RSTransform.fromComponents(
+              rotation: 0,
+              scale: Shared.tileInitialZoom,
+              anchorX: 0,
+              anchorY: 0,
+              translateX: x,
+              translateY: y));
+          src.add(sprite.src);
+        }
       }
+      canvas.drawAtlas(atlas, transforms, src, null, null,
+          Rect.fromLTWH(0, 0, size.width, size.height), paint);
     }
-    canvas.drawAtlas(atlas, transforms, src, null, null,
-        Rect.fromLTWH(0, 0, size.width, size.height), paint);
+    for (Layers layer in Layers.zeroNonDrawable) {
+      List<RSTransform> transforms = <RSTransform>[];
+      List<Rect> src = <Rect>[];
+      ui.Image atlas = TextureRegistry.getTexture("content")!.atlasImage;
+      for (int i = 0; i < GameRoot.I.reactor.rows; i++) {
+        for (int j = 0; j < GameRoot.I.reactor.columns; j++) {
+          double x = j * (Shared.kTileSize + Shared.kTileSpacing);
+          double y = i * (Shared.kTileSize + Shared.kTileSpacing);
+          ItemDefinition definition =
+              GameRoot.I.reactor.at(i, j).at(layer).findItemDefinition(layer);
+          AtlasSprite sprite = definition.sprite().findTexture();
+          transforms.add(RSTransform.fromComponents(
+              rotation: 0,
+              scale: Shared.tileInitialZoom,
+              anchorX: 0,
+              anchorY: 0,
+              translateX: x,
+              translateY: y));
+          src.add(sprite.src);
+        }
+      }
+      canvas.drawAtlas(atlas, transforms, src, null, null,
+          Rect.fromLTWH(0, 0, size.width, size.height), paint);
+    }
+    // ! HEAT DEMO
+    // canvas.drawRect(
+    //     Rect.fromLTWH(0, 0, size.width, size.height),
+    //     paint
+    //       ..color = Colors.red
+    //       ..blendMode = BlendMode.overlay);
+
     // if (pressedLocation != null) {
     //   Paint redPaint = Paint()..color = Colors.red;
     //   canvas.drawRect(
@@ -66,7 +100,6 @@ class AppRoot extends StatelessWidget {
     return WidgetsApp(
       debugShowCheckedModeBanner: false,
       debugShowWidgetInspector: false,
-      showPerformanceOverlay: true,
       color: Colors.black,
       builder: (BuildContext context, _) =>
           LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
@@ -108,18 +141,23 @@ class _ReactorWidgetState extends State<_ReactorWidget> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTapUp: (TapUpDetails details) {
-        setState(() {
-          pressedLocation = details.localPosition;
-          hitLocation = (
-            pressedLocation!.dy ~/ (Shared.kTileSize + Shared.kTileSpacing),
-            pressedLocation!.dx ~/ (Shared.kTileSize + Shared.kTileSpacing)
-          );
-          GameRoot.I.reactor[hitLocation!] =
-              GameRoot.I.reactor[hitLocation!] == 0 ? 1 : 0;
-        });
-      },
+      onSecondaryTapDown: (TapDownDetails details) => _handleHit(false, details),
+      onTapDown: (TapDownDetails details) => _handleHit(true, details),
       child: CustomPaint(painter: CullingReactorGridPainter(hitLocation: hitLocation)),
     );
+  }
+
+  void _handleHit(bool primary, TapDownDetails details) {
+    setState(() {
+      pressedLocation = details.localPosition;
+      hitLocation = CellLocation(
+          pressedLocation!.dy ~/ (Shared.kTileSize + Shared.kTileSpacing),
+          pressedLocation!.dx ~/ (Shared.kTileSize + Shared.kTileSpacing),
+          Layers.ITEMS);
+      GameRoot.I.reactor[hitLocation!] =
+          primary || GameRoot.I.pointerBuffer.secondary == null
+              ? GameRoot.I.pointerBuffer.primary
+              : GameRoot.I.pointerBuffer.secondary!;
+    });
   }
 }

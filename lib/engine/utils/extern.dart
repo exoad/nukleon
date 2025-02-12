@@ -14,6 +14,13 @@ extension DebuggableTextureAtlasSprite on AtlasSprite {
   }
 }
 
+extension KnowledgeableList<T> on List<T> {
+  /// Checks if [i] is a possible indice
+  bool within(int i) {
+    return i >= 0 && i < length;
+  }
+}
+
 class DataModel {
   const DataModel();
 }

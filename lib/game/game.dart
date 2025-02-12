@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:project_yellow_cake/engine/engine.dart';
+import 'package:project_yellow_cake/game/controllers/pointer.dart';
 import 'package:project_yellow_cake/game/entities/reactor.dart';
 import 'package:project_yellow_cake/game/items/cells/content/item_empty_cell.dart';
 import 'package:project_yellow_cake/game/items/cells/content/item_power_cell.dart';
@@ -11,22 +12,24 @@ class GameRoot {
   static final GameRoot I = GameRoot._();
 
   final ValueNotifier<ReactorEntity> _reactorEntity;
+  final PointerBuffer _pointerBuffer;
 
   GameRoot._()
       : _reactorEntity = ValueNotifier<ReactorEntity>(ReactorEntity(
           rows: Shared.reactorRows,
           columns: Shared.reactorColumns,
-        ));
+        )),
+        _pointerBuffer = PointerBuffer(1);
 
   Future<void> loadBuiltinItems() async {
     await initializeEngine();
     await Shared.initialize();
-    int i = 0;
-    ItemsRegistry.I.addItemDefinition(i++, EmptyCell());
-    ItemsRegistry.I.addItemDefinition(i++, ReactorCell());
-    Shared.logger.info(
-        "Loaded $i items into the engine registry");
+    ItemsRegistry.I.addItemDefinition(0, Layers.BACKDROPS, EmptyCell());
+    ItemsRegistry.I.addItemDefinition(1, Layers.ITEMS, ReactorCell());
+    Shared.logger.info("Loaded builtin items into the engine registry");
   }
 
   ReactorEntity get reactor => _reactorEntity.value;
+
+  PointerBuffer get pointerBuffer => _pointerBuffer;
 }

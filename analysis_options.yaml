@@ -15,3 +15,5 @@ linter:
     camel_case_types: false
     avoid_print: false
     constant_identifier_names: false
+    unnecessary_getters_setters: false
+    prefer_spread_collections: false

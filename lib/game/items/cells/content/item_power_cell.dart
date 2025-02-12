@@ -1,5 +1,6 @@
-import 'package:project_yellow_cake/engine/components/textures.dart';
 import 'package:project_yellow_cake/game/items/cells/cells.dart';
+
+import '../../../../engine/engine.dart';
 
 class ReactorCell extends Cell {
   @override
@@ -18,4 +19,7 @@ class ReactorCell extends Cell {
 
   @override
   String get canonicalName => "A cell";
+
+  @override
+  Layers get layer => Layers.ITEMS;
 }

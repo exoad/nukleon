@@ -14,7 +14,6 @@ export "components/components.dart";
 typedef TextureAtlas = TexturePackerAtlas;
 typedef AtlasSprite = TexturePackerSprite;
 
-
 Future<void> initializeEngine([Level loggingLevel = Level.ALL]) async {
   hierarchicalLoggingEnabled = true;
   logger.level = loggingLevel;

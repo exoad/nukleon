@@ -18,4 +18,7 @@ class EmptyCell extends Cell {
 
   @override
   String get canonicalLabel => "Nothing here...";
+
+  @override
+  Layers get layer => Layers.BACKDROPS;
 }

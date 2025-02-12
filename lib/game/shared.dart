@@ -4,8 +4,8 @@ import 'package:project_yellow_cake/engine/engine.dart';
 final class Shared {
   Shared._();
 
-  static const int reactorRows = 14;
-  static const int reactorColumns = 26;
+  static const int reactorRows = 12;
+  static const int reactorColumns = 24;
   static const double tileInitialZoom = 1.8;
   static const double tileSize = 16;
   static const double tileSpacing = 0;
