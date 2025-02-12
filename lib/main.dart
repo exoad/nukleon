@@ -22,7 +22,7 @@ class CullingReactorGridPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     Paint paint = G.fasterPainter;
-    for (Layers layer in Layers.zeroDrawable) {
+    {
       List<RSTransform> transforms = <RSTransform>[];
       List<Rect> src = <Rect>[];
       ui.Image atlas = TextureRegistry.getTexture("content")!.atlasImage;
@@ -30,8 +30,10 @@ class CullingReactorGridPainter extends CustomPainter {
         for (int j = 0; j < GameRoot.I.reactor.columns; j++) {
           double x = j * (Shared.kTileSize + Shared.kTileSpacing);
           double y = i * (Shared.kTileSize + Shared.kTileSpacing);
-          ItemDefinition definition =
-              GameRoot.I.reactor.at(i, j).at(layer).findItemDefinition(layer);
+          ItemDefinition definition = GameRoot.I.reactor
+              .at(i, j)
+              .at(Layers.BACKDROPS)
+              .findItemDefinition(Layers.BACKDROPS);
           AtlasSprite sprite = definition.sprite().findTexture();
           transforms.add(RSTransform.fromComponents(
               rotation: 0,
@@ -46,30 +48,28 @@ class CullingReactorGridPainter extends CustomPainter {
       canvas.drawAtlas(atlas, transforms, src, null, null,
           Rect.fromLTWH(0, 0, size.width, size.height), paint);
     }
-    for (Layers layer in Layers.zeroNonDrawable) {
-      List<RSTransform> transforms = <RSTransform>[];
-      List<Rect> src = <Rect>[];
-      ui.Image atlas = TextureRegistry.getTexture("content")!.atlasImage;
-      for (int i = 0; i < GameRoot.I.reactor.rows; i++) {
-        for (int j = 0; j < GameRoot.I.reactor.columns; j++) {
-          double x = j * (Shared.kTileSize + Shared.kTileSpacing);
-          double y = i * (Shared.kTileSize + Shared.kTileSpacing);
-          ItemDefinition definition =
-              GameRoot.I.reactor.at(i, j).at(layer).findItemDefinition(layer);
-          AtlasSprite sprite = definition.sprite().findTexture();
-          transforms.add(RSTransform.fromComponents(
-              rotation: 0,
-              scale: Shared.tileInitialZoom,
-              anchorX: 0,
-              anchorY: 0,
-              translateX: x,
-              translateY: y));
-          src.add(sprite.src);
-        }
+    List<RSTransform> transforms = <RSTransform>[];
+    List<Rect> src = <Rect>[];
+    ui.Image atlas = TextureRegistry.getTexture("content")!.atlasImage;
+    for (int i = 0; i < GameRoot.I.reactor.rows; i++) {
+      for (int j = 0; j < GameRoot.I.reactor.columns; j++) {
+        double x = j * (Shared.kTileSize + Shared.kTileSpacing);
+        double y = i * (Shared.kTileSize + Shared.kTileSpacing);
+        ItemDefinition definition =
+            GameRoot.I.reactor.at(i, j).at(Layers.ITEMS).findItemDefinition(Layers.ITEMS);
+        AtlasSprite sprite = definition.sprite().findTexture();
+        transforms.add(RSTransform.fromComponents(
+            rotation: 0,
+            scale: Shared.tileInitialZoom,
+            anchorX: 0,
+            anchorY: 0,
+            translateX: x,
+            translateY: y));
+        src.add(sprite.src);
       }
-      canvas.drawAtlas(atlas, transforms, src, null, null,
-          Rect.fromLTWH(0, 0, size.width, size.height), paint);
     }
+    canvas.drawAtlas(atlas, transforms, src, null, null,
+        Rect.fromLTWH(0, 0, size.width, size.height), paint);
     // ! HEAT DEMO
     // canvas.drawRect(
     //     Rect.fromLTWH(0, 0, size.width, size.height),
@@ -100,25 +100,29 @@ class AppRoot extends StatelessWidget {
     return WidgetsApp(
       debugShowCheckedModeBanner: false,
       debugShowWidgetInspector: false,
-      color: Colors.black,
+      showPerformanceOverlay: true,
+      color: Color.fromARGB(255, 73, 86, 103),
       builder: (BuildContext context, _) =>
           LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
-        return Row(
-          children: <Widget>[
-            Container(width: 260, height: double.infinity, color: Colors.transparent),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  Container(height: 200, color: Colors.transparent),
-                  Expanded(
-                      child: _ReactorWidget(
-                    constraints: constraints,
-                  )),
-                ],
+        return ColoredBox(
+          color: Color.fromARGB(255, 31, 33, 36),
+          child: Row(
+            children: <Widget>[
+              Container(width: 260, height: double.infinity, color: Colors.transparent),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    Container(height: 200, color: Colors.transparent),
+                    Expanded(
+                        child: _ReactorWidget(
+                      constraints: constraints,
+                    )),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         );
       }),
     );

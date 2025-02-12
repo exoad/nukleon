@@ -47,6 +47,10 @@ class ReactorEntity {
     return _grid[row][column];
   }
 
+  List<ReactorSlot> allOnLayer(Layers layer) {
+    return _grid[layer.index];
+  }
+
   int operator [](CellLocation location) {
     if (location.row < 0 ||
         location.row >= _grid.length ||

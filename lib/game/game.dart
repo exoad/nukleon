@@ -25,7 +25,9 @@ class GameRoot {
     await initializeEngine();
     await Shared.initialize();
     ItemsRegistry.I.addItemDefinition(0, Layers.BACKDROPS, EmptyCell());
-    ItemsRegistry.I.addItemDefinition(1, Layers.ITEMS, ReactorCell());
+    int i = 1;
+    ItemsRegistry.I.addItemDefinition(i++, Layers.ITEMS, UraniumCell());
+    ItemsRegistry.I.addItemDefinition(i++, Layers.ITEMS, UraniumEnhancedCell());
     Shared.logger.info("Loaded builtin items into the engine registry");
   }
 

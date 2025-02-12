@@ -34,7 +34,7 @@ prettyPrint=false
 legacyOutput=true
 
 scaleFactors=[{suffix:"",factor:1,resampling:bicubic}]
-inputFiles=[{path:Empty_Cell.png,type:Input,regionName:null},{path:Power_Cell.png,type:Input,regionName:null}]
+inputFiles=[{path:Empty_Cell.png,type:Input,regionName:null},{path:Reactor_Cell_Uranium.png,type:Input,regionName:null},{path:Reactor_Cell_Uranium_Enhanced.png,type:Input,regionName:null}]
 keepInputFileExtensions=false
 
 

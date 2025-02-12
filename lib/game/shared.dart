@@ -6,8 +6,8 @@ final class Shared {
 
   static const int reactorRows = 12;
   static const int reactorColumns = 24;
-  static const double tileInitialZoom = 1.8;
-  static const double tileSize = 16;
+  static const double tileInitialZoom = 1;
+  static const double tileSize = 32;
   static const double tileSpacing = 0;
   static const double kTileSize = tileSize * tileInitialZoom;
   static const double kTileSpacing = tileSpacing * tileInitialZoom;

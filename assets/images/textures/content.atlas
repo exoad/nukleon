@@ -1,20 +1,27 @@
 
 content.png
-size: 32, 16
+size: 128, 32
 format: RGBA8888
 filter: Nearest, Nearest
 repeat: none
 Empty_Cell
   rotate: false
-  xy: 0, 0
-  size: 16, 16
-  orig: 16, 16
+  xy: 32, 0
+  size: 32, 32
+  orig: 32, 32
   offset: 0, 0
   index: -1
-Power_Cell
+Reactor_Cell_Uranium
   rotate: false
-  xy: 16, 0
-  size: 16, 16
-  orig: 16, 16
+  xy: 64, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+Reactor_Cell_Uranium_Enhanced
+  rotate: false
+  xy: 0, 0
+  size: 32, 32
+  orig: 32, 32
   offset: 0, 0
   index: -1

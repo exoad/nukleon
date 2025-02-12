@@ -25,7 +25,11 @@ enum Layers {
   ITEMS,
   INFO,
   OVERLAY;
-  
+
+  static Layers get baseLayer {
+    return ITEMS;
+  }
+
   static List<Layers> get zeroNonDrawable {
     return const <Layers>[ITEMS, INFO, OVERLAY];
   }
