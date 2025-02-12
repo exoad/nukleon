@@ -6,14 +6,21 @@ filter: Nearest, Nearest
 repeat: none
 Empty_Cell
   rotate: false
-  xy: 32, 0
+  xy: 64, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
+Reactor_Button
+  rotate: false
+  xy: 32, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 1
 Reactor_Cell_Uranium
   rotate: false
-  xy: 64, 0
+  xy: 96, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0

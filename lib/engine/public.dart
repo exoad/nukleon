@@ -20,21 +20,22 @@ final class PublicK {
   static const int TEXTURE_FILTER_HIGH = 3;
 }
 
-enum Layers {
+enum Class {
   BACKDROPS,
   ITEMS,
   INFO,
-  OVERLAY;
+  OVERLAY,
+  UI;
 
-  static Layers get baseLayer {
+  static Class get baseLayer {
     return ITEMS;
   }
 
-  static List<Layers> get zeroNonDrawable {
-    return const <Layers>[ITEMS, INFO, OVERLAY];
+  static List<Class> get zeroNonDrawable {
+    return const <Class>[ITEMS, INFO, OVERLAY];
   }
 
-  static List<Layers> get zeroDrawable {
-    return const <Layers>[BACKDROPS];
+  static List<Class> get zeroDrawable {
+    return const <Class>[BACKDROPS];
   }
 }

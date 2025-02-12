@@ -1,6 +1,5 @@
 import 'package:project_yellow_cake/engine/engine.dart';
 
-@DataModel()
 class TextureRegistry {
   final Map<String, TextureMap> _texturesCache;
   final Map<String, TextureMap> _coreCache;

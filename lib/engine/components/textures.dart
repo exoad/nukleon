@@ -48,7 +48,7 @@ class TextureMap {
       if (Public.panicOnNullTextures) {
         panicNow("Could not find sprite_texture '$spriteName' under '$identifier'");
       }
-      logger.warning("Null texutere for '$spriteName' under '$identifier'");
+      logger.warning("Null texture for '$spriteName' under '$identifier'");
       return TextureRegistry.nullTextureSprite;
     }
     return res;

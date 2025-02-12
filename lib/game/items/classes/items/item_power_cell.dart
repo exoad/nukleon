@@ -1,4 +1,4 @@
-import 'package:project_yellow_cake/game/items/cells/cells.dart';
+import 'package:project_yellow_cake/game/items/classes/classes.dart';
 
 import '../../../../engine/engine.dart';
 
@@ -21,7 +21,7 @@ class UraniumCell extends Cell {
   String get canonicalName => "Uranium Fuel Cell";
 
   @override
-  Layers get layer => Layers.ITEMS;
+  Class get layer => Class.ITEMS;
 }
 
 class UraniumEnhancedCell extends Cell {
@@ -43,5 +43,5 @@ class UraniumEnhancedCell extends Cell {
   String get canonicalName => "Enhanced Uranium Fuel Cell";
 
   @override
-  Layers get layer => Layers.ITEMS;
+  Class get layer => Class.ITEMS;
 }

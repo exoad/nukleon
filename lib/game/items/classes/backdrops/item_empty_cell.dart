@@ -1,5 +1,5 @@
 import 'package:project_yellow_cake/engine/engine.dart';
-import 'package:project_yellow_cake/game/items/cells/cells.dart';
+import 'package:project_yellow_cake/game/items/classes/classes.dart';
 
 class EmptyCell extends Cell {
   @override
@@ -20,5 +20,5 @@ class EmptyCell extends Cell {
   String get canonicalLabel => "Nothing here...";
 
   @override
-  Layers get layer => Layers.BACKDROPS;
+  Class get layer => Class.BACKDROPS;
 }

@@ -7,10 +7,18 @@ final class Shared {
   static const int reactorRows = 12;
   static const int reactorColumns = 24;
   static const double tileInitialZoom = 1;
+
+  /// Resort to using [kTileSize] since that one has additional calculations to make sure it is a true size (AKA its a magic number)
   static const double tileSize = 32;
+
+  /// Resort to using [kTileSpacing] since that one has additional calculations to make sure it is a true size (AKA its a magic number)
   static const double tileSpacing = 0;
   static const double kTileSize = tileSize * tileInitialZoom;
   static const double kTileSpacing = tileSpacing * tileInitialZoom;
+
+  static const double uiPadding = 8.0;
+  static const double uiGridParentPadding = 10;
+  static const double uiGridChildPadding = 12;
 
   static const String textureAtlasLocation = "textures/content.atlas";
 

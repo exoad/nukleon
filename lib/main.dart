@@ -9,8 +9,7 @@ void main() async {
   Public.textureFilter = PublicK.TEXTURE_FILTER_NONE;
   await GameRoot.I.loadBuiltinItems();
   Shared.logger
-      .config("LAYERS: ${ItemsRegistry.I.layers[Layers.OVERLAY.index].values.join(",")}");
-  Shared.logger.config("LAYERS_3_0: ${ItemsRegistry.I.layers[Layers.OVERLAY.index][0]}");
+      .config("LAYERS: ${ItemsRegistry.I.allClasses[Class.OVERLAY]!.values.join(",")}");
   runApp(AppRoot());
 }
 
@@ -32,8 +31,8 @@ class CullingReactorGridPainter extends CustomPainter {
           double y = i * (Shared.kTileSize + Shared.kTileSpacing);
           ItemDefinition definition = GameRoot.I.reactor
               .at(i, j)
-              .at(Layers.BACKDROPS)
-              .findItemDefinition(Layers.BACKDROPS);
+              .at(Class.BACKDROPS)
+              .findItemDefinition(Class.BACKDROPS);
           AtlasSprite sprite = definition.sprite().findTexture();
           transforms.add(RSTransform.fromComponents(
               rotation: 0,
@@ -53,19 +52,21 @@ class CullingReactorGridPainter extends CustomPainter {
     ui.Image atlas = TextureRegistry.getTexture("content")!.atlasImage;
     for (int i = 0; i < GameRoot.I.reactor.rows; i++) {
       for (int j = 0; j < GameRoot.I.reactor.columns; j++) {
-        double x = j * (Shared.kTileSize + Shared.kTileSpacing);
-        double y = i * (Shared.kTileSize + Shared.kTileSpacing);
-        ItemDefinition definition =
-            GameRoot.I.reactor.at(i, j).at(Layers.ITEMS).findItemDefinition(Layers.ITEMS);
-        AtlasSprite sprite = definition.sprite().findTexture();
-        transforms.add(RSTransform.fromComponents(
-            rotation: 0,
-            scale: Shared.tileInitialZoom,
-            anchorX: 0,
-            anchorY: 0,
-            translateX: x,
-            translateY: y));
-        src.add(sprite.src);
+        int id = GameRoot.I.reactor.at(i, j).at(Class.ITEMS);
+        if (id != 0) {
+          ItemDefinition definition = id.findItemDefinition(Class.ITEMS);
+          double x = j * (Shared.kTileSize + Shared.kTileSpacing);
+          double y = i * (Shared.kTileSize + Shared.kTileSpacing);
+          AtlasSprite sprite = definition.sprite().findTexture();
+          transforms.add(RSTransform.fromComponents(
+              rotation: 0,
+              scale: Shared.tileInitialZoom,
+              anchorX: 0,
+              anchorY: 0,
+              translateX: x,
+              translateY: y));
+          src.add(sprite.src);
+        }
       }
     }
     canvas.drawAtlas(atlas, transforms, src, null, null,
@@ -76,16 +77,6 @@ class CullingReactorGridPainter extends CustomPainter {
     //     paint
     //       ..color = Colors.red
     //       ..blendMode = BlendMode.overlay);
-
-    // if (pressedLocation != null) {
-    //   Paint redPaint = Paint()..color = Colors.red;
-    //   canvas.drawRect(
-    //       Rect.fromCenter(
-    //           center: pressedLocation!,
-    //           width: Shared.kTileSize,
-    //           height: Shared.kTileSize),
-    //       redPaint);
-    // }
   }
 
   @override
@@ -101,27 +92,58 @@ class AppRoot extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       debugShowWidgetInspector: false,
       showPerformanceOverlay: true,
-      color: Color.fromARGB(255, 73, 86, 103),
+      color: Colors.black,
       builder: (BuildContext context, _) =>
           LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
-        return ColoredBox(
-          color: Color.fromARGB(255, 31, 33, 36),
-          child: Row(
-            children: <Widget>[
-              Container(width: 260, height: double.infinity, color: Colors.transparent),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    Container(height: 200, color: Colors.transparent),
-                    Expanded(
-                        child: _ReactorWidget(
-                      constraints: constraints,
-                    )),
-                  ],
+        return Padding(
+          padding: const EdgeInsets.all(Shared.uiPadding),
+          child: ColoredBox(
+            color: Colors.black,
+            child: Row(
+              children: <Widget>[
+                Column(children: <Widget>[
+                  Container(
+                      height: MediaQuery.sizeOf(context).height * 0.4 -
+                          (Shared.uiPadding * 2),
+                      width: 260,
+                      color: Color.fromARGB(255, 56, 61, 74)),
+                  const SizedBox(height: Shared.uiPadding),
+                  Container(
+                    height:
+                        MediaQuery.sizeOf(context).height * 0.6 - (Shared.uiPadding * 2),
+                    width: 260,
+                    color: Color.fromARGB(255, 56, 61, 74),
+                    child: GridView.builder(
+                        padding: const EdgeInsets.all(Shared.uiGridParentPadding),
+                        itemCount: ItemsRegistry.I.registeredItems(Class.ITEMS) - 1,
+                        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                            maxCrossAxisExtent: Shared.kTileSize,
+                            crossAxisSpacing: Shared.uiGridChildPadding,
+                            mainAxisSpacing: Shared.uiGridChildPadding),
+                        itemBuilder: (BuildContext context, int index) {
+                          int trueIndex = index + 1;
+                          return SpriteWidget(ItemsRegistry.I
+                              .findItemDefinition(trueIndex, Class.ITEMS)
+                              .sprite()
+                              .findTexture());
+                        }),
+                  ),
+                ]),
+                const SizedBox(width: Shared.uiPadding),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      Container(height: 200, color: Colors.transparent),
+                      Expanded(
+                          child: _ReactorWidget(
+                        constraints: constraints,
+                      )),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       }),
@@ -144,6 +166,8 @@ class _ReactorWidgetState extends State<_ReactorWidget> {
 
   @override
   Widget build(BuildContext context) {
+    // ! still need to support drag and pressed buttons
+    // ! clicking individually on a massive grid is a pain
     return GestureDetector(
       onSecondaryTapDown: (TapDownDetails details) => _handleHit(false, details),
       onTapDown: (TapDownDetails details) => _handleHit(true, details),
@@ -157,7 +181,7 @@ class _ReactorWidgetState extends State<_ReactorWidget> {
       hitLocation = CellLocation(
           pressedLocation!.dy ~/ (Shared.kTileSize + Shared.kTileSpacing),
           pressedLocation!.dx ~/ (Shared.kTileSize + Shared.kTileSpacing),
-          Layers.ITEMS);
+          Class.ITEMS);
       GameRoot.I.reactor[hitLocation!] =
           primary || GameRoot.I.pointerBuffer.secondary == null
               ? GameRoot.I.pointerBuffer.primary

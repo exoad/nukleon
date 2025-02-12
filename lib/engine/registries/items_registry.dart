@@ -4,116 +4,128 @@ final class ItemsRegistry {
   static final ItemsRegistry I = ItemsRegistry._();
 
   /// The indices represents the layer
-  final List<Map<int, ItemDefinition>> _items;
-  final List<Map<String, int>> _identifiersRemap;
+  final Map<Class, Map<int, ItemDefinition>> _items;
+  final Map<Class, Map<String, int>> _identifiersRemap;
 
   ItemsRegistry._()
-      : _items = List<Map<int, ItemDefinition>>.filled(
-            Layers.values.length, <int, ItemDefinition>{}),
-        _identifiersRemap =
-            List<Map<String, int>>.filled(Layers.values.length, <String, int>{});
+      : _items = Map<Class, Map<int, ItemDefinition>>.fromIterables(
+            Class.values, <Map<int, ItemDefinition>>[
+          for (int i = 0; i < Class.values.length; i++) <int, ItemDefinition>{}
+        ]),
+        _identifiersRemap = Map<Class, Map<String, int>>.fromIterables(
+            Class.values, <Map<String, int>>[
+          for (int i = 0; i < Class.values.length; i++) <String, int>{}
+        ]);
 
   int get totalRegisteredItems {
     int l = 0;
-    for (int i = 0; i < _items.length; i++) {
-      l += _items[i].length;
+    for (Map<int, ItemDefinition> def in _items.values) {
+      l += def.length;
     }
     return l;
   }
 
-  Map<int, ItemDefinition> operator [](Layers layer) {
-    return _items[layer.index];
+  int registeredItems(Class layer) {
+    return _items[layer]!.length;
+  }
+
+  Map<int, ItemDefinition> operator [](Class layer) {
+    return _items[layer]!;
   }
 
   /// Avoid modification at all costs
-  List<Map<int, ItemDefinition>> get layers => _items;
+  Map<Class, Map<int, ItemDefinition>> get allClasses => _items;
 
   void _checkInvariance<E extends ItemDefinition>(
-      E? item, Layers layer, String? identifier) {
+      E? item, Class layer, String? identifier) {
     if (item != null) {
-      if ((!_items[layer.index].containsValue(item) &&
-              _identifiersRemap[layer.index].containsKey(item.identifier)) ||
-          (_items[layer.index].containsValue(item) &&
-              !_identifiersRemap[layer.index].containsKey(item.identifier))) {
+      if ((!_items[layer]!.containsValue(item) &&
+              _identifiersRemap[layer]!.containsKey(item.identifier)) ||
+          (_items[layer]!.containsValue(item) &&
+              !_identifiersRemap[layer]!.containsKey(item.identifier))) {
         logger.severe(
-            "INVARIANCE ENCOUNTERED\nItems_$layer=${_items[layer.index]}\nIdentifiersRemap=$_identifiersRemap");
+            "INVARIANCE ENCOUNTERED\nItems_$layer=${_items[layer]}\nIdentifiersRemap=$_identifiersRemap");
         throw "Invariance encountered inside of ItemsRegistry. This is highly unlikely to happen, so this is a major error.";
       }
     }
     if (identifier != null) {
-      bool c = _items[layer.index]
+      bool c = _items[layer]!
           .values
           .any((ItemDefinition definition) => definition.identifier == identifier);
-      if ((!c && _identifiersRemap[layer.index].containsKey(identifier)) ||
-          (c && !_identifiersRemap[layer.index].containsKey(identifier))) {
+      if ((!c && _identifiersRemap[layer]!.containsKey(identifier)) ||
+          (c && !_identifiersRemap[layer]!.containsKey(identifier))) {
         logger.severe(
-            "INVARIANCE ENCOUNTERED\nItems_$layer=${_items[layer.index]}\nIdentifiersRemap=$_identifiersRemap");
+            "INVARIANCE ENCOUNTERED\nItems_$layer=${_items[layer]}\nIdentifiersRemap=$_identifiersRemap");
         throw "Invariance encountered inside of ItemsRegistry. This is highly unlikely to happen, so this is a major error.";
       }
     }
   }
 
-  void addItemDefinition<E extends ItemDefinition>(int id, Layers layer, E item) {
-    if (_identifiersRemap[layer.index].containsKey(item.identifier)) {
+  void addItemDefinition<E extends ItemDefinition>(int id, Class layer, E item) {
+    if (_identifiersRemap[layer]!.containsKey(item.identifier)) {
       logger.severe("Cannot add an item with a duplicate identifier: ${item.identifier}");
-      throw "Duplicate item identifier ${item.identifier} with duplicate at ${_identifiersRemap[layer.index][item.identifier]} (Layer $layer)";
+      throw "Duplicate item identifier ${item.identifier} with duplicate at ${_identifiersRemap[layer]![item.identifier]} (Layer $layer)";
     }
-    if (_items[layer.index].containsKey(id)) {
-      if (_items[layer.index][id]!.locked) {
+    if (_items[layer]!.containsKey(id)) {
+      if (_items[layer]![id]!.locked) {
         logger.severe(
-            "Cannot replace item definition at $id.$layer (${_items[layer.index][id]!.identifier}) with ${item.identifier} because it is locked)");
+            "Cannot replace item definition at $id.$layer (${_items[layer]![id]!.identifier}) with ${item.identifier} because it is locked)");
       } else {
-        String original = _items[layer.index][id]!.identifier;
-        _items[layer.index][id] = item;
-        _identifiersRemap[layer.index][item.identifier] = id;
+        String original = _items[layer]![id]!.identifier;
+        _items[layer]![id] = item;
+        _identifiersRemap[layer]![item.identifier] = id;
         logger.fine(
             "Replaced item definition at $id.$layer ($original with ${item.identifier})");
       }
     } else {
-      _items[layer.index][id] = item;
-      _identifiersRemap[layer.index][item.identifier] = id;
+      _items[layer]![id] = item;
+      _identifiersRemap[layer]![item.identifier] = id;
       logger.fine("Loaded new item definition at $id.$layer -> ${item.identifier}");
+    }
+    if (id == 0 && layer != Class.BACKDROPS) {
+      logger.warning(
+          "[DANGEROUS OPTION] It can be confusing to set the empty layer other than backdrops [0=0].");
     }
   }
 
-  bool containsID(int id) {
-    return _items.within(id);
+  bool containsID(int id, Class layer) {
+    return _items[layer]!.containsKey(id);
   }
 
-  bool containsItemDefinition<E extends ItemDefinition>(Layers layer, E item) {
+  bool containsItemDefinition<E extends ItemDefinition>(Class layer, E item) {
     _checkInvariance<E>(item, layer, null);
-    return _items[layer.index].containsValue(item);
+    return _items[layer]!.containsValue(item);
   }
 
-  bool containsIdentifier(String identifier, Layers layer) {
+  bool containsIdentifier(String identifier, Class layer) {
     _checkInvariance<ItemDefinition>(null, layer, identifier);
-    return _identifiersRemap[layer.index].containsKey(identifier);
+    return _identifiersRemap[layer]!.containsKey(identifier);
   }
 
   /// When calling this, make sure to place a check to call [containsID]
-  E findItemDefinition<E extends ItemDefinition>(int id, Layers layer) {
-    if (!_items[layer.index].containsKey(id)) {
+  E findItemDefinition<E extends ItemDefinition>(int id, Class layer) {
+    if (!_items[layer]!.containsKey(id)) {
       panicNow("Could not find ItemDefinition id '$id' on layer $layer");
     }
-    return _items[layer.index][id]! as E;
+    return _items[layer]![id]! as E;
   }
 
-  int findID<E extends ItemDefinition>(E item, Layers layer) {
+  int findID<E extends ItemDefinition>(E item, Class layer) {
     _checkInvariance<E>(item, layer, null);
-    return _identifiersRemap[layer.index][item.identifier]!;
+    return _identifiersRemap[layer]![item.identifier]!;
   }
 
-  int findIDByIdentifier(String identifier, Layers layer) {
+  int findIDByIdentifier(String identifier, Class layer) {
     _checkInvariance<ItemDefinition>(null, layer, identifier);
-    return _identifiersRemap[layer.index][identifier]!;
+    return _identifiersRemap[layer]![identifier]!;
   }
 }
 
 extension ItemID on int {
-  ItemDefinition findItemDefinition(Layers layer) {
-    if (!ItemsRegistry.I.containsID(this)) {
+  ItemDefinition findItemDefinition(Class layer) {
+    if (!ItemsRegistry.I.containsID(this, layer)) {
       panicNow(
-          "ItemRegstry $this is not in the item registry so it does not have an ItemDefinition! Register it first");
+          "For ItemDefinition id=$this on $layer is not in the item registry so it does not have an ItemDefinition! Register it first");
     }
     return ItemsRegistry.I.findItemDefinition(this, layer);
   }
@@ -122,7 +134,7 @@ extension ItemID on int {
 abstract class ItemDefinition {
   String get identifier;
 
-  Layers get layer;
+  Class get layer;
 
   SpriteTextureKey sprite();
 

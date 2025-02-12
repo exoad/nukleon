@@ -2,27 +2,27 @@ import 'package:project_yellow_cake/engine/engine.dart';
 import 'package:project_yellow_cake/game/game.dart';
 
 class ReactorSlot {
-  final Map<Layers, int> _layers;
+  final Map<Class, int> _Class;
 
-  ReactorSlot([Map<Layers, int>? initial])
-      : _layers = Map<Layers, int>.fromIterables(
-            Layers.values, List<int>.filled(Layers.values.length, 0, growable: false));
+  ReactorSlot([Map<Class, int>? initial])
+      : _Class = Map<Class, int>.fromIterables(
+            Class.values, List<int>.filled(Class.values.length, 0, growable: false));
 
-  int at(Layers layer) {
-    return _layers[
+  int at(Class layer) {
+    return _Class[
         layer]!; // non nullable enum type assures us that the result will at least produce a numerical typing
   }
 
-  int operator [](Layers layer) {
+  int operator [](Class layer) {
     return at(layer);
   }
 
-  void setAt(Layers layer, int value) {
-    _layers[layer] = value;
+  void setAt(Class layer, int value) {
+    _Class[layer] = value;
   }
 
-  void operator []=(Layers layer, int value) {
-    _layers[layer] = value;
+  void operator []=(Class layer, int value) {
+    _Class[layer] = value;
   }
 }
 
@@ -47,7 +47,7 @@ class ReactorEntity {
     return _grid[row][column];
   }
 
-  List<ReactorSlot> allOnLayer(Layers layer) {
+  List<ReactorSlot> allOnLayer(Class layer) {
     return _grid[layer.index];
   }
 
@@ -75,7 +75,7 @@ class ReactorEntity {
         "Reactor set ${location.row},${location.column},${location.layer} to $value (${value.findItemDefinition(location.layer).identifier})");
   }
 
-  void setAt(int value, {required int row, required int column, required Layers layer}) {
+  void setAt(int value, {required int row, required int column, required Class layer}) {
     if (row < 0 || row >= _grid.length || column < 0 || column >= _grid[row].length) {
       panicNow(
           "Invalid indices: row=$row, column=$column,layer=$layer. Grid size is ${_grid.length}x${_grid.isNotEmpty ? _grid[0].length : 0}.");
@@ -93,7 +93,7 @@ class ReactorEntity {
 class CellLocation {
   final int row;
   final int column;
-  final Layers layer;
+  final Class layer;
 
   CellLocation(this.row, this.column, this.layer)
       : assert(row >= 0, "Reactor Cell of Row=$row is not possible!"),
