@@ -8,8 +8,6 @@ import "dart:ui" as ui;
 void main() async {
   Public.textureFilter = PublicK.TEXTURE_FILTER_NONE;
   await GameRoot.I.loadBuiltinItems();
-  Shared.logger
-      .config("LAYERS: ${ItemsRegistry.I.allClasses[Class.OVERLAY]!.values.join(",")}");
   runApp(AppRoot());
 }
 

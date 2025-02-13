@@ -43,9 +43,10 @@ final class ItemsRegistry {
               _identifiersRemap[layer]!.containsKey(item.identifier)) ||
           (_items[layer]!.containsValue(item) &&
               !_identifiersRemap[layer]!.containsKey(item.identifier))) {
-        logger.severe(
-            "INVARIANCE ENCOUNTERED\nItems_$layer=${_items[layer]}\nIdentifiersRemap=$_identifiersRemap");
-        throw "Invariance encountered inside of ItemsRegistry. This is highly unlikely to happen, so this is a major error.";
+        panicNow(
+            "INVARIANCE ENCOUNTERED\nItems_$layer=${_items[layer]}\nIdentifiersRemap=$_identifiersRemap",
+            details:
+                "Invariance encountered inside of ItemsRegistry. This is highly unlikely to happen, so this is a major error.");
       }
     }
     if (identifier != null) {
@@ -54,17 +55,19 @@ final class ItemsRegistry {
           .any((ItemDefinition definition) => definition.identifier == identifier);
       if ((!c && _identifiersRemap[layer]!.containsKey(identifier)) ||
           (c && !_identifiersRemap[layer]!.containsKey(identifier))) {
-        logger.severe(
-            "INVARIANCE ENCOUNTERED\nItems_$layer=${_items[layer]}\nIdentifiersRemap=$_identifiersRemap");
-        throw "Invariance encountered inside of ItemsRegistry. This is highly unlikely to happen, so this is a major error.";
+        panicNow(
+            "INVARIANCE ENCOUNTERED\nItems_$layer=${_items[layer]}\nIdentifiersRemap=$_identifiersRemap",
+            details:
+                "Invariance encountered inside of ItemsRegistry. This is highly unlikely to happen, so this is a major error.");
       }
     }
   }
 
   void addItemDefinition<E extends ItemDefinition>(int id, Class layer, E item) {
     if (_identifiersRemap[layer]!.containsKey(item.identifier)) {
-      logger.severe("Cannot add an item with a duplicate identifier: ${item.identifier}");
-      throw "Duplicate item identifier ${item.identifier} with duplicate at ${_identifiersRemap[layer]![item.identifier]} (Layer $layer)";
+      panicNow("Cannot add an item with a duplicate identifier: ${item.identifier}",
+          details:
+              "Duplicate item identifier ${item.identifier} with duplicate at ${_identifiersRemap[layer]![item.identifier]} (Layer $layer)");
     }
     if (_items[layer]!.containsKey(id)) {
       if (_items[layer]![id]!.locked) {
@@ -125,7 +128,8 @@ extension ItemID on int {
   ItemDefinition findItemDefinition(Class layer) {
     if (!ItemsRegistry.I.containsID(this, layer)) {
       panicNow(
-          "For ItemDefinition id=$this on $layer is not in the item registry so it does not have an ItemDefinition! Register it first");
+          "For ItemDefinition id=$this on $layer is not in the item registry so it does not have an ItemDefinition!",
+          help: "Register it to the ItemRegistry first.");
     }
     return ItemsRegistry.I.findItemDefinition(this, layer);
   }
@@ -144,7 +148,8 @@ abstract class ItemDefinition {
   int get id {
     if (!ItemsRegistry.I.containsIdentifier(identifier, layer)) {
       panicNow(
-          "This item $identifier is not in the item registry so it does not have an ID! Register it first");
+          "This item $identifier is not in the item registry so it does not have an ID!",
+          help: "Register it to the ItemRegistry first.");
     }
     return ItemsRegistry.I.findIDByIdentifier(identifier, layer);
   }

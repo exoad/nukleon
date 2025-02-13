@@ -21,6 +21,7 @@ final class Shared {
   static const double uiGridChildPadding = 12;
 
   static const String textureAtlasLocation = "textures/content.atlas";
+  static const String uiTextureAtlasLocation = "textures/ui_content.atlas";
 
   /// Game side logger
   static final Logger logger = Logger("Game");
@@ -36,6 +37,10 @@ final class Shared {
         "content",
         (await TextureAtlasLoader.loadAssetsAtlas(textureAtlasLocation))
             .toTextureMap("content"));
+    TextureRegistry.registerTextureMap(
+        "ui_content",
+        (await TextureAtlasLoader.loadAssetsAtlas(uiTextureAtlasLocation))
+            .toTextureMap("ui_content"));
     // reactorItemsTexture = await TextureAtlasLoader.loadAssetsAtlas(textureAtlasLocation);
     Shared.logger.info("Shared Resources initialized.");
   }

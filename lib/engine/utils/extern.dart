@@ -21,6 +21,12 @@ extension KnowledgeableList<T> on List<T> {
   }
 }
 
-class DataModel {
-  const DataModel();
+extension StringList on Iterable<String> {
+  String get longestString {
+    return reduce((String a, String b) => a.length > b.length ? a : b);
+  }
+
+  String get shortestString {
+    return reduce((String a, String b) => a.length > b.length ? b : a);
+  }
 }
