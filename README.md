@@ -6,7 +6,4 @@ Today I set myself up to do a challenge that no one has ever beaten. Minecraft h
 
 Copyright (C) 2025 Jiaming Meng. All rights reserved.
 
-This project, including all its code, documentation, and associated files, is the intellectual property of Jiaming Meng. 
-No permission is granted to use, copy, modify, or distribute this work for any purpose without explicit written consent from the copyright holder.
-
 For inquiries regarding the use of this project, please contact [reachout@exoad.net](mailto://reachout@exoad.net).
