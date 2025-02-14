@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:project_yellow_cake/engine/engine.dart";
+import "package:project_yellow_cake/game/design/design_ui.dart";
 import "package:project_yellow_cake/game/entities/entities.dart";
 import "package:project_yellow_cake/game/game.dart";
 
@@ -120,10 +121,12 @@ class AppRoot extends StatelessWidget {
                             mainAxisSpacing: Shared.uiGridChildPadding),
                         itemBuilder: (BuildContext context, int index) {
                           int trueIndex = index + 1;
-                          return SpriteWidget(ItemsRegistry.I
-                              .findItemDefinition(trueIndex, Class.ITEMS)
-                              .sprite()
-                              .findTexture());
+                          return ReactorButton(
+                              child: ItemsRegistry.I
+                                  .findItemDefinition(trueIndex, Class.ITEMS)
+                                  .sprite()
+                                  .findTexture(),
+                              onPressed: () {});
                         }),
                   ),
                 ]),

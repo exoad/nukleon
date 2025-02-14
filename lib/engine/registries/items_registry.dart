@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:project_yellow_cake/engine/engine.dart';
 
 final class ItemsRegistry {
@@ -135,7 +136,10 @@ extension ItemID on int {
   }
 }
 
+@immutable
 abstract class ItemDefinition {
+  const ItemDefinition();
+
   String get identifier;
 
   Class get layer;

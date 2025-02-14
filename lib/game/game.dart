@@ -31,8 +31,6 @@ class GameRoot {
     i = 1;
     ItemsRegistry.I.addItemDefinition(i++, Class.UI, ReactorButton1Normal());
     ItemsRegistry.I.addItemDefinition(i++, Class.UI, ReactorButton1Pressed());
-    ItemsRegistry.I.addItemDefinition(i++, Class.UI, ReactorButton1Pressed());
-
     Shared.logger.info("Loaded builtin items into the engine registry");
   }
 
