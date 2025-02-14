@@ -1,6 +1,6 @@
-import 'package:project_yellow_cake/game/items/classes/classes.dart';
+import 'package:project_yellow_cake/game/classes/classes.dart';
 
-import '../../../../engine/engine.dart';
+import '../../../engine/engine.dart';
 
 class UraniumCell extends Cell {
   @override

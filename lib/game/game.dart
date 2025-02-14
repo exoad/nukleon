@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:project_yellow_cake/engine/engine.dart';
 import 'package:project_yellow_cake/game/controllers/pointer.dart';
 import 'package:project_yellow_cake/game/entities/reactor.dart';
-import 'package:project_yellow_cake/game/items/classes/classes.dart';
+import 'package:project_yellow_cake/game/classes/classes.dart';
 import 'package:project_yellow_cake/game/shared.dart';
 
 export "shared.dart";
