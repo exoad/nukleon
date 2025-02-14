@@ -2,7 +2,7 @@ import 'package:project_yellow_cake/engine/engine.dart';
 
 class ReactorButton1Normal extends ItemDefinition {
   @override
-  String get identifier => "game.ui_button_1#normal";
+  String get identifier => "class.ui.button_1#normal";
 
   @override
   bool get locked => true;
@@ -18,7 +18,7 @@ class ReactorButton1Normal extends ItemDefinition {
 
 class ReactorButton1Pressed extends ItemDefinition {
   @override
-  String get identifier => "game.ui_button_1#pressed";
+  String get identifier => "class.ui.button_1#pressed";
 
   @override
   bool get locked => true;

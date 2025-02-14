@@ -28,10 +28,8 @@ class CullingReactorGridPainter extends CustomPainter {
         for (int j = 0; j < GameRoot.I.reactor.columns; j++) {
           double x = j * (Shared.kTileSize + Shared.kTileSpacing);
           double y = i * (Shared.kTileSize + Shared.kTileSpacing);
-          ItemDefinition definition = GameRoot.I.reactor
-              .at(i, j)
-              .at(Class.BACKDROPS)
-              .findItemDefinition(Class.BACKDROPS);
+          ItemDefinition definition =
+              GameRoot.I.reactor.at(i, j).at(Class.TILES).findItemDefinition(Class.TILES);
           AtlasSprite sprite = definition.sprite().findTexture();
           transforms.add(RSTransform.fromComponents(
               rotation: 0,
@@ -135,7 +133,11 @@ class AppRoot extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
-                      Container(height: 200, color: Colors.transparent),
+                      Container(
+                        height: 200,
+                        color: Colors.transparent,
+                        child: Image.asset("assets/shitass.jpeg", fit: BoxFit.fill,),
+                      ),
                       Expanded(
                           child: _ReactorWidget(
                         constraints: constraints,

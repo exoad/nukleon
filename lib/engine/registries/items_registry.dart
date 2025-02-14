@@ -86,7 +86,7 @@ final class ItemsRegistry {
       _identifiersRemap[layer]![item.identifier] = id;
       logger.fine("Loaded new item definition at $id.$layer -> ${item.identifier}");
     }
-    if (id == 0 && layer != Class.BACKDROPS) {
+    if (id == 0 && layer != Class.TILES) {
       logger.warning(
           "[DANGEROUS OPTION] It can be confusing to set the empty layer other than backdrops [0=0].");
     }

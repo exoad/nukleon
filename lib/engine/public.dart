@@ -80,7 +80,7 @@ final class PublicK {
 }
 
 enum Class {
-  BACKDROPS,
+  TILES,
   ITEMS,
   INFO,
   OVERLAY,
@@ -95,6 +95,6 @@ enum Class {
   }
 
   static List<Class> get zeroDrawable {
-    return const <Class>[BACKDROPS];
+    return const <Class>[TILES];
   }
 }

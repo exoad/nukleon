@@ -22,6 +22,7 @@ final class Shared {
 
   static const String textureAtlasLocation = "textures/content.atlas";
   static const String uiTextureAtlasLocation = "textures/ui_content.atlas";
+  static const String tilesTextureAtlasLocation = "textures/tiles_content.atlas";
 
   /// Game side logger
   static final Logger logger = Logger("Game");
@@ -41,6 +42,10 @@ final class Shared {
         "ui_content",
         (await TextureAtlasLoader.loadAssetsAtlas(uiTextureAtlasLocation))
             .toTextureMap("ui_content"));
+    TextureRegistry.registerTextureMap(
+        "tiles_content",
+        (await TextureAtlasLoader.loadAssetsAtlas(tilesTextureAtlasLocation))
+            .toTextureMap("tiles_content"));
     // reactorItemsTexture = await TextureAtlasLoader.loadAssetsAtlas(textureAtlasLocation);
     Shared.logger.info("Shared Resources initialized.");
   }

@@ -27,7 +27,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
   FlutterWindow window(project);
   Win32Window::Point origin(10, 10);
   Win32Window::Size size(1200, 780);
-  if (!window.Create(L"shitters", origin, size)) {
+  //https://www.reddit.com/r/copypasta/comments/1ip9xoh/trump_and_elon_musk_auditing_the_government_is/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
+  if (!window.Create(L"The delusion and blind trust you have in a billionaire to perform an 'audit' is astounding. Accountants audit, not billionaires. They have saved less than .01 so far, and if you think those breaks are going to you, dream on. They're getting ready to make cuts to the tax rates for only the wealthiest 1 only. You'll never see a change. ", origin, size)) {
     return EXIT_FAILURE;
   }
   window.SetQuitOnClose(true);

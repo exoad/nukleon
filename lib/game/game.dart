@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:project_yellow_cake/engine/engine.dart';
+import 'package:project_yellow_cake/game/classes/items/item_blank.dart';
 import 'package:project_yellow_cake/game/controllers/pointer.dart';
 import 'package:project_yellow_cake/game/entities/reactor.dart';
 import 'package:project_yellow_cake/game/classes/classes.dart';
@@ -23,7 +24,8 @@ class GameRoot {
   Future<void> loadBuiltinItems() async {
     await initializeEngine();
     await Shared.initialize();
-    ItemsRegistry.I.addItemDefinition(0, Class.BACKDROPS, EmptyCell());
+    ItemsRegistry.I.addItemDefinition(0, Class.TILES, BasicTile());
+    ItemsRegistry.I.addItemDefinition(0, Class.ITEMS, BlankItem());
     int i = 1;
     ItemsRegistry.I.addItemDefinition(i++, Class.ITEMS, UraniumCell());
     ItemsRegistry.I.addItemDefinition(i++, Class.ITEMS, UraniumEnhancedCell());

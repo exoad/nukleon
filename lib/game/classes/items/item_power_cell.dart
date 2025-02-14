@@ -4,7 +4,7 @@ import '../../../engine/engine.dart';
 
 class UraniumCell extends Cell {
   @override
-  String get identifier => "game.uranium_fuel_cell";
+  String get identifier => "class.items.uranium_fuel_cell";
 
   @override
   bool get locked => true;
