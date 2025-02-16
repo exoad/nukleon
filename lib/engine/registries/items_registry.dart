@@ -148,13 +148,4 @@ abstract class ItemDefinition {
 
   /// Determines if this is a locked item and should have any further modifications in the [ItemRegistry] be restricted or locked down.
   bool get locked;
-
-  int get id {
-    if (!ItemsRegistry.I.containsIdentifier(identifier, layer)) {
-      panicNow(
-          "This item $identifier is not in the item registry so it does not have an ID!",
-          help: "Register it to the ItemRegistry first.");
-    }
-    return ItemsRegistry.I.findIDByIdentifier(identifier, layer);
-  }
 }

@@ -8,4 +8,7 @@ abstract class Cell extends ItemDefinition {
   String get canonicalName;
 
   String get canonicalLabel;
+
+  /// If `null`, then this is indestructible
+  double? get maxHealth => 100;
 }

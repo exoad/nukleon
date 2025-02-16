@@ -1,32 +1,35 @@
+import 'package:flutter/material.dart';
 import 'package:project_yellow_cake/engine/engine.dart';
 import 'package:project_yellow_cake/game/game.dart';
 
 class ReactorSlot {
-  final Map<Class, int> _Class;
+  final Map<Class, CellValue> _class;
 
-  ReactorSlot([Map<Class, int>? initial])
-      : _Class = Map<Class, int>.fromIterables(
-            Class.values, List<int>.filled(Class.values.length, 0, growable: false));
+  ReactorSlot([Map<Class, CellValue>? initial])
+      : _class = Map<Class, CellValue>.fromIterables(
+            Class.values,
+            List<CellValue>.filled(Class.values.length, CellValue.emptiness,
+                growable: false));
 
-  int at(Class layer) {
-    return _Class[
+  CellValue at(Class layer) {
+    return _class[
         layer]!; // non nullable enum type assures us that the result will at least produce a numerical typing
   }
 
-  int operator [](Class layer) {
+  CellValue operator [](Class layer) {
     return at(layer);
   }
 
-  void setAt(Class layer, int value) {
-    _Class[layer] = value;
+  void setAt(Class layer, CellValue value) {
+    _class[layer] = value;
   }
 
-  void operator []=(Class layer, int value) {
-    _Class[layer] = value;
+  void operator []=(Class layer, CellValue value) {
+    _class[layer] = value;
   }
 }
 
-class ReactorEntity {
+class ReactorEntity with ChangeNotifier {
   final List<List<ReactorSlot>> _grid;
 
   ReactorEntity(
@@ -51,36 +54,41 @@ class ReactorEntity {
     return _grid[layer.index];
   }
 
-  int operator [](CellLocation location) {
+  @Deprecated("dont use this shit")
+  CellValue operator [](CellLocation location) {
     if (location.row < 0 ||
         location.row >= _grid.length ||
         location.column < 0 ||
         location.row >= _grid[location.row].length) {
       panicNow(
-          "Invalid indices: row=${location.row}, column=${location.row}, layer=${location.layer}. Grid size is ${_grid.length}x${_grid.isNotEmpty ? _grid[0].length : 0}.");
+          "Invalid indices: row=${location.row}, column=${location.row}, layer=Class.ITEMS. Grid size is ${_grid.length}x${_grid.isNotEmpty ? _grid[0].length : 0}.");
     }
-    return _grid[location.row][location.column][location.layer];
+    return _grid[location.row][location.column][Class.ITEMS];
   }
 
-  void operator []=(CellLocation location, int value) {
+  bool safePut(CellLocation location, CellValue value, Class layer,
+      [bool forced = false]) {
     if (location.row < 0 ||
         location.row >= _grid.length ||
         location.column < 0 ||
         location.row >= _grid[location.row].length) {
-      panicNow(
-          "Invalid indices: row=${location.row}, column=${location.row}. Grid size is ${_grid.length}x${_grid.isNotEmpty ? _grid[0].length : 0}.");
+      return false;
     }
-    _grid[location.row][location.column][location.layer] = value;
-    Shared.logger.fine(
-        "Reactor set ${location.row},${location.column},${location.layer} to $value (${value.findItemDefinition(location.layer).identifier})");
+    if (_grid[location.row][location.column][layer] != value || forced) {
+      _grid[location.row][location.column][layer] = value;
+      Shared.logger.fine(
+          "Reactor set ${location.row},${location.column},$layer to $value (${value.id.findItemDefinition(layer).identifier})");
+      return true;
+    }
+    return false;
   }
 
-  void setAt(int value, {required int row, required int column, required Class layer}) {
-    if (row < 0 || row >= _grid.length || column < 0 || column >= _grid[row].length) {
-      panicNow(
-          "Invalid indices: row=$row, column=$column,layer=$layer. Grid size is ${_grid.length}x${_grid.isNotEmpty ? _grid[0].length : 0}.");
-    }
-    _grid[row][column][layer] = value;
+  /// Similar in functionality to the `[]=` operator, but does not panic when the [location] is out of bounds.
+  /// If the operation is successful, this function returns `true` else it will return `false`.
+  ///
+  /// If [forced] is set to `true`, it will update the value even if there is no change.
+  bool safePutCell(CellLocation location, CellValue value, [bool forced = false]) {
+    return safePut(location, value, Class.ITEMS, forced);
   }
 
   int get size => _grid.length * _grid[0].length;
@@ -93,13 +101,34 @@ class ReactorEntity {
 class CellLocation {
   final int row;
   final int column;
-  final Class layer;
 
-  CellLocation(this.row, this.column, this.layer)
+  const CellLocation(this.row, this.column)
       : assert(row >= 0, "Reactor Cell of Row=$row is not possible!"),
         assert(column >= 0, "Reactor Cell of Column=$column is not possible!");
 
-  int findInRector([ReactorEntity? instance]) {
-    return (instance ?? GameRoot.I.reactor).at(row, column)[layer];
+  CellValue findInRector([ReactorEntity? instance]) {
+    return (instance ?? GameRoot.I.reactor).at(row, column)[Class.ITEMS];
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is CellLocation && other.row == row && other.column == column;
+  }
+
+  @override
+  int get hashCode => row.hashCode ^ column.hashCode;
+}
+
+class CellValue {
+  static final CellValue emptiness = CellValue(0, itemHealth: 0);
+
+  final int id;
+  double itemHealth;
+
+  CellValue(this.id, {this.itemHealth = 100.0});
+
+  @override
+  String toString() {
+    return "$id@[Health=$itemHealth]";
   }
 }

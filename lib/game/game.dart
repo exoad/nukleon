@@ -13,13 +13,15 @@ class GameRoot {
 
   final ValueNotifier<ReactorEntity> _reactorEntity;
   final PointerBuffer _pointerBuffer;
+  final CellLocationBuffer _cellLocationBuffer;
 
   GameRoot._()
       : _reactorEntity = ValueNotifier<ReactorEntity>(ReactorEntity(
           rows: Shared.reactorRows,
           columns: Shared.reactorColumns,
         )),
-        _pointerBuffer = PointerBuffer(1);
+        _pointerBuffer = PointerBuffer(1),
+        _cellLocationBuffer = CellLocationBuffer();
 
   Future<void> loadBuiltinItems() async {
     await initializeEngine();
@@ -39,4 +41,6 @@ class GameRoot {
   ReactorEntity get reactor => _reactorEntity.value;
 
   PointerBuffer get pointerBuffer => _pointerBuffer;
+
+  CellLocationBuffer get cellLocationBuffer => _cellLocationBuffer;
 }

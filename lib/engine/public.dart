@@ -10,12 +10,24 @@ final class Public {
   static bool panicOnNullTextures = true;
   static int textureFilter = PublicK.TEXTURE_FILTER_NONE;
   static bool warnOnTextureMapDuplicateSprites = false;
+  static final Random random1 = Random(DateTime.now().microsecondsSinceEpoch);
   static Future<void> initialize() async {
     logger.info("Public Resources initialized.");
   }
 
   static const int panicMessageLength = 64;
   static const String panicMessageWrapIndent = "  ";
+
+  @pragma("vm:prefer-inline")
+  static int _debugWrapHandleEdgeCase(Iterable<String>? s) {
+    if (s == null) {
+      return -1;
+    }
+    if (s.length == 1) {
+      return s.first.length + 1;
+    }
+    return s.longestString.length + 1;
+  }
 
   static String formatErrorMessage(String message, [String? internal, String? help]) {
     StringBuffer buffer = StringBuffer("\n\n");
@@ -37,10 +49,12 @@ final class Public {
         maxInternalLength = max(maxInternalLength, wrapped.longestString.length + 1);
       }
     }
-    int maxStripes = max(messageWrapped.length + 1,
-                max(helpWrapped?.length ?? -1, maxInternalLength)) ~/
-            2 +
+    int maxStripes = (max(_debugWrapHandleEdgeCase(messageWrapped),
+                max(_debugWrapHandleEdgeCase(helpWrapped), maxInternalLength)) ~/
+            2) +
         2;
+    logger.config(
+        "MaxStripes=$maxStripes\nMessage=${messageWrapped.length}\nHelp=${helpWrapped?.length ?? -1}\nInternal=$maxInternalLength");
     for (int i = 0; i < maxStripes; i++) {
       buffer.write("◢◤");
     }

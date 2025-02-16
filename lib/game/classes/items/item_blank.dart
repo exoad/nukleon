@@ -1,6 +1,7 @@
 import 'package:project_yellow_cake/engine/engine.dart';
+import 'package:project_yellow_cake/game/classes/classes.dart';
 
-final class BlankItem extends ItemDefinition {
+final class BlankItem extends Cell {
   @override
   String get identifier => "class.items.blank";
 
@@ -14,4 +15,16 @@ final class BlankItem extends ItemDefinition {
   SpriteTextureKey sprite() {
     return const SpriteTextureKey("content", spriteName: "Blank");
   }
+
+  @override
+  int? get preferredID => 0;
+
+  @override
+  String get canonicalLabel => "";
+
+  @override
+  String get canonicalName => "Emptiness";
+
+  @override
+  double get maxHealth => 0;
 }

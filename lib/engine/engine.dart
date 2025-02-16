@@ -36,6 +36,7 @@ Future<void> initializeEngine([Level loggingLevel = Level.ALL]) async {
   logger.info("Engine initialized!");
 }
 
+@pragma("vm:prefer-inline")
 void panicNow(String label, {String? details, String? help}) {
   logger.severe("[[ !! Engine Panicked o_O !! ]] '$label'");
   throw Public.formatErrorMessage(label, details, help);
