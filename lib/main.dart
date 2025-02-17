@@ -266,15 +266,17 @@ class _ReactorWidgetState extends State<_ReactorWidget> {
   }
 
   void _handleHit(Offset position) {
-    pressedLocation = position;
-    lastHitLocation = hitLocation;
-    hitLocation =
+    // this only enables duplication hit location checking on PointerBuffer.ERASE mode
+    CellLocation newHitLocation =
         GeomSurveyor.posToCellLocation(position, Shared.kTileSize, Shared.kTileSpacing);
-    if (GameRoot.I.reactor.safePutCell(
-        hitLocation!, CellValue(PointerBuffer.of(context, listen: false).resolve()))) {
-      setState(() {});
+    PointerBuffer ptr = PointerBuffer.of(context, listen: false);
+    if ((ptr.isErasing && newHitLocation != lastHitLocation) || ptr.isUsing) {
+      pressedLocation = position;
+      lastHitLocation = hitLocation;
+      hitLocation = newHitLocation;
+      if (GameRoot.I.reactor.safePutCell(hitLocation!, CellValue(ptr.resolve()))) {
+        setState(() {});
+      }
     }
-    Shared.logger.finest(
-        "LAST_HIT = $lastHitLocation | NEW_HIT = $hitLocation | DUPLICATE = ${lastHitLocation == hitLocation}");
   }
 }
