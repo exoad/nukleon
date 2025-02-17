@@ -206,7 +206,11 @@ class AppRoot extends StatelessWidget {
                                     fit: BoxFit.fill,
                                   ),
                                 ),
-                                Expanded(child: _ReactorWidget()),
+                                Expanded(
+                                    child: Padding(
+                                  padding: const EdgeInsets.only(top: 8, left: 8),
+                                  child: _ReactorWidget(),
+                                )),
                               ],
                             ),
                           ),
