@@ -17,3 +17,4 @@ linter:
     constant_identifier_names: false
     unnecessary_getters_setters: false
     prefer_spread_collections: false
+    avoid_equals_and_hash_code_on_mutable_classes: true

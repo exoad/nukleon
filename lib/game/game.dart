@@ -11,16 +11,12 @@ export "shared.dart";
 class GameRoot {
   static final GameRoot I = GameRoot._();
 
-  final ValueNotifier<ReactorEntity> _reactorEntity;
+  late ValueNotifier<ReactorEntity> _reactorEntity;
   final PointerBuffer _pointerBuffer;
   final CellLocationBuffer _cellLocationBuffer;
 
   GameRoot._()
-      : _reactorEntity = ValueNotifier<ReactorEntity>(ReactorEntity(
-          rows: Shared.reactorRows,
-          columns: Shared.reactorColumns,
-        )),
-        _pointerBuffer = PointerBuffer(1),
+      : _pointerBuffer = PointerBuffer(1),
         _cellLocationBuffer = CellLocationBuffer();
 
   Future<void> loadBuiltinItems() async {
@@ -28,6 +24,10 @@ class GameRoot {
     await Shared.initialize();
     ItemsRegistry.I.addItemDefinition(0, Class.TILES, BasicTile());
     ItemsRegistry.I.addItemDefinition(0, Class.ITEMS, BlankItem());
+    _reactorEntity = ValueNotifier<ReactorEntity>(ReactorEntity(
+      rows: Shared.reactorRows,
+      columns: Shared.reactorColumns,
+    ));
     int i = 1;
     ItemsRegistry.I.addItemDefinition(i++, Class.ITEMS, UraniumCell());
     ItemsRegistry.I.addItemDefinition(i++, Class.ITEMS, UraniumEnhancedCell());

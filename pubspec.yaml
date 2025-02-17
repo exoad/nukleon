@@ -10,6 +10,7 @@ environment:
 
 dependencies:
   dotted_border: ^2.1.0
+  equatable: ^2.0.7
   flame: ^1.24.0
   flame_texturepacker: ^4.1.5
   flutter:
@@ -26,7 +27,7 @@ dev_dependencies:
   flutter_lints: ^5.0.0
 
 flutter:
-  uses-material-design: true
+  uses-material-design: false
   assets:
     - assets/
     - assets/images/textures/
@@ -39,3 +40,6 @@ flutter:
     - family: Resource
       fonts:
         - asset: fonts/resource.ttf
+    - family: Nokia Cellphone FC
+      fonts:
+        - asset: fonts/nokiafc22.ttf

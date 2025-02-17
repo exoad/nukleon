@@ -1,9 +1,11 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:project_yellow_cake/engine/engine.dart';
 import "dart:ui" as ui;
 
-class SpriteTextureKey {
+@immutable
+class SpriteTextureKey with EquatableMixin {
   final String key;
   final String spriteName;
 
@@ -19,14 +21,7 @@ class SpriteTextureKey {
   }
 
   @override
-  int get hashCode => key.hashCode ^ spriteName.hashCode;
-
-  @override
-  bool operator ==(Object other) {
-    return other is SpriteTextureKey &&
-        other.key == key &&
-        other.spriteName == spriteName;
-  }
+  List<Object?> get props => <Object?>[key, spriteName];
 }
 
 /// This is based on [WidgetStateProperty]
@@ -40,8 +35,7 @@ abstract class SpriteSet<T> {
   static SpriteSetAll all(SpriteTextureKey value, {required Matrix4 transform}) =>
       SpriteSetAll(value, transform: transform);
 
-  static SpriteSetMapper<T> fromMap<T>(
-          Map<T, SpriteSetProperty> map) =>
+  static SpriteSetMapper<T> fromMap<T>(Map<T, SpriteSetProperty> map) =>
       SpriteSetMapper<T>(map);
 
   static SpriteSetResolver<T> resolveWith<T>(SpriteTextureKey Function(Set<T>) resolver,
@@ -69,7 +63,7 @@ class SpriteSetResolver<T> implements SpriteSet<T> {
 }
 
 @immutable
-class SpriteSetAll implements SpriteSet<dynamic> {
+class SpriteSetAll with EquatableMixin implements SpriteSet<dynamic> {
   final SpriteTextureKey value;
   final Matrix4 transform;
 
@@ -81,19 +75,12 @@ class SpriteSetAll implements SpriteSet<dynamic> {
   }
 
   @override
-  int get hashCode => value.hashCode;
-
-  @override
-  bool operator ==(Object other) {
-    return other is SpriteSetAll &&
-        other.runtimeType == runtimeType &&
-        other.value == value;
-  }
-
-  @override
   Matrix4 resolveTransformation(Set<dynamic> states) {
     return transform;
   }
+
+  @override
+  List<Object?> get props => <Object?>[value, transform];
 }
 
 typedef SpriteSetProperty = ({SpriteTextureKey sprite, Matrix4 transform});
@@ -102,13 +89,11 @@ typedef SpriteSetProperty = ({SpriteTextureKey sprite, Matrix4 transform});
 class SpriteSetMapper<T> implements SpriteSet<T> {
   final Map<T, SpriteSetProperty> _map;
 
-  const SpriteSetMapper(Map<T, SpriteSetProperty> map)
-      : _map = map;
+  const SpriteSetMapper(Map<T, SpriteSetProperty> map) : _map = map;
 
   @override
   SpriteTextureKey resolveTextureKey(Set<T> states) {
-    for (MapEntry<T, SpriteSetProperty> entry
-        in _map.entries) {
+    for (MapEntry<T, SpriteSetProperty> entry in _map.entries) {
       if (states.contains(entry.key)) {
         return entry.value.sprite;
       }
@@ -134,8 +119,7 @@ class SpriteSetMapper<T> implements SpriteSet<T> {
 
   @override
   Matrix4 resolveTransformation(Set<T> states) {
-    for (MapEntry<T, SpriteSetProperty> entry
-        in _map.entries) {
+    for (MapEntry<T, SpriteSetProperty> entry in _map.entries) {
       if (states.contains(entry.key)) {
         return entry.value.transform;
       }

@@ -9,6 +9,10 @@ abstract class Cell extends ItemDefinition {
 
   String get canonicalLabel;
 
-  /// If `null`, then this is indestructible
-  double? get maxHealth => 100;
+  /// If negative, then this is indestructible
+  double get maxHealth => 100;
+}
+
+extension FindCell on int {
+  Cell findCell() => findItemDefinition(Class.ITEMS) as Cell;
 }

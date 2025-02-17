@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:project_yellow_cake/engine/engine.dart";
+import "package:project_yellow_cake/game/colors.dart";
 import "package:project_yellow_cake/game/design/ui/ui_reactor_button_toggle_1.dart";
 import "package:project_yellow_cake/game/controllers/pointer.dart";
 import "package:project_yellow_cake/game/design/design_ui.dart";
@@ -16,9 +17,6 @@ import "package:provider/single_child_widget.dart";
 void main() async {
   Public.textureFilter = PublicK.TEXTURE_FILTER_NONE;
   await GameRoot.I.loadBuiltinItems();
-  if (PointerBuffer.kIsHandicapped) {
-    Shared.logger.warning("Running in handicapped mode!");
-  }
   runApp(AppRoot());
 }
 
@@ -128,17 +126,15 @@ class AppRoot extends StatelessWidget {
                           height: size.height * 0.4 - (Shared.uiPadding * 2),
                           width: 260,
                           color: Color.fromARGB(255, 56, 61, 74),
-                          child: PointerBuffer.kIsHandicapped
-                              ? UIToggleButton1(
-                                  toggled: true,
-                                  onSwitch: (bool active) {
-                                    if (active) {
-                                      PointerBuffer.of(context, listen: false).use();
-                                    } else {
-                                      PointerBuffer.of(context, listen: false).erase();
-                                    }
-                                  })
-                              : null),
+                          child: UIToggleButton1(
+                              toggled: true,
+                              onSwitch: (bool active) {
+                                if (active) {
+                                  PointerBuffer.of(context, listen: false).use();
+                                } else {
+                                  PointerBuffer.of(context, listen: false).erase();
+                                }
+                              })),
                       const SizedBox(height: Shared.uiPadding),
                       Container(
                         height: size.height * 0.6 - (Shared.uiPadding * 2),
@@ -177,18 +173,34 @@ class AppRoot extends StatelessWidget {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: <Widget>[
-                                  Text(
-                                    "Row ${CellLocationBuffer.of(context).row}, Col ${CellLocationBuffer.of(context).column}",
+                                  Text.rich(
+                                    TextSpan(children: <InlineSpan>[
+                                      TextSpan(
+                                          text:
+                                              "[${PointerBuffer.of(context).isErasing ? 'ERASE' : 'USE'}]",
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              fontFamily: "Nokia Cellphone FC",
+                                              color: PointerBuffer.of(context).isErasing
+                                                  ? FadedColors.red
+                                                  : FadedColors.green)),
+                                      TextSpan(
+                                          text:
+                                              "  Row ${CellLocationBuffer.of(context).row}, Col ${CellLocationBuffer.of(context).column}",
+                                          style:
+                                              const TextStyle(color: DefaultColors.gray1))
+                                    ]),
                                   ),
                                   SizedBox.square(
                                       dimension: Shared.kTileSize + Shared.kTileSpacing,
                                       child: SpriteWidget(<AtlasSprite>[
-                                        ItemsRegistry.I
-                                            .findItemDefinition(
-                                                PointerBuffer.of(context).primary,
-                                                Class.ITEMS)
-                                            .sprite()
-                                            .findTexture()
+                                        if (PointerBuffer.of(context).primary != null)
+                                          ItemsRegistry.I
+                                              .findItemDefinition(
+                                                  PointerBuffer.of(context).primary!,
+                                                  Class.ITEMS)
+                                              .sprite()
+                                              .findTexture()
                                       ], transformations: <Matrix4>[
                                         Matrix4.identity()
                                       ])),
@@ -235,11 +247,16 @@ class _ReactorWidgetState extends State<_ReactorWidget> {
   Offset? pressedLocation;
   CellLocation? hitLocation;
   CellLocation? lastHitLocation;
+  late bool panning;
+
+  @override
+  void initState() {
+    super.initState();
+    panning = false;
+  }
 
   @override
   Widget build(BuildContext context) {
-    // ! still need to support drag and pressed buttons
-    // ! clicking individually on a massive grid is a pain
     return MouseRegion(
       onHover: (PointerHoverEvent details) {
         ({int row, int column}) item = GeomSurveyor.fromPos(
@@ -248,16 +265,11 @@ class _ReactorWidgetState extends State<_ReactorWidget> {
       },
       child: GestureDetector(
         onPanUpdate: (DragUpdateDetails details) => _handleHit(details.localPosition),
-        onSecondaryTapDown: (TapDownDetails details) {
-          if (!PointerBuffer.kIsHandicapped) {
-            PointerBuffer.of(context, listen: false).erase();
-          }
-          _handleHit(details.localPosition);
-        },
+        onPanStart: (_) => panning = true,
+        onPanCancel: () => panning = false,
+        onPanEnd: (_) => panning = false,
         onTapDown: (TapDownDetails details) {
-          if (!PointerBuffer.kIsHandicapped) {
-            PointerBuffer.of(context, listen: false).use();
-          }
+          PointerBuffer.of(context, listen: false).use();
           _handleHit(details.localPosition);
         },
         child: CustomPaint(painter: CullingReactorGridPainter(hitLocation: hitLocation)),
@@ -266,16 +278,19 @@ class _ReactorWidgetState extends State<_ReactorWidget> {
   }
 
   void _handleHit(Offset position) {
-    // this only enables duplication hit location checking on PointerBuffer.ERASE mode
-    CellLocation newHitLocation =
-        GeomSurveyor.posToCellLocation(position, Shared.kTileSize, Shared.kTileSpacing);
     PointerBuffer ptr = PointerBuffer.of(context, listen: false);
-    if ((ptr.isErasing && newHitLocation != lastHitLocation) || ptr.isUsing) {
-      pressedLocation = position;
-      lastHitLocation = hitLocation;
-      hitLocation = newHitLocation;
-      if (GameRoot.I.reactor.safePutCell(hitLocation!, CellValue(ptr.resolve()))) {
-        setState(() {});
+    if (ptr.primary != null || ptr.isErasing) {
+      CellLocation newHitLocation =
+          GeomSurveyor.posToCellLocation(position, Shared.kTileSize, Shared.kTileSpacing);
+      if (newHitLocation != lastHitLocation) {
+        pressedLocation = position;
+        lastHitLocation = hitLocation;
+        hitLocation = newHitLocation;
+        if (ptr.isErasing || panning || ptr.isUsing) {
+          if (GameRoot.I.reactor.safePutCell(hitLocation!, ptr.resolve()!)) {
+            setState(() {});
+          }
+        }
       }
     }
   }

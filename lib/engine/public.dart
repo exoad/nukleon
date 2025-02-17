@@ -53,14 +53,14 @@ final class Public {
                 max(_debugWrapHandleEdgeCase(helpWrapped), maxInternalLength)) ~/
             2) +
         2;
-    logger.config(
-        "MaxStripes=$maxStripes\nMessage=${messageWrapped.length}\nHelp=${helpWrapped?.length ?? -1}\nInternal=$maxInternalLength");
     for (int i = 0; i < maxStripes; i++) {
       buffer.write("◢◤");
     }
-    buffer.write("\n\n ${messageWrapped.join("\n")}");
+    buffer.write("\n ${messageWrapped.join("\n")}");
     if (internalStrBuffer != null) {
-      buffer.writeln("\n");
+      buffer
+        ..writeln()
+        ..writeln();
       for (int i = 0; i < maxStripes * 2 - 1; i++) {
         buffer.write("▱");
       }
@@ -72,9 +72,7 @@ final class Public {
       for (int i = 0; i < maxStripes * 2 - 1; i++) {
         buffer.write("▱");
       }
-      buffer.write("\n ${helpWrapped!.join("\n")}\n\n");
-    } else {
-      buffer.writeln("\n");
+      buffer.write("\n ${helpWrapped!.join("\n")}\n");
     }
     for (int i = 0; i < maxStripes; i++) {
       buffer.write("◢◤");

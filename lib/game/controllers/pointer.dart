@@ -7,12 +7,11 @@ import 'package:provider/provider.dart';
 /// Secondary is always an erasing element
 class PointerBuffer with ChangeNotifier {
   bool _usePrimary;
-  int _primary;
+  int? _primary;
   final int _secondary;
-  static const bool kIsHandicapped = true;
 
-  PointerBuffer(int primary, [int? secondary, int? gridRow, int? gridCold])
-      : _primary = primary,
+  PointerBuffer([int? secondary, int? gridRow, int? gridCold])
+      : _primary = null,
         _secondary = secondary ?? 0,
         _usePrimary = true;
 
@@ -26,6 +25,7 @@ class PointerBuffer with ChangeNotifier {
       primary = newPrimary;
     }
     Shared.logger.finer("PointerBuffer USE");
+    notifyListeners();
   }
 
   void swap() => isUsing ? erase() : use();
@@ -33,16 +33,23 @@ class PointerBuffer with ChangeNotifier {
   void erase() {
     _usePrimary = false;
     Shared.logger.finer("PointerBuffer ERASE");
+    notifyListeners();
   }
 
-  int resolve() => isUsing ? primary : secondary;
+  CellValue? resolve() {
+    if (primary != null) {
+      int id = isUsing ? primary! : secondary;
+      return CellValue(id);
+    }
+    return null;
+  }
 
-  int get primary => _primary;
+  int? get primary => _primary;
 
   int get secondary => _secondary;
 
-  set primary(int primary) {
-    _primary = primary;
+  set primary(int? p) {
+    _primary = p;
     Shared.logger.finer("PointerBuffer Use=$_primary");
     notifyListeners();
   }

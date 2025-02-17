@@ -1,4 +1,7 @@
+import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:project_yellow_cake/engine/engine.dart';
+import 'package:project_yellow_cake/game/classes/classes.dart';
 import 'package:project_yellow_cake/game/game.dart';
 
 class ReactorSlot {
@@ -73,7 +76,7 @@ class ReactorEntity {
         location.row >= _grid[location.row].length) {
       return false;
     }
-    if (_grid[location.row][location.column][layer] != value || forced) {
+    if (!_grid[location.row][location.column][layer].isEqual(value) || forced) {
       _grid[location.row][location.column][layer] = value;
       Shared.logger.fine(
           "Reactor set ${location.row},${location.column},$layer to $value (${value.id.findItemDefinition(layer).identifier})");
@@ -97,7 +100,8 @@ class ReactorEntity {
   int get columns => _grid[0].length;
 }
 
-class CellLocation {
+@immutable
+class CellLocation with EquatableMixin {
   final int row;
   final int column;
 
@@ -115,24 +119,25 @@ class CellLocation {
   }
 
   @override
-  bool operator ==(Object other) {
-    return other is CellLocation && other.row == row && other.column == column;
-  }
-
-  @override
-  int get hashCode => row.hashCode ^ column.hashCode;
+  List<Object?> get props => <Object?>[row, column];
 }
 
 class CellValue {
-  static final CellValue emptiness = CellValue(0, itemHealth: 0);
+  static CellValue get emptiness {
+    return CellValue(0);
+  }
 
   final int id;
   double itemHealth;
 
-  CellValue(this.id, {this.itemHealth = 100.0});
+  CellValue(this.id, {double? itemHealth}) : itemHealth = id.findCell().maxHealth;
 
   @override
   String toString() {
     return "$id@[Health=$itemHealth]";
+  }
+
+  bool isEqual(CellValue other) {
+    return other.id == id && other.itemHealth == itemHealth;
   }
 }
