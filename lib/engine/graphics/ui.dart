@@ -1,22 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:project_yellow_cake/engine/engine.dart';
 
-class UIButton extends StatelessWidget {
-  final Widget child;
-  final void Function() onPressed;
-
-  const UIButton({super.key, required this.child, required this.onPressed});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-        onTap: onPressed,
-        child: Container(
-            decoration: BoxDecoration(color: Color.fromARGB(255, 118, 128, 155)),
-            child: child));
-  }
-}
-
 final class _SpriteWidgetPainter extends CustomPainter {
   List<AtlasSprite> sprites;
   List<Matrix4> transformations;

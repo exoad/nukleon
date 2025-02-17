@@ -17,9 +17,6 @@ final class BlankItem extends Cell {
   }
 
   @override
-  int? get preferredID => 0;
-
-  @override
   String get canonicalLabel => "";
 
   @override

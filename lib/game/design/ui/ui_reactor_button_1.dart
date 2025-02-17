@@ -1,20 +1,19 @@
-import 'package:flame/components.dart';
 import 'package:flutter/widgets.dart';
 import 'package:project_yellow_cake/engine/engine.dart';
 
-class ReactorButton extends StatefulWidget {
+class UIButton1 extends StatefulWidget {
   final AtlasSprite child;
   final SpriteSet<ButtonSpriteStates>? spriteSet;
   final void Function() onPressed;
 
-  const ReactorButton(
+  const UIButton1(
       {super.key, this.spriteSet, required this.child, required this.onPressed});
 
   @override
-  State<ReactorButton> createState() => _ReactorButtonState();
+  State<UIButton1> createState() => _ReactorButtonState();
 }
 
-class _ReactorButtonState extends State<ReactorButton> {
+class _ReactorButtonState extends State<UIButton1> {
   late SpriteSet<ButtonSpriteStates> spriteSet;
   ButtonSpriteStates pressed = ButtonSpriteStates.normal;
 

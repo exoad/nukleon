@@ -10,6 +10,7 @@ export "registries/registries.dart";
 export "utils/utils.dart";
 export "graphics/graphics.dart";
 export "components/components.dart";
+export "package:flame/game.dart";
 
 typedef TextureAtlas = TexturePackerAtlas;
 typedef AtlasSprite = TexturePackerSprite;

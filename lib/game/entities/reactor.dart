@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:project_yellow_cake/engine/engine.dart';
 import 'package:project_yellow_cake/game/game.dart';
 
@@ -29,7 +28,7 @@ class ReactorSlot {
   }
 }
 
-class ReactorEntity with ChangeNotifier {
+class ReactorEntity {
   final List<List<ReactorSlot>> _grid;
 
   ReactorEntity(
@@ -108,6 +107,11 @@ class CellLocation {
 
   CellValue findInRector([ReactorEntity? instance]) {
     return (instance ?? GameRoot.I.reactor).at(row, column)[Class.ITEMS];
+  }
+
+  @override
+  String toString() {
+    return "CellLoc[Row=$row,Col=$column]";
   }
 
   @override

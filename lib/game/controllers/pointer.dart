@@ -1,58 +1,55 @@
 import 'package:flutter/material.dart';
-import 'package:project_yellow_cake/engine/engine.dart';
 import 'package:project_yellow_cake/game/entities/entities.dart';
 import 'package:project_yellow_cake/game/game.dart';
 import 'package:provider/provider.dart';
 
+/// Primary is always an element to place
+/// Secondary is always an erasing element
 class PointerBuffer with ChangeNotifier {
+  bool _usePrimary;
   int _primary;
-  int? _secondary;
-  int _gridRow;
-  int _gridCol;
+  final int _secondary;
+  static const bool kIsHandicapped = true;
 
   PointerBuffer(int primary, [int? secondary, int? gridRow, int? gridCold])
       : _primary = primary,
         _secondary = secondary ?? 0,
-        _gridCol = gridCold ?? -1,
-        _gridRow = gridRow ?? -1;
+        _usePrimary = true;
+
+  bool get isUsing => _usePrimary;
+
+  bool get isErasing => !isUsing;
+
+  void use([int? newPrimary]) {
+    _usePrimary = true;
+    if (newPrimary != null) {
+      primary = newPrimary;
+    }
+    Shared.logger.finer("PointerBuffer USE");
+  }
+
+  void swap() => isUsing ? erase() : use();
+
+  void erase() {
+    _usePrimary = false;
+    Shared.logger.finer("PointerBuffer ERASE");
+  }
+
+  int resolve() => isUsing ? primary : secondary;
 
   int get primary => _primary;
 
-  int get gridRow => _gridRow;
-
-  int get gridCol => _gridCol;
-
-  int? get secondary => _secondary;
-
-  set gridRow(int gridRow) {
-    _gridRow = gridRow;
-    Shared.logger.finer("Pointer Buffer GridRow=$_gridRow");
-    notifyListeners();
-  }
-
-  set gridCol(int gridCol) {
-    _gridCol = gridCol;
-    Shared.logger.finer("Pointer Buffer GridCol=$_gridCol");
-    notifyListeners();
-  }
+  int get secondary => _secondary;
 
   set primary(int primary) {
     _primary = primary;
-    Shared.logger.finer("Pointer Buffer Primary=$_primary");
+    Shared.logger.finer("PointerBuffer Use=$_primary");
     notifyListeners();
   }
-
-  set secondary(int? secondary) {
-    _secondary = secondary;
-    Shared.logger.finer("Pointer Buffer Secondary=$_secondary");
-    notifyListeners();
-  }
-
-  bool get hasSecondary => _secondary == null;
 
   @override
   String toString() {
-    return "PtrBuff[$_primary,$_secondary]";
+    return "PtrBuffer[$_primary,$_secondary]";
   }
 
   static PointerBuffer of(BuildContext context, {bool listen = true}) {

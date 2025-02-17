@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:project_yellow_cake/engine/engine.dart";
+import "package:project_yellow_cake/game/design/ui/ui_reactor_button_toggle_1.dart";
 import "package:project_yellow_cake/game/controllers/pointer.dart";
 import "package:project_yellow_cake/game/design/design_ui.dart";
 import "package:project_yellow_cake/game/entities/entities.dart";
@@ -15,6 +16,9 @@ import "package:provider/single_child_widget.dart";
 void main() async {
   Public.textureFilter = PublicK.TEXTURE_FILTER_NONE;
   await GameRoot.I.loadBuiltinItems();
+  if (PointerBuffer.kIsHandicapped) {
+    Shared.logger.warning("Running in handicapped mode!");
+  }
   runApp(AppRoot());
 }
 
@@ -101,7 +105,7 @@ class AppRoot extends StatelessWidget {
                 exitDuration: Duration.zero,
                 decoration: const BoxDecoration(borderRadius: BorderRadius.zero))),
         debugShowCheckedModeBanner: false,
-        showPerformanceOverlay: true,
+        showPerformanceOverlay: false,
         color: Colors.black,
         home: DefaultTextStyle(
           style:
@@ -123,7 +127,18 @@ class AppRoot extends StatelessWidget {
                       Container(
                           height: size.height * 0.4 - (Shared.uiPadding * 2),
                           width: 260,
-                          color: Color.fromARGB(255, 56, 61, 74)),
+                          color: Color.fromARGB(255, 56, 61, 74),
+                          child: PointerBuffer.kIsHandicapped
+                              ? UIToggleButton1(
+                                  toggled: true,
+                                  onSwitch: (bool active) {
+                                    if (active) {
+                                      PointerBuffer.of(context, listen: false).use();
+                                    } else {
+                                      PointerBuffer.of(context, listen: false).erase();
+                                    }
+                                  })
+                              : null),
                       const SizedBox(height: Shared.uiPadding),
                       Container(
                         height: size.height * 0.6 - (Shared.uiPadding * 2),
@@ -142,7 +157,7 @@ class AppRoot extends StatelessWidget {
                               int trueIndex = index + 1;
                               ItemDefinition item = ItemsRegistry.I
                                   .findItemDefinition(trueIndex, Class.ITEMS);
-                              return ReactorButton(
+                              return UIButton1(
                                   child: item.sprite().findTexture(),
                                   onPressed: () {
                                     PointerBuffer.of(context, listen: false).primary =
@@ -216,13 +231,6 @@ class _ReactorWidgetState extends State<_ReactorWidget> {
   Offset? pressedLocation;
   CellLocation? hitLocation;
   CellLocation? lastHitLocation;
-  late bool isPrimary;
-
-  @override
-  void initState() {
-    super.initState();
-    isPrimary = false;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -235,42 +243,34 @@ class _ReactorWidgetState extends State<_ReactorWidget> {
         CellLocationBuffer.of(context, listen: false).setLocation(item.row, item.column);
       },
       child: GestureDetector(
-        onPanUpdate: (DragUpdateDetails details) {
-          _handleHit(isPrimary, details.localPosition);
+        onPanUpdate: (DragUpdateDetails details) => _handleHit(details.localPosition),
+        onSecondaryTapDown: (TapDownDetails details) {
+          if (!PointerBuffer.kIsHandicapped) {
+            PointerBuffer.of(context, listen: false).erase();
+          }
+          _handleHit(details.localPosition);
         },
-        onSecondaryTapDown: (TapDownDetails details) =>
-            _handleHit(false, details.localPosition),
-        onTapDown: (TapDownDetails details) => _handleHit(true, details.localPosition),
-        // onTapUp: (_) => isPrimary = true,
-        // onSecondaryTapUp: (_) => isPrimary = false,
+        onTapDown: (TapDownDetails details) {
+          if (!PointerBuffer.kIsHandicapped) {
+            PointerBuffer.of(context, listen: false).use();
+          }
+          _handleHit(details.localPosition);
+        },
         child: CustomPaint(painter: CullingReactorGridPainter(hitLocation: hitLocation)),
       ),
     );
   }
 
-  void _setPressed(bool newValue, [bool forced = false]) {
-    if (isPrimary != newValue) {
-      setState(() => isPrimary = newValue);
-    } else if (forced) {
+  void _handleHit(Offset position) {
+    pressedLocation = position;
+    lastHitLocation = hitLocation;
+    hitLocation =
+        GeomSurveyor.posToCellLocation(position, Shared.kTileSize, Shared.kTileSpacing);
+    if (GameRoot.I.reactor.safePutCell(
+        hitLocation!, CellValue(PointerBuffer.of(context, listen: false).resolve()))) {
       setState(() {});
     }
-    Shared.logger.finer("PrimaryPressed=$isPrimary");
-  }
-
-  void _handleHit(bool primary, Offset position) {
-    CellLocation newHit =
-        GeomSurveyor.posToCellLocation(position, Shared.kTileSize, Shared.kTileSpacing);
-    if (lastHitLocation == null || lastHitLocation != newHit) {
-      pressedLocation = position;
-      lastHitLocation = hitLocation;
-      hitLocation = newHit;
-      if (GameRoot.I.reactor.safePutCell(
-          hitLocation!,
-          CellValue(primary || GameRoot.I.pointerBuffer.secondary == null
-              ? GameRoot.I.pointerBuffer.primary
-              : GameRoot.I.pointerBuffer.secondary!))) {
-        _setPressed(primary, true);
-      }
-    }
+    Shared.logger.finest(
+        "LAST_HIT = $lastHitLocation | NEW_HIT = $hitLocation | DUPLICATE = ${lastHitLocation == hitLocation}");
   }
 }
