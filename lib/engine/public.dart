@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:logging/logging.dart';
-import 'package:project_yellow_cake/engine/utils/extern.dart';
+import 'package:shitter/engine/utils/extern.dart';
 
 final class Public {
   Public._();

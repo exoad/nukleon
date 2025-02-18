@@ -1,6 +1,6 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
-import 'package:project_yellow_cake/engine/engine.dart';
+import 'package:shitter/engine/engine.dart';
 
 class DebugBorderWidget extends StatelessWidget {
   final Widget child;

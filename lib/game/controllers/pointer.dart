@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:project_yellow_cake/game/entities/entities.dart';
-import 'package:project_yellow_cake/game/game.dart';
+import 'package:shitter/game/entities/entities.dart';
+import 'package:shitter/game/game.dart';
 import 'package:provider/provider.dart';
 
 /// Primary is always an element to place
@@ -10,10 +10,10 @@ class PointerBuffer with ChangeNotifier {
   int? _primary;
   final int _secondary;
 
-  PointerBuffer([int? secondary, int? gridRow, int? gridCold])
-      : _primary = null,
-        _secondary = secondary ?? 0,
-        _usePrimary = true;
+  PointerBuffer([int? primary])
+      : _primary = primary,
+        _secondary = 0,
+        _usePrimary = primary == null ? false : true;
 
   bool get isUsing => _usePrimary;
 
@@ -21,9 +21,10 @@ class PointerBuffer with ChangeNotifier {
 
   void use([int? newPrimary]) {
     _usePrimary = true;
-    if (newPrimary != null) {
-      primary = newPrimary;
-    }
+    // if (newPrimary != null) {
+    //   primary = newPrimary;
+    // }
+    // * this part helps with an auto use mode
     Shared.logger.finer("PointerBuffer USE");
     notifyListeners();
   }

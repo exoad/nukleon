@@ -1,5 +1,5 @@
-import 'package:project_yellow_cake/engine/engine.dart';
-import 'package:project_yellow_cake/game/classes/classes.dart';
+import 'package:shitter/engine/engine.dart';
+import 'package:shitter/game/classes/classes.dart';
 
 final class BlankItem extends Cell {
   @override

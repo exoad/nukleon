@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:project_yellow_cake/engine/engine.dart';
+import 'package:shitter/engine/engine.dart';
 
 @immutable
 final class _SpriteWidgetPainter extends CustomPainter {
   final List<AtlasSprite> sprites;
-  final List<Matrix4> transformations;
+  final List<LinearTransformer>? transformations;
+  final LinearTransformer? globalTransformer;
 
-  const _SpriteWidgetPainter(this.sprites, this.transformations);
+  const _SpriteWidgetPainter(this.sprites, this.transformations,
+      [this.globalTransformer]);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -15,15 +17,34 @@ final class _SpriteWidgetPainter extends CustomPainter {
       // ! preferring drawImageRect is bad
       // ! we should instead prefer to use drawAtlas but we cant really do that if that is at all even
       // ! even more performant for just drawing a single image
-      for (int i = 0; i < sprites.length; i++) {
-        canvas.transform(transformations[i].storage);
-        canvas.drawImageRect(
-            sprites[i].image,
-            sprites[i].src,
-            Rect.fromLTWH(0, 0, size.width, size.height),
-            sprites[i].paint
-              ..filterQuality = FilterQuality.none
-              ..isAntiAlias = false);
+      if (globalTransformer != null) {
+        canvas.transform(globalTransformer!.resolve(size, size).storage);
+      }
+      if (transformations != null) {
+        for (int i = 0; i < sprites.length; i++) {
+          if (transformations!.within(i)) {
+            canvas.transform(transformations![i]
+                .resolve(size, Size(sprites[i].originalWidth, sprites[i].originalHeight))
+                .storage);
+          }
+          canvas.drawImageRect(
+              sprites[i].image,
+              sprites[i].src,
+              Rect.fromLTWH(0, 0, size.width, size.height),
+              sprites[i].paint
+                ..filterQuality = FilterQuality.none
+                ..isAntiAlias = false);
+        }
+      } else {
+        for (int i = 0; i < sprites.length; i++) {
+          canvas.drawImageRect(
+              sprites[i].image,
+              sprites[i].src,
+              Rect.fromLTWH(0, 0, size.width, size.height),
+              sprites[i].paint
+                ..filterQuality = FilterQuality.none
+                ..isAntiAlias = false);
+        }
       }
     }
   }
@@ -37,15 +58,16 @@ final class _SpriteWidgetPainter extends CustomPainter {
 @immutable
 class SpriteWidget extends StatelessWidget {
   final List<AtlasSprite> sprites;
-  final List<Matrix4> transformations;
+  final List<LinearTransformer>? transformers;
+  final LinearTransformer? globalTransformer;
 
-  const SpriteWidget(this.sprites, {super.key, required this.transformations})
-      : assert(sprites.length <= transformations.length,
-            "Sprite count must be less than or equal to transformations count (${sprites.length} <= ${transformations.length}). If you don't want a sprite to move, use [Matrix4.identity()].");
+  const SpriteWidget(this.sprites,
+      {super.key, this.transformers, this.globalTransformer});
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(painter: _SpriteWidgetPainter(sprites, transformations));
+    return CustomPaint(
+        painter: _SpriteWidgetPainter(sprites, transformers, globalTransformer));
   }
 }
 

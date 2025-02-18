@@ -1,9 +1,10 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
-import 'package:project_yellow_cake/engine/engine.dart';
-import 'package:project_yellow_cake/game/classes/classes.dart';
-import 'package:project_yellow_cake/game/game.dart';
+import 'package:shitter/engine/engine.dart';
+import 'package:shitter/game/classes/classes.dart';
+import 'package:shitter/game/game.dart';
 
+@immutable
 class ReactorSlot {
   final Map<Class, CellValue> _class;
 
@@ -28,6 +29,16 @@ class ReactorSlot {
 
   void operator []=(Class layer, CellValue value) {
     _class[layer] = value;
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is ReactorSlot && mapEquals(other._class, _class);
+  }
+
+  @override
+  int get hashCode {
+    return _class.hashCode;
   }
 }
 
@@ -58,10 +69,7 @@ class ReactorEntity {
 
   @Deprecated("dont use this shit")
   CellValue operator [](CellLocation location) {
-    if (location.row < 0 ||
-        location.row >= _grid.length ||
-        location.column < 0 ||
-        location.row >= _grid[location.row].length) {
+    if (isValidLocation(location)) {
       panicNow(
           "Invalid indices: row=${location.row}, column=${location.row}, layer=Class.ITEMS. Grid size is ${_grid.length}x${_grid.isNotEmpty ? _grid[0].length : 0}.");
     }
@@ -70,10 +78,7 @@ class ReactorEntity {
 
   bool safePut(CellLocation location, CellValue value, Class layer,
       [bool forced = false]) {
-    if (location.row < 0 ||
-        location.row >= _grid.length ||
-        location.column < 0 ||
-        location.row >= _grid[location.row].length) {
+    if (isValidLocation(location)) {
       return false;
     }
     if (!_grid[location.row][location.column][layer].isEqual(value) || forced) {
@@ -83,6 +88,13 @@ class ReactorEntity {
       return true;
     }
     return false;
+  }
+
+  bool isValidLocation(CellLocation location) {
+    return location.row < 0 ||
+        location.row >= _grid.length ||
+        location.column < 0 ||
+        location.row >= _grid[location.row].length;
   }
 
   /// Similar in functionality to the `[]=` operator, but does not panic when the [location] is out of bounds.

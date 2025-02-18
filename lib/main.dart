@@ -1,13 +1,13 @@
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
-import "package:project_yellow_cake/engine/engine.dart";
-import "package:project_yellow_cake/game/colors.dart";
-import "package:project_yellow_cake/game/design/ui/ui_reactor_button_toggle_1.dart";
-import "package:project_yellow_cake/game/controllers/pointer.dart";
-import "package:project_yellow_cake/game/design/design_ui.dart";
-import "package:project_yellow_cake/game/entities/entities.dart";
-import "package:project_yellow_cake/game/game.dart";
-import "package:project_yellow_cake/game/utils/surveyor.dart";
+import "package:shitter/engine/engine.dart";
+import "package:shitter/game/colors.dart";
+import "package:shitter/game/design/ui/ui_reactor_button_toggle_1.dart";
+import "package:shitter/game/controllers/pointer.dart";
+import "package:shitter/game/design/design_ui.dart";
+import "package:shitter/game/entities/entities.dart";
+import "package:shitter/game/game.dart";
+import "package:shitter/game/utils/surveyor.dart";
 
 import "dart:ui" as ui;
 
@@ -171,6 +171,7 @@ class AppRoot extends StatelessWidget {
                           Align(
                               alignment: Alignment.bottomRight,
                               child: Row(
+                                spacing: 6,
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: <Widget>[
                                   Text.rich(
@@ -193,17 +194,25 @@ class AppRoot extends StatelessWidget {
                                   ),
                                   SizedBox.square(
                                       dimension: Shared.kTileSize + Shared.kTileSpacing,
-                                      child: SpriteWidget(<AtlasSprite>[
-                                        if (PointerBuffer.of(context).primary != null)
-                                          ItemsRegistry.I
-                                              .findItemDefinition(
-                                                  PointerBuffer.of(context).primary!,
-                                                  Class.ITEMS)
-                                              .sprite()
-                                              .findTexture()
-                                      ], transformations: <Matrix4>[
-                                        Matrix4.identity()
-                                      ])),
+                                      child: SpriteWidget(
+                                        <AtlasSprite>[
+                                          TextureRegistry.getTextureSprite(
+                                              SpriteTextureKey("content",
+                                                  spriteName: "Selector_Border")),
+                                          if (PointerBuffer.of(context).primary != null)
+                                            ItemsRegistry.I
+                                                .findItemDefinition(
+                                                    PointerBuffer.of(context).primary!,
+                                                    Class.ITEMS)
+                                                .sprite()
+                                                .findTexture()
+                                          else
+                                            TextureRegistry.getTextureSprite(
+                                                SpriteTextureKey("content",
+                                                    spriteName: "Null_Item")),
+                                        ],
+                                        transformers: <LinearTransformer>[],
+                                      )),
                                 ],
                               )),
                           Positioned(

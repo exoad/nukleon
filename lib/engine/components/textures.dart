@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:project_yellow_cake/engine/engine.dart';
+import 'package:shitter/engine/engine.dart';
 import "dart:ui" as ui;
 
 @immutable
@@ -30,22 +30,23 @@ abstract class SpriteSet<T> {
 
   SpriteTextureKey resolveTextureKey(Set<T> states);
 
-  Matrix4 resolveTransformation(Set<T> states);
+  LinearTransformer resolveTransformation(Set<T> states);
 
-  static SpriteSetAll all(SpriteTextureKey value, {required Matrix4 transform}) =>
+  static SpriteSetAll all(SpriteTextureKey value,
+          {required LinearTransformer transform}) =>
       SpriteSetAll(value, transform: transform);
 
   static SpriteSetMapper<T> fromMap<T>(Map<T, SpriteSetProperty> map) =>
       SpriteSetMapper<T>(map);
 
   static SpriteSetResolver<T> resolveWith<T>(SpriteTextureKey Function(Set<T>) resolver,
-          {Matrix4 Function(Set<T>)? transformationResolver}) =>
+          {LinearTransformer Function(Set<T>)? transformationResolver}) =>
       SpriteSetResolver<T>(resolver, transformationResolver);
 }
 
 class SpriteSetResolver<T> implements SpriteSet<T> {
   final SpriteTextureKey Function(Set<T>) resolver;
-  final Matrix4 Function(Set<T>)? transformationResolver;
+  final LinearTransformer Function(Set<T>)? transformationResolver;
 
   SpriteSetResolver(this.resolver, this.transformationResolver);
 
@@ -55,17 +56,17 @@ class SpriteSetResolver<T> implements SpriteSet<T> {
   }
 
   @override
-  Matrix4 resolveTransformation(Set<T> states) {
-    return transformationResolver == null
+  LinearTransformer resolveTransformation(Set<T> states) {
+    return LinearTransformer.single(transformationResolver == null
         ? Matrix4.identity()
-        : transformationResolver!.call(states);
+        : transformationResolver!.call(states) as Matrix4);
   }
 }
 
 @immutable
 class SpriteSetAll with EquatableMixin implements SpriteSet<dynamic> {
   final SpriteTextureKey value;
-  final Matrix4 transform;
+  final LinearTransformer transform;
 
   const SpriteSetAll(this.value, {required this.transform});
 
@@ -75,7 +76,7 @@ class SpriteSetAll with EquatableMixin implements SpriteSet<dynamic> {
   }
 
   @override
-  Matrix4 resolveTransformation(Set<dynamic> states) {
+  LinearTransformer resolveTransformation(Set<dynamic> states) {
     return transform;
   }
 
@@ -83,13 +84,13 @@ class SpriteSetAll with EquatableMixin implements SpriteSet<dynamic> {
   List<Object?> get props => <Object?>[value, transform];
 }
 
-typedef SpriteSetProperty = ({SpriteTextureKey sprite, Matrix4 transform});
+typedef SpriteSetProperty = ({SpriteTextureKey sprite, LinearTransformer transform});
 
 @immutable
-class SpriteSetMapper<T> implements SpriteSet<T> {
+class SpriteSetMapper<T> extends SpriteSet<T> {
   final Map<T, SpriteSetProperty> _map;
 
-  const SpriteSetMapper(Map<T, SpriteSetProperty> map) : _map = map;
+  SpriteSetMapper(Map<T, SpriteSetProperty> map) : _map = map;
 
   @override
   SpriteTextureKey resolveTextureKey(Set<T> states) {
@@ -118,7 +119,7 @@ class SpriteSetMapper<T> implements SpriteSet<T> {
   }
 
   @override
-  Matrix4 resolveTransformation(Set<T> states) {
+  LinearTransformer resolveTransformation(Set<T> states) {
     for (MapEntry<T, SpriteSetProperty> entry in _map.entries) {
       if (states.contains(entry.key)) {
         return entry.value.transform;
@@ -126,7 +127,7 @@ class SpriteSetMapper<T> implements SpriteSet<T> {
     }
     try {
       // ignore: cast_from_null_always_fails
-      return null as Matrix4;
+      return null as LinearTransformer;
     } on TypeError {
       panicNow("This SpriteSet cannot resolve states: $states.",
           details: "None of the provided mapping states matched these states.",

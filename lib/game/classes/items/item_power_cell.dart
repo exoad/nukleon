@@ -1,4 +1,4 @@
-import 'package:project_yellow_cake/game/classes/classes.dart';
+import 'package:shitter/game/classes/classes.dart';
 
 import '../../../engine/engine.dart';
 

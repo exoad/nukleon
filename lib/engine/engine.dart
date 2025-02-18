@@ -2,8 +2,8 @@ import 'package:flame/cache.dart';
 import 'package:flame_texturepacker/flame_texturepacker.dart';
 import 'package:flutter/widgets.dart';
 import 'package:logging/logging.dart';
-import 'package:project_yellow_cake/engine/public.dart';
-import 'package:project_yellow_cake/engine/registries/textures_registries.dart';
+import 'package:shitter/engine/public.dart';
+import 'package:shitter/engine/registries/textures_registries.dart';
 
 export "public.dart";
 export "registries/registries.dart";

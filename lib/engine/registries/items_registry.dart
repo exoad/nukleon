@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:project_yellow_cake/engine/engine.dart';
+import 'package:shitter/engine/engine.dart';
 
 final class ItemsRegistry {
   static final ItemsRegistry I = ItemsRegistry._();

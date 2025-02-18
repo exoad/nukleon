@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:project_yellow_cake/game/entities/entities.dart';
+import 'package:shitter/game/entities/entities.dart';
 
 final class GeomSurveyor {
   GeomSurveyor._();

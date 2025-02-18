@@ -33,6 +33,19 @@
   <link rel="manifest" href="manifest.json">
 </head>
 <body>
-  <script src="flutter_bootstrap.js" async></script>
+<script>
+  {{flutter_js}}
+  {{flutter_build_config}}
+
+  _flutter.loader.load({
+    onEntrypointLoaded: async function (engineInitializer) {
+      let appRunner = await engineInitializer.initializeEngine({
+        // JsFlutterConfiguration goes here...
+        canvasKitBaseUrl: "/canvaskit/",
+      });
+      appRunner.runApp();
+    },
+  });
+</script>
 </body>
 </html>

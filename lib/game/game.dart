@@ -1,10 +1,10 @@
 import 'package:flutter/foundation.dart';
-import 'package:project_yellow_cake/engine/engine.dart';
-import 'package:project_yellow_cake/game/classes/items/item_blank.dart';
-import 'package:project_yellow_cake/game/controllers/pointer.dart';
-import 'package:project_yellow_cake/game/entities/reactor.dart';
-import 'package:project_yellow_cake/game/classes/classes.dart';
-import 'package:project_yellow_cake/game/shared.dart';
+import 'package:shitter/engine/engine.dart';
+import 'package:shitter/game/classes/items/item_blank.dart';
+import 'package:shitter/game/controllers/pointer.dart';
+import 'package:shitter/game/entities/reactor.dart';
+import 'package:shitter/game/classes/classes.dart';
+import 'package:shitter/game/shared.dart';
 
 export "shared.dart";
 
@@ -16,7 +16,7 @@ class GameRoot {
   final CellLocationBuffer _cellLocationBuffer;
 
   GameRoot._()
-      : _pointerBuffer = PointerBuffer(1),
+      : _pointerBuffer = PointerBuffer(),
         _cellLocationBuffer = CellLocationBuffer();
 
   Future<void> loadBuiltinItems() async {

@@ -1,5 +1,5 @@
 import 'package:flame/components.dart';
-import 'package:project_yellow_cake/engine/engine.dart';
+import 'package:shitter/engine/engine.dart';
 
 extension DebuggableSprite on Sprite {
   String get richString {

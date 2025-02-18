@@ -1,5 +1,5 @@
 import 'package:logging/logging.dart';
-import 'package:project_yellow_cake/engine/engine.dart';
+import 'package:shitter/engine/engine.dart';
 
 final class Shared {
   Shared._();

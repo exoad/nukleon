@@ -1,4 +1,4 @@
-import 'package:project_yellow_cake/engine/engine.dart';
+import 'package:shitter/engine/engine.dart';
 
 export "items/items.dart";
 export "ui/ui.dart";
