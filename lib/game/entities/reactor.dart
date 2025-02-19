@@ -56,7 +56,7 @@ class ReactorEntity {
 
   /// Returns an item definition ID that can be looked up in [ItemsRegistry]
   ReactorSlot at(int row, int column) {
-    if (row < 0 || row >= _grid.length || column < 0 || column >= _grid[row].length) {
+    if (!isValidLocationRaw(row, column)) {
       panicNow(
           "Invalid indices: row=$row, column=$column. Grid size is ${_grid.length}x${_grid.isNotEmpty ? _grid[0].length : 0}.");
     }
@@ -69,7 +69,7 @@ class ReactorEntity {
 
   @Deprecated("dont use this shit")
   CellValue operator [](CellLocation location) {
-    if (isValidLocation(location)) {
+    if (!isValidLocation(location)) {
       panicNow(
           "Invalid indices: row=${location.row}, column=${location.row}, layer=Class.ITEMS. Grid size is ${_grid.length}x${_grid.isNotEmpty ? _grid[0].length : 0}.");
     }
@@ -78,7 +78,7 @@ class ReactorEntity {
 
   bool safePut(CellLocation location, CellValue value, Class layer,
       [bool forced = false]) {
-    if (isValidLocation(location)) {
+    if (!isValidLocation(location)) {
       return false;
     }
     if (!_grid[location.row][location.column][layer].isEqual(value) || forced) {
@@ -91,10 +91,14 @@ class ReactorEntity {
   }
 
   bool isValidLocation(CellLocation location) {
-    return location.row < 0 ||
-        location.row >= _grid.length ||
-        location.column < 0 ||
-        location.row >= _grid[location.row].length;
+    return location.row >= 0 &&
+        location.row < _grid.length &&
+        location.column >= 0 &&
+        location.row < _grid[location.row].length;
+  }
+
+  bool isValidLocationRaw(int row, int column) {
+    return row >= 0 && row < _grid.length && column >= 0 && row < _grid[row].length;
   }
 
   /// Similar in functionality to the `[]=` operator, but does not panic when the [location] is out of bounds.

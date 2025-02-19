@@ -9,7 +9,7 @@ class BasicTile extends ItemDefinition {
 
   @override
   SpriteTextureKey sprite() {
-    return SpriteTextureKey("tiles_content", spriteName: "Basic");
+    return SpriteTextureKey("tiles_content", spriteName: "Basic_Tile");
   }
 
   @override

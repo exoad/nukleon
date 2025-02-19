@@ -74,6 +74,7 @@ final class Public {
       }
       buffer.write("\n ${helpWrapped!.join("\n")}\n");
     }
+    buffer.writeln();
     for (int i = 0; i < maxStripes; i++) {
       buffer.write("◢◤");
     }
@@ -100,13 +101,5 @@ enum Class {
 
   static Class get baseLayer {
     return ITEMS;
-  }
-
-  static List<Class> get zeroNonDrawable {
-    return const <Class>[ITEMS, INFO, OVERLAY];
-  }
-
-  static List<Class> get zeroDrawable {
-    return const <Class>[TILES];
   }
 }

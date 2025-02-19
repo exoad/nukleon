@@ -194,25 +194,22 @@ class AppRoot extends StatelessWidget {
                                   ),
                                   SizedBox.square(
                                       dimension: Shared.kTileSize + Shared.kTileSpacing,
-                                      child: SpriteWidget(
-                                        <AtlasSprite>[
+                                      child: SpriteWidget(<AtlasSprite>[
+                                        TextureRegistry.getTextureSprite(SpriteTextureKey(
+                                            "content",
+                                            spriteName: "Selector_Border")),
+                                        if (PointerBuffer.of(context).primary != null)
+                                          ItemsRegistry.I
+                                              .findItemDefinition(
+                                                  PointerBuffer.of(context).primary!,
+                                                  Class.ITEMS)
+                                              .sprite()
+                                              .findTexture()
+                                        else
                                           TextureRegistry.getTextureSprite(
                                               SpriteTextureKey("content",
-                                                  spriteName: "Selector_Border")),
-                                          if (PointerBuffer.of(context).primary != null)
-                                            ItemsRegistry.I
-                                                .findItemDefinition(
-                                                    PointerBuffer.of(context).primary!,
-                                                    Class.ITEMS)
-                                                .sprite()
-                                                .findTexture()
-                                          else
-                                            TextureRegistry.getTextureSprite(
-                                                SpriteTextureKey("content",
-                                                    spriteName: "Null_Item")),
-                                        ],
-                                        transformers: <LinearTransformer>[],
-                                      )),
+                                                  spriteName: "Null_Item")),
+                                      ], transformers: <LinearTransformer>[])),
                                 ],
                               )),
                           Positioned(
@@ -270,7 +267,10 @@ class _ReactorWidgetState extends State<_ReactorWidget> {
       onHover: (PointerHoverEvent details) {
         ({int row, int column}) item = GeomSurveyor.fromPos(
             details.localPosition, Shared.kTileSize, Shared.kTileSpacing);
-        CellLocationBuffer.of(context, listen: false).setLocation(item.row, item.column);
+        if (GameRoot.I.reactor.isValidLocationRaw(item.row, item.column)) {
+          CellLocationBuffer.of(context, listen: false)
+              .setLocation(item.row, item.column);
+        }
       },
       child: GestureDetector(
         onPanUpdate: (DragUpdateDetails details) => _handleHit(details.localPosition),
@@ -281,7 +281,11 @@ class _ReactorWidgetState extends State<_ReactorWidget> {
           PointerBuffer.of(context, listen: false).use();
           _handleHit(details.localPosition);
         },
-        child: CustomPaint(painter: CullingReactorGridPainter(hitLocation: hitLocation)),
+        child: CustomPaint(
+          painter: CullingReactorGridPainter(hitLocation: hitLocation),
+          isComplex: true,
+          willChange: true,
+        ),
       ),
     );
   }
@@ -291,7 +295,8 @@ class _ReactorWidgetState extends State<_ReactorWidget> {
     if (ptr.primary != null || ptr.isErasing) {
       CellLocation newHitLocation =
           GeomSurveyor.posToCellLocation(position, Shared.kTileSize, Shared.kTileSpacing);
-      if (newHitLocation != lastHitLocation) {
+      if (GameRoot.I.reactor.isValidLocation(newHitLocation) &&
+          newHitLocation != lastHitLocation) {
         pressedLocation = position;
         lastHitLocation = hitLocation;
         hitLocation = newHitLocation;
