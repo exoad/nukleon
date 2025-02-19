@@ -2,17 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:shitter/engine/engine.dart';
 
 @immutable
-final class _SpriteWidgetPainter extends CustomPainter {
+final class _SpriteWidgetPainter extends ContentRenderer {
   final List<AtlasSprite> sprites;
   final List<LinearTransformer>? transformations;
   final LinearTransformer? globalTransformer;
-  final bool antialias;
-  final FilterQuality filterQuality;
 
   const _SpriteWidgetPainter(this.sprites, this.transformations,
-      {this.globalTransformer,
-      this.antialias = false,
-      this.filterQuality = FilterQuality.none});
+      {this.globalTransformer, super.config});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -35,9 +31,7 @@ final class _SpriteWidgetPainter extends CustomPainter {
               sprites[i].image,
               sprites[i].src,
               Rect.fromLTWH(0, 0, size.width, size.height),
-              sprites[i].paint
-                ..filterQuality = filterQuality
-                ..isAntiAlias = antialias);
+              sprites[i].paint..applyConfig(config));
         }
       } else {
         for (int i = 0; i < sprites.length; i++) {
@@ -45,9 +39,7 @@ final class _SpriteWidgetPainter extends CustomPainter {
               sprites[i].image,
               sprites[i].src,
               Rect.fromLTWH(0, 0, size.width, size.height),
-              sprites[i].paint
-                ..filterQuality = filterQuality
-                ..isAntiAlias = antialias);
+              sprites[i].paint..applyConfig(config));
         }
       }
     }
@@ -64,39 +56,29 @@ class SpriteWidget extends StatelessWidget {
   final List<AtlasSprite> sprites;
   final List<LinearTransformer>? transformers;
   final LinearTransformer? globalTransformer;
-  final bool antialias;
-  final FilterQuality filterQuality;
+  final PaintConfig? config;
 
   const SpriteWidget(this.sprites,
-      {super.key,
-      this.transformers,
-      this.globalTransformer,
-      this.antialias = true,
-      this.filterQuality = FilterQuality.none});
+      {super.key, this.transformers, this.globalTransformer, this.config});
 
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
         painter: _SpriteWidgetPainter(sprites, transformers,
-            globalTransformer: globalTransformer,
-            antialias: antialias,
-            filterQuality: filterQuality));
+            globalTransformer: globalTransformer, config: config));
   }
 }
 
-class _NineSpriteWidgetPainter extends CustomPainter {
+class _NineSpriteWidgetPainter extends ContentRenderer {
   final AtlasSprite sprite;
   final LinearTransformer? transformer;
-  final bool antialias;
   final EdgeInsets border;
-  final FilterQuality filterQuality;
 
   _NineSpriteWidgetPainter(
       {required this.sprite,
       required this.transformer,
-      required this.antialias,
       required this.border,
-      required this.filterQuality});
+      super.config});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -113,9 +95,7 @@ class _NineSpriteWidgetPainter extends CustomPainter {
             sprite.originalWidth - border.right - border.left,
             sprite.originalHeight - border.bottom - border.top),
         Rect.fromLTWH(0, 0, size.width, size.height),
-        Paint()
-          ..isAntiAlias = antialias
-          ..filterQuality = filterQuality);
+        Paint()..applyConfig(config));
   }
 
   @override
@@ -130,8 +110,7 @@ class NineSpriteWidget extends StatelessWidget {
   final EdgeInsets border;
   final EdgeInsets? padding;
   final LinearTransformer? transformer;
-  final bool antialias;
-  final FilterQuality filterQuality;
+  final PaintConfig? config;
 
   const NineSpriteWidget(
       {super.key,
@@ -140,18 +119,13 @@ class NineSpriteWidget extends StatelessWidget {
       required this.border,
       this.padding,
       this.transformer,
-      this.antialias = true,
-      this.filterQuality = FilterQuality.none});
+      this.config});
 
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
       painter: _NineSpriteWidgetPainter(
-          sprite: sprite,
-          transformer: transformer,
-          antialias: antialias,
-          border: border,
-          filterQuality: filterQuality),
+          sprite: sprite, transformer: transformer, border: border, config: config),
       child: padding == null ? Padding(padding: padding!, child: child) : child,
     );
   }
