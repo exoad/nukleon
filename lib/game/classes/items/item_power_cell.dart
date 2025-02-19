@@ -1,6 +1,5 @@
+import 'package:shitter/engine/engine.dart';
 import 'package:shitter/game/classes/classes.dart';
-
-import '../../../engine/engine.dart';
 
 class UraniumCell extends Cell {
   @override

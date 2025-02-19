@@ -12,6 +12,9 @@ class Button1 extends ButtonFacet {
   bool get locked => true;
 
   @override
+  EdgeInsets get border => EdgeInsets.all(2);
+
+  @override
   SpriteSet<ButtonSpriteStates> get spriteSet {
     return SpriteSet.resolveWith<ButtonSpriteStates>((Set<ButtonSpriteStates> states) =>
         states.first == ButtonSpriteStates.normal

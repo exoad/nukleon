@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter/foundation.dart';
 import 'package:shitter/engine/engine.dart';
 import 'package:shitter/game/classes/classes.dart';
 import 'package:shitter/game/game.dart';

@@ -1,4 +1,3 @@
-import 'package:flame/components.dart';
 import 'package:shitter/engine/engine.dart';
 
 extension DebuggableSprite on Sprite {

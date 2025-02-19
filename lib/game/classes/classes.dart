@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:shitter/engine/engine.dart';
 
 export "items/items.dart";
@@ -31,6 +30,8 @@ abstract class Facet<T> extends ItemDefinition {
   @override
   @nonVirtual
   Class get layer => Class.UI;
+
+  EdgeInsets get border => EdgeInsets.zero;
 
   @override
   @nonVirtual

@@ -1,8 +1,7 @@
 import 'dart:math';
 
-import 'package:flutter/foundation.dart';
 import 'package:logging/logging.dart';
-import 'package:shitter/engine/utils/extern.dart';
+import 'package:shitter/engine/engine.dart';
 
 final class Public {
   Public._();

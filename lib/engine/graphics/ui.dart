@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:shitter/engine/engine.dart';
 
 @immutable
@@ -69,12 +68,13 @@ class SpriteWidget extends StatelessWidget {
   }
 }
 
+@immutable
 class _NineSpriteWidgetPainter extends ContentRenderer {
   final AtlasSprite sprite;
   final LinearTransformer? transformer;
   final EdgeInsets border;
 
-  _NineSpriteWidgetPainter(
+  const _NineSpriteWidgetPainter(
       {required this.sprite,
       required this.transformer,
       required this.border,
@@ -104,6 +104,7 @@ class _NineSpriteWidgetPainter extends ContentRenderer {
   }
 }
 
+@immutable
 class NineSpriteWidget extends StatelessWidget {
   final AtlasSprite sprite;
   final Widget child;
@@ -126,7 +127,7 @@ class NineSpriteWidget extends StatelessWidget {
     return CustomPaint(
       painter: _NineSpriteWidgetPainter(
           sprite: sprite, transformer: transformer, border: border, config: config),
-      child: padding == null ? Padding(padding: padding!, child: child) : child,
+      child: padding == null ? Padding(padding: EdgeInsets.zero, child: child) : child,
     );
   }
 }

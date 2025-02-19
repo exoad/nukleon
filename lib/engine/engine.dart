@@ -10,7 +10,10 @@ export "registries/registries.dart";
 export "utils/utils.dart";
 export "graphics/graphics.dart";
 export "components/components.dart";
-export "package:flame/game.dart";
+export "package:flutter/material.dart" hide Route, OverlayRoute;
+export "package:flutter/services.dart";
+export "package:flutter/foundation.dart";
+export "package:flame/components.dart";
 
 typedef TextureAtlas = TexturePackerAtlas;
 typedef AtlasSprite = TexturePackerSprite;

@@ -1,8 +1,6 @@
-import "package:flutter/material.dart";
-import "package:flutter/services.dart";
 import "package:shitter/engine/engine.dart";
+import "package:shitter/game/classes/classes.dart";
 import "package:shitter/game/colors.dart";
-import "package:shitter/game/design/ui/ui_reactor_button_toggle_1.dart";
 import "package:shitter/game/controllers/pointer.dart";
 import "package:shitter/game/design/design_ui.dart";
 import "package:shitter/game/entities/entities.dart";
@@ -126,15 +124,21 @@ class AppRoot extends StatelessWidget {
                           height: size.height * 0.4 - (Shared.uiPadding * 2),
                           width: 260,
                           color: Color.fromARGB(255, 56, 61, 74),
-                          child: UIToggleButton1(
-                              toggled: true,
-                              onSwitch: (bool active) {
-                                if (active) {
-                                  PointerBuffer.of(context, listen: false).use();
-                                } else {
-                                  PointerBuffer.of(context, listen: false).erase();
-                                }
-                              })),
+                          child: ButtonFacetWidget(
+                              facet: Button1(),
+                              onPressed: () {
+                                Shared.logger.finer("WTF");
+                              },
+                              child: Text("WTF"))),
+                      // child: UIToggleButton1(
+                      //     toggled: true,
+                      //     onSwitch: (bool active) {
+                      //       if (active) {
+                      //         PointerBuffer.of(context, listen: false).use();
+                      //       } else {
+                      //         PointerBuffer.of(context, listen: false).erase();
+                      //       }
+                      //     })),
                       const SizedBox(height: Shared.uiPadding),
                       Container(
                         height: size.height * 0.6 - (Shared.uiPadding * 2),

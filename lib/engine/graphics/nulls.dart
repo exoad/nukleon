@@ -1,4 +1,3 @@
-import 'package:flutter/widgets.dart';
 import 'package:shitter/engine/engine.dart';
 
 class NullPainter extends CustomPainter {
