@@ -129,7 +129,7 @@ class AppRoot extends StatelessWidget {
                               onPressed: () {
                                 Shared.logger.finer("WTF");
                               },
-                              child: Text("WTF"))),
+                              child: Text(""))),
                       // child: UIToggleButton1(
                       //     toggled: true,
                       //     onSwitch: (bool active) {

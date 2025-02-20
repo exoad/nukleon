@@ -34,7 +34,7 @@ prettyPrint=false
 legacyOutput=true
 
 scaleFactors=[{suffix:"",factor:1,resampling:bicubic}]
-inputFiles=[{path:Reactor_Button_1_Normal.png,type:Input,regionName:null},{path:Reactor_Button_1_Pressed.png,type:Input,regionName:null}]
+inputFiles=[{path:Reactor_Button_1_Normal.png,type:Input,regionName:null},{path:Reactor_Button_1_Pressed.png,type:Input,regionName:null},{path:Button_Facet_1_Normal.png,type:Input,regionName:null},{path:Button_Facet_1_Pressed.png,type:Input,regionName:null}]
 keepInputFileExtensions=false
 
 

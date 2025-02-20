@@ -69,7 +69,8 @@ class TextureRegistry {
   static void registerTextureMap(String key, TextureMap image) {
     I._texturesCache[key] = image;
     for (AtlasSprite sprite in I._texturesCache[key]!.sprites) {
-      logger.finer("Registered texture sprite: '${sprite.name}' [${sprite.index}]");
+      logger.finer(
+          "Registered texture sprite: '${sprite.name}' [${sprite.index}] (${sprite.src})");
     }
   }
 

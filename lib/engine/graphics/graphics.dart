@@ -11,6 +11,11 @@ final class G {
       ..filterQuality = FilterQuality.values[Public.textureFilter]
       ..isAntiAlias = false;
   }
+
+  static RSTransform rstNoRot(double x, double y, [double scale = 1]) {
+    return RSTransform.fromComponents(
+        rotation: 0, scale: scale, anchorX: 0, anchorY: 0, translateX: x, translateY: y);
+  }
 }
 
 final class C {

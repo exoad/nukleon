@@ -18,8 +18,8 @@ class Button1 extends ButtonFacet {
   SpriteSet<ButtonSpriteStates> get spriteSet {
     return SpriteSet.resolveWith<ButtonSpriteStates>((Set<ButtonSpriteStates> states) =>
         states.first == ButtonSpriteStates.normal
-            ? SpriteTextureKey("ui_content", spriteName: "Reactor_Button_1_Normal")
-            : SpriteTextureKey("ui_content", spriteName: "Reactor_Button_1_Pressed"));
+            ? SpriteTextureKey("ui_content", spriteName: "Button_Facet_1_Normal")
+            : SpriteTextureKey("ui_content", spriteName: "Button_Facet_1_Pressed"));
   }
 }
 
