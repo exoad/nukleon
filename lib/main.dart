@@ -97,6 +97,54 @@ class AppRoot extends StatelessWidget {
     final Size size = MediaQuery.sizeOf(context);
     return MaterialApp(
         theme: ThemeData(
+            colorScheme: const ColorScheme(
+              brightness: Brightness.dark,
+              primary: Color(0xfffffaff),
+              surfaceTint: Color(0xffe5c524),
+              onPrimary: Color(0xff3a3000),
+              primaryContainer: Color(0xffffde3f),
+              onPrimaryContainer: Color(0xff736100),
+              secondary: Color(0xffffdbcc),
+              onSecondary: Color(0xff50240b),
+              secondaryContainer: Color(0xffffb693),
+              onSecondaryContainer: Color(0xff7a452a),
+              tertiary: Color(0xffffc480),
+              onTertiary: Color(0xff472a00),
+              tertiaryContainer: Color(0xffeea446),
+              onTertiaryContainer: Color(0xff643c00),
+              error: Color(0xffffb4ab),
+              onError: Color(0xff690005),
+              errorContainer: Color(0xff93000a),
+              onErrorContainer: Color(0xffffdad6),
+              surface: Color(0xff16130a),
+              onSurface: Color(0xffe9e2d1),
+              onSurfaceVariant: Color(0xffcfc6ad),
+              outline: Color(0xff989079),
+              outlineVariant: Color(0xff4c4733),
+              shadow: Color(0xff000000),
+              scrim: Color(0xff000000),
+              inverseSurface: Color(0xffe9e2d1),
+              inversePrimary: Color(0xff6e5d00),
+              primaryFixed: Color(0xffffe25e),
+              onPrimaryFixed: Color(0xff221b00),
+              primaryFixedDim: Color(0xffe5c524),
+              onPrimaryFixedVariant: Color(0xff534600),
+              secondaryFixed: Color(0xffffdbcb),
+              onSecondaryFixed: Color(0xff341000),
+              secondaryFixedDim: Color(0xffffb693),
+              onSecondaryFixedVariant: Color(0xff6c3a1f),
+              tertiaryFixed: Color(0xffffddb9),
+              onTertiaryFixed: Color(0xff2b1700),
+              tertiaryFixedDim: Color(0xffffb964),
+              onTertiaryFixedVariant: Color(0xff663e00),
+              surfaceDim: Color(0xff16130a),
+              surfaceBright: Color(0xff3d392e),
+              surfaceContainerLowest: Color(0xff100e06),
+              surfaceContainerLow: Color(0xff1e1b11),
+              surfaceContainer: Color(0xff222015),
+              surfaceContainerHigh: Color(0xff2d2a1f),
+              surfaceContainerHighest: Color(0xff383529),
+            ),
             tooltipTheme: TooltipThemeData(
                 exitDuration: Duration.zero,
                 decoration: const BoxDecoration(borderRadius: BorderRadius.zero))),
@@ -124,12 +172,18 @@ class AppRoot extends StatelessWidget {
                           height: size.height * 0.4 - (Shared.uiPadding * 2),
                           width: 260,
                           color: Color.fromARGB(255, 56, 61, 74),
-                          child: ButtonFacetWidget(
-                              facet: Button1(),
-                              onPressed: () {
-                                Shared.logger.finer("WTF");
-                              },
-                              child: Text(""))),
+                          child: Column(
+                            children: <Widget>[
+                              FilledButton.tonal(
+                                  child: Text("INSHALLAH"), onPressed: () {}),
+                              ButtonFacetWidget(
+                                  facet: Button1(),
+                                  onPressed: () {
+                                    Shared.logger.finer("WTF");
+                                  },
+                                  child: Text("WTF"))
+                            ],
+                          )),
                       // child: UIToggleButton1(
                       //     toggled: true,
                       //     onSwitch: (bool active) {

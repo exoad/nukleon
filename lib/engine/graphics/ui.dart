@@ -70,7 +70,6 @@ class SpriteWidget extends StatelessWidget {
 class _NineSpriteWidgetPainter extends ContentRenderer with RenderingMixin {
   final AtlasSprite sprite;
   final LinearTransformer? transformer;
-  final EdgeInsets border;
   late final Float32List _corners;
   final Float32List _horiSides;
   final Float32List _vertSides;
@@ -78,10 +77,7 @@ class _NineSpriteWidgetPainter extends ContentRenderer with RenderingMixin {
   final double _sliceSize;
 
   _NineSpriteWidgetPainter(
-      {required this.sprite,
-      required this.transformer,
-      required this.border,
-      super.config})
+      {required this.sprite, required this.transformer, super.config})
       : _sliceSize = sprite.src.width / 3,
         _corners = Float32List(16),
         _horiSides = Float32List(8),
@@ -115,7 +111,7 @@ class _NineSpriteWidgetPainter extends ContentRenderer with RenderingMixin {
     _horiSides[0] = sliceSize1X;
     _horiSides[1] = sprite.src.topLeft.dy;
     _horiSides[2] = sliceSize2X;
-    _horiSides[3] = sliceSize1X;
+    _horiSides[3] = sliceSize1Y;
     // bottom center
     _horiSides[4] = sliceSize1X;
     _horiSides[5] = sliceSize2Y;
@@ -236,8 +232,7 @@ class _NineSpriteWidgetPainter extends ContentRenderer with RenderingMixin {
 class NineSpriteWidget extends StatelessWidget {
   final SpriteTextureKey sprite;
   final Widget child;
-  final EdgeInsets border;
-  final EdgeInsets? padding;
+  final EdgeInsets? border;
   final LinearTransformer? transformer;
   final PaintConfig? config;
 
@@ -245,23 +240,16 @@ class NineSpriteWidget extends StatelessWidget {
       {super.key,
       required this.sprite,
       required this.child,
-      required this.border,
-      this.padding,
+      this.border,
       this.transformer,
       this.config});
 
   @override
   Widget build(BuildContext context) {
-    logger.config("Sprite Key -> ${sprite.spriteName}");
-    return SizedBox(
-      child: CustomPaint(
-        painter: _NineSpriteWidgetPainter(
-            sprite: sprite.findTexture(),
-            transformer: transformer,
-            border: border,
-            config: config),
-        child: padding == null ? child : Padding(padding: padding!, child: child),
-      ),
+    return CustomPaint(
+      painter: _NineSpriteWidgetPainter(
+          sprite: sprite.findTexture(), transformer: transformer, config: config),
+      child: (border == null ? child : Padding(padding: border!, child: child)),
     );
   }
 }

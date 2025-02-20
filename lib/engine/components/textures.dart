@@ -23,7 +23,6 @@ abstract class SpriteSet<T> {
   SpriteSet();
 
   SpriteTextureKey resolveTextureKey(Set<T> states);
-
   LinearTransformer resolveTransformation(Set<T> states);
 
   static SpriteSetAll all(SpriteTextureKey value,

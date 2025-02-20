@@ -12,7 +12,7 @@ class Button1 extends ButtonFacet {
   bool get locked => true;
 
   @override
-  EdgeInsets get border => EdgeInsets.all(2);
+  EdgeInsets get border => EdgeInsets.all(7);
 
   @override
   SpriteSet<ButtonSpriteStates> get spriteSet =>

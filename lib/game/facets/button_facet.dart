@@ -29,20 +29,14 @@ class _ButtonFacetWidgetState extends State<ButtonFacetWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) => SizedBox(
-              width: constraints.maxWidth,
-              height: constraints.maxHeight,
-              child: GestureDetector(
-                  onTap: widget.onPressed,
-                  onTapDown: (_) => setState(() => pressed = ButtonSpriteStates.pressed),
-                  onTapUp: (_) => setState(() => pressed = ButtonSpriteStates.normal),
-                  child: NineSpriteWidget(
-                    sprite: widget.facet.spriteSet
-                        .resolveTextureKey(<ButtonSpriteStates>{pressed}),
-                    border: widget.facet.border,
-                    child: widget.child,
-                  )),
-            ));
+    return GestureDetector(
+        onTap: widget.onPressed,
+        onTapDown: (_) => setState(() => pressed = ButtonSpriteStates.pressed),
+        onTapUp: (_) => setState(() => pressed = ButtonSpriteStates.normal),
+        child: NineSpriteWidget(
+          border: widget.facet.border,
+          sprite: widget.facet.spriteSet.resolveTextureKey(<ButtonSpriteStates>{pressed}),
+          child: widget.child,
+        ));
   }
 }
