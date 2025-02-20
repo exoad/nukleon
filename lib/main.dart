@@ -2,7 +2,7 @@ import "package:shitter/engine/engine.dart";
 import "package:shitter/game/classes/classes.dart";
 import "package:shitter/game/colors.dart";
 import "package:shitter/game/controllers/pointer.dart";
-import "package:shitter/game/design/design_ui.dart";
+import "package:shitter/game/facets/facets.dart";
 import "package:shitter/game/entities/entities.dart";
 import "package:shitter/game/game.dart";
 import "package:shitter/game/utils/surveyor.dart";
@@ -266,33 +266,31 @@ class _ReactorWidgetState extends State<_ReactorWidget> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return MouseRegion(
-      onHover: (PointerHoverEvent details) {
-        ({int row, int column}) item = GeomSurveyor.fromPos(
-            details.localPosition, Shared.kTileSize, Shared.kTileSpacing);
-        if (GameRoot.I.reactor.isValidLocationRaw(item.row, item.column)) {
-          CellLocationBuffer.of(context, listen: false)
-              .setLocation(item.row, item.column);
-        }
-      },
-      child: GestureDetector(
-        onPanUpdate: (DragUpdateDetails details) => _handleHit(details.localPosition),
-        onPanStart: (_) => panning = true,
-        onPanCancel: () => panning = false,
-        onPanEnd: (_) => panning = false,
-        onTapDown: (TapDownDetails details) {
-          PointerBuffer.of(context, listen: false).use();
-          _handleHit(details.localPosition);
+  Widget build(BuildContext context) => MouseRegion(
+        onHover: (PointerHoverEvent details) {
+          ({int row, int column}) item = GeomSurveyor.fromPos(
+              details.localPosition, Shared.kTileSize, Shared.kTileSpacing);
+          if (GameRoot.I.reactor.isValidLocationRaw(item.row, item.column)) {
+            CellLocationBuffer.of(context, listen: false)
+                .setLocation(item.row, item.column);
+          }
         },
-        child: CustomPaint(
-          painter: CullingReactorGridPainter(hitLocation: hitLocation),
-          isComplex: true,
-          willChange: true,
+        child: GestureDetector(
+          onPanUpdate: (DragUpdateDetails details) => _handleHit(details.localPosition),
+          onPanStart: (_) => panning = true,
+          onPanCancel: () => panning = false,
+          onPanEnd: (_) => panning = false,
+          onTapDown: (TapDownDetails details) {
+            PointerBuffer.of(context, listen: false).use();
+            _handleHit(details.localPosition);
+          },
+          child: CustomPaint(
+            painter: CullingReactorGridPainter(hitLocation: hitLocation),
+            isComplex: true,
+            willChange: true,
+          ),
         ),
-      ),
-    );
-  }
+      );
 
   void _handleHit(Offset position) {
     PointerBuffer ptr = PointerBuffer.of(context, listen: false);

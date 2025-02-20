@@ -43,6 +43,12 @@ abstract class ContentRenderer extends CustomPainter {
   PaintConfig get config => _config ?? PaintConfig.global;
 }
 
+mixin RenderingMixin on ContentRenderer {
+  Paint applyConfig(Paint paint) => paint
+    ..isAntiAlias = config.isAntialias
+    ..filterQuality = config.filterQuality;
+}
+
 extension ConfigurablePaint on Paint {
   void applyConfig(PaintConfig config) {
     isAntiAlias = config.isAntialias;

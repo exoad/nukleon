@@ -9,6 +9,7 @@ final class Public {
   static bool panicOnNullTextures = true;
   static int textureFilter = PublicK.TEXTURE_FILTER_NONE;
   static bool warnOnTextureMapDuplicateSprites = false;
+  static bool useLennyFaceOnPanic = true;
   static final Random random1 = Random(DateTime.now().microsecondsSinceEpoch);
   static Future<void> initialize() async {
     logger.info("Public Resources initialized.");
@@ -97,8 +98,4 @@ enum Class {
   INFO,
   OVERLAY,
   UI;
-
-  static Class get baseLayer {
-    return ITEMS;
-  }
 }

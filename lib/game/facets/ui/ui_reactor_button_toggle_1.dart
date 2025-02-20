@@ -36,8 +36,7 @@ class _UIToggleButton1State extends State<UIToggleButton1> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
+  Widget build(BuildContext context) => GestureDetector(
         onTap: () {
           setState(() => _active = !_active);
           widget.onSwitch(_active);
@@ -49,5 +48,4 @@ class _UIToggleButton1State extends State<UIToggleButton1> {
         ], transformers: <LinearTransformer>[
           Matrix4.identity().toLinearTransformer
         ]));
-  }
 }

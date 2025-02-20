@@ -42,7 +42,8 @@ Future<void> initializeEngine([Level loggingLevel = Level.ALL]) async {
 
 @pragma("vm:prefer-inline")
 void panicNow(String label, {String? details, String? help}) {
-  logger.severe("[[ !! Engine Panicked o_O !! ]] '$label'");
+  logger.severe(
+      "[[ !! Engine Panicked ${Public.useLennyFaceOnPanic ? 'ಠ╭╮ಠ' : ''} !! ]] '$label'");
   throw Public.formatErrorMessage(label, details, help);
 }
 
@@ -50,8 +51,6 @@ class TextureAtlasLoader {
   TextureAtlasLoader._();
 
   static Future<TextureAtlas> loadAssetsAtlas(String path,
-      {Images? images, bool useOriginalSize = true}) async {
-    return await TextureAtlas.load(path,
-        images: images, useOriginalSize: useOriginalSize);
-  }
+          {Images? images, bool useOriginalSize = true}) async =>
+      await TextureAtlas.load(path, images: images, useOriginalSize: useOriginalSize);
 }

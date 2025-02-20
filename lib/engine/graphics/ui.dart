@@ -46,9 +46,7 @@ final class _SpriteWidgetPainter extends ContentRenderer {
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return true;
-  }
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }
 
 @immutable
@@ -62,16 +60,14 @@ class SpriteWidget extends StatelessWidget {
       {super.key, this.transformers, this.globalTransformer, this.config});
 
   @override
-  Widget build(BuildContext context) {
-    return CustomPaint(
-        painter: _SpriteWidgetPainter(sprites, transformers,
-            globalTransformer: globalTransformer, config: config));
-  }
+  Widget build(BuildContext context) => CustomPaint(
+      painter: _SpriteWidgetPainter(sprites, transformers,
+          globalTransformer: globalTransformer, config: config));
 }
 
 // self implemented cuz the Canvas api doesnt have one lmao and stretching images from an
 // atlas needs to be optimized ASF :D
-class _NineSpriteWidgetPainter extends ContentRenderer {
+class _NineSpriteWidgetPainter extends ContentRenderer with RenderingMixin {
   final AtlasSprite sprite;
   final LinearTransformer? transformer;
   final EdgeInsets border;
@@ -91,67 +87,67 @@ class _NineSpriteWidgetPainter extends ContentRenderer {
         _horiSides = Float32List(8),
         _vertSides = Float32List(8),
         _center = Float32List(4) {
-    double sliceSize2 = _sliceSize * 2;
-    double sliceSize3 = _sliceSize * 3;
+    final double sliceSize1X = _sliceSize + sprite.src.topLeft.dx;
+    final double sliceSize1Y = _sliceSize + sprite.src.topLeft.dy;
+    final double sliceSize2X = sliceSize1X + _sliceSize;
+    final double sliceSize2Y = sliceSize1Y + _sliceSize;
     // top left
-    _corners[0] = 0;
-    _corners[1] = 0;
-    _corners[2] = _sliceSize;
-    _corners[3] = _sliceSize;
+    _corners[0] = sprite.src.topLeft.dx;
+    _corners[1] = sprite.src.topLeft.dy;
+    _corners[2] = sliceSize1X;
+    _corners[3] = sliceSize1Y;
     // top right
-    _corners[4] = sliceSize2;
-    _corners[5] = 0;
-    _corners[6] = sliceSize3;
-    _corners[7] = _sliceSize;
+    _corners[4] = sliceSize2X;
+    _corners[5] = sprite.src.topLeft.dy;
+    _corners[6] = sprite.src.topRight.dx;
+    _corners[7] = sliceSize1Y;
     // bottom left
-    _corners[8] = 0;
-    _corners[9] = sliceSize2;
-    _corners[10] = _sliceSize;
-    _corners[11] = sliceSize3;
+    _corners[8] = sprite.src.topLeft.dx;
+    _corners[9] = sliceSize2Y;
+    _corners[10] = sliceSize1X;
+    _corners[11] = sprite.src.bottomRight.dy;
     // bottom right
-    _corners[12] = sliceSize2;
-    _corners[13] = sliceSize2;
-    _corners[14] = sliceSize3;
-    _corners[15] = sliceSize3;
-    // vertical sides
-    //  top center
-    _horiSides[0] = _sliceSize;
-    _horiSides[1] = 0;
-    _horiSides[2] = sliceSize2;
-    _horiSides[3] = sliceSize2;
-    //  bottom center
-    _horiSides[4] = _sliceSize;
-    _horiSides[5] = sliceSize2;
-    _horiSides[6] = sliceSize2;
-    _horiSides[7] = sliceSize3;
-    // horizontal sides
-    //  center left
-    _vertSides[0] = 0;
-    _vertSides[1] = _sliceSize;
-    _vertSides[2] = sliceSize2;
-    _vertSides[3] = sliceSize2;
-    //  center right
-    _vertSides[4] = sliceSize2;
-    _vertSides[5] = _sliceSize;
-    _vertSides[6] = sliceSize3;
-    _vertSides[7] = sliceSize2;
+    _corners[12] = sliceSize2X;
+    _corners[13] = sliceSize2Y;
+    _corners[14] = sprite.src.bottomRight.dx;
+    _corners[15] = sprite.src.bottomRight.dy;
+    // top center
+    _horiSides[0] = sliceSize1X;
+    _horiSides[1] = sprite.src.topLeft.dy;
+    _horiSides[2] = sliceSize2X;
+    _horiSides[3] = sliceSize1X;
+    // bottom center
+    _horiSides[4] = sliceSize1X;
+    _horiSides[5] = sliceSize2Y;
+    _horiSides[6] = sliceSize2X;
+    _horiSides[7] = sprite.src.bottomCenter.dy;
+    // center left
+    _vertSides[0] = sprite.src.topLeft.dx;
+    _vertSides[1] = sliceSize1Y;
+    _vertSides[2] = sliceSize1X;
+    _vertSides[3] = sliceSize2Y;
+    // center right
+    _vertSides[4] = sliceSize2X;
+    _vertSides[5] = sliceSize1Y;
+    _vertSides[6] = sprite.src.centerRight.dx;
+    _vertSides[7] = sliceSize2Y;
     // center piece
-    _center[0] = _sliceSize;
-    _center[1] = _sliceSize;
-    _center[2] = sliceSize2;
-    _center[3] = sliceSize2;
+    _center[0] = sliceSize1X;
+    _center[1] = sliceSize1Y;
+    _center[2] = sliceSize2X;
+    _center[3] = sliceSize2Y;
   }
 
   @override
   void paint(Canvas canvas, Size size) {
-    Paint p = G.fasterPainter;
+    Paint p = applyConfig(G.fasterPainter);
     if (transformer != null) {
       canvas.transform(transformer!
           .resolve(size, Size(sprite.originalWidth, sprite.originalHeight))
           .storage);
     }
-    Rect frame = Rect.fromLTWH(0, 0, size.width, size.height);
-    Float32List cornersTransforms = Float32List(_corners.length);
+    final Rect frame = Offset.zero & size;
+    final Float32List cornersTransforms = Float32List(_corners.length);
     final double cornerWidth = size.width - _sliceSize;
     final double cornerHeight = size.height - _sliceSize;
     // top left
@@ -180,7 +176,7 @@ class _NineSpriteWidgetPainter extends ContentRenderer {
         geom.mag(size.width - 2 * _sliceSize, _sliceSize) / geom.mag(_sliceSize, 0);
     final double horiSideX = _sliceSize / horiSideScale;
     canvas.scale(horiSideScale, 1);
-    Float32List transformsHoriSides = Float32List(8);
+    final Float32List transformsHoriSides = Float32List(8);
     // top center
     transformsHoriSides[0] = 1;
     transformsHoriSides[1] = 0;
@@ -199,7 +195,7 @@ class _NineSpriteWidgetPainter extends ContentRenderer {
         geom.mag(_sliceSize, size.height - 2 * _sliceSize) / geom.mag(0, _sliceSize);
     final double vertSideY = _sliceSize / vertSideScale;
     canvas.scale(1, vertSideScale);
-    Float32List transformVertiSides = Float32List(8);
+    final Float32List transformVertiSides = Float32List(8);
     // center left
     transformVertiSides[0] = 1;
     transformVertiSides[1] = 0;
@@ -214,7 +210,7 @@ class _NineSpriteWidgetPainter extends ContentRenderer {
         sprite.image, transformVertiSides, _vertSides, null, null, frame, p);
     canvas.restore();
     canvas.scale(horiSideScale, vertSideScale);
-    Float32List transformCenter = Float32List(4);
+    final Float32List transformCenter = Float32List(4);
     // center
     transformCenter[0] = 1;
     transformCenter[1] = 0;
@@ -224,21 +220,21 @@ class _NineSpriteWidgetPainter extends ContentRenderer {
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+  bool shouldRepaint(covariant ContentRenderer oldDelegate) {
     if (oldDelegate is! _NineSpriteWidgetPainter) {
       return false;
     } else {
       return oldDelegate._center != _center ||
           oldDelegate._corners != _corners ||
           oldDelegate._horiSides != _horiSides ||
-          oldDelegate._vertSides != _vertSides;
+          oldDelegate._vertSides != _vertSides ||
+          oldDelegate.sprite.src != sprite.src;
     }
   }
 }
 
-@immutable
 class NineSpriteWidget extends StatelessWidget {
-  final AtlasSprite sprite;
+  final SpriteTextureKey sprite;
   final Widget child;
   final EdgeInsets border;
   final EdgeInsets? padding;
@@ -256,10 +252,16 @@ class NineSpriteWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      painter: _NineSpriteWidgetPainter(
-          sprite: sprite, transformer: transformer, border: border, config: config),
-      child: padding == null ? Padding(padding: EdgeInsets.zero, child: child) : child,
+    logger.config("Sprite Key -> ${sprite.spriteName}");
+    return SizedBox(
+      child: CustomPaint(
+        painter: _NineSpriteWidgetPainter(
+            sprite: sprite.findTexture(),
+            transformer: transformer,
+            border: border,
+            config: config),
+        child: padding == null ? child : Padding(padding: padding!, child: child),
+      ),
     );
   }
 }

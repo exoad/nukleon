@@ -25,13 +25,9 @@ final class ItemsRegistry {
     return l;
   }
 
-  int registeredItems(Class layer) {
-    return _items[layer]!.length;
-  }
+  int registeredItems(Class layer) => _items[layer]!.length;
 
-  Map<int, ItemDefinition> operator [](Class layer) {
-    return _items[layer]!;
-  }
+  Map<int, ItemDefinition> operator [](Class layer) => _items[layer]!;
 
   /// Avoid modification at all costs
   Map<Class, Map<int, ItemDefinition>> get allClasses => _items;
@@ -64,8 +60,10 @@ final class ItemsRegistry {
   }
 
   void addItemDefinition<E extends ItemDefinition>(int id, Class layer, E item) {
-    if (_identifiersRemap[layer]!.containsKey(item.identifier)) {
-      panicNow("Cannot add an item with a duplicate identifier: ${item.identifier}",
+    if (_identifiersRemap[layer]!.containsKey(item.identifier) ||
+        containsOfType(E.runtimeType, layer)) {
+      panicNow(
+          "Cannot add an item with a duplicate identifier/type: ${item.identifier} ($E)",
           details:
               "Duplicate item identifier ${item.identifier} with duplicate at ${_identifiersRemap[layer]![item.identifier]} (Layer $layer)");
     }
@@ -91,9 +89,23 @@ final class ItemsRegistry {
     }
   }
 
-  bool containsID(int id, Class layer) {
-    return _items[layer]!.containsKey(id);
+  bool containsOfType(Type type, Class layer) =>
+      _items[layer]!.values.any((ItemDefinition item) => item.runtimeType == type);
+
+  /// Based on a runtime type referring to each object's [Object.runtimeType] and uses that to find that
+  /// registered Item. This is not very versatile, so please avoid using this method! (*￣3￣)╭
+  T? findOfType<T extends ItemDefinition>(Type type, Class layer) {
+    assert(T.runtimeType == type,
+        "Type invariance for finding of type '${T.runtimeType}' to $type");
+    for (ItemDefinition item in _items[layer]!.values) {
+      if (item.runtimeType == type) {
+        return item as T;
+      }
+    }
+    return null;
   }
+
+  bool containsID(int id, Class layer) => _items[layer]!.containsKey(id);
 
   bool containsItemDefinition<E extends ItemDefinition>(Class layer, E item) {
     _checkInvariance<E>(item, layer, null);
@@ -105,7 +117,7 @@ final class ItemsRegistry {
     return _identifiersRemap[layer]!.containsKey(identifier);
   }
 
-  /// When calling this, make sure to place a check to call [containsID]
+  /// When calling this, make sure to place a check to call [containsID] !
   E findItemDefinition<E extends ItemDefinition>(int id, Class layer) {
     if (!_items[layer]!.containsKey(id)) {
       panicNow("Could not find ItemDefinition id '$id' on layer $layer");

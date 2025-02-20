@@ -4,17 +4,29 @@ linter:
     always_declare_return_types: true
     always_put_control_body_on_new_line: true
     always_specify_types: true
+    prefer_mixin: true
+    prefer_asserts_with_message: true
     annotate_overrides: true
-    package_api_docs: true
+    avoid_slow_async_io: true
+    use_if_null_to_convert_nulls_to_bools: true
     prefer_adjacent_string_concatenation: true
     prefer_conditional_assignment: true
     prefer_double_quotes: false
+    prefer_null_aware_method_calls: true
     use_string_buffers: true
+    join_return_with_assignment: true
+    missing_code_block_language_in_doc_comment: true
+    use_enums: true
+    avoid_returning_this: true
+    close_sinks: true
     non_constant_identifier_names: false
     unnecessary_new: true
     camel_case_types: false
+    use_colored_box: true
     avoid_print: false
+    prefer_spread_collections: false
     constant_identifier_names: false
     unnecessary_getters_setters: false
-    prefer_spread_collections: false
+    always_use_package_imports: true
+    unnecessary_statements: true
     avoid_equals_and_hash_code_on_mutable_classes: true

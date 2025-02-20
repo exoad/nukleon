@@ -10,13 +10,9 @@ class SpriteTextureKey with EquatableMixin {
   const SpriteTextureKey(this.key, {required this.spriteName});
 
   @override
-  String toString() {
-    return "SpriteTextKey[$key,$spriteName]";
-  }
+  String toString() => "SpriteTextKey[$key,$spriteName]";
 
-  AtlasSprite findTexture() {
-    return TextureRegistry.getTextureSprite(this);
-  }
+  AtlasSprite findTexture() => TextureRegistry.getTextureSprite(this);
 
   @override
   List<Object?> get props => <Object?>[key, spriteName];
@@ -49,16 +45,13 @@ class SpriteSetResolver<T> implements SpriteSet<T> {
   SpriteSetResolver(this.resolver, this.transformationResolver);
 
   @override
-  SpriteTextureKey resolveTextureKey(Set<T> states) {
-    return resolver(states);
-  }
+  SpriteTextureKey resolveTextureKey(Set<T> states) => resolver(states);
 
   @override
-  LinearTransformer resolveTransformation(Set<T> states) {
-    return LinearTransformer.single(transformationResolver == null
-        ? Matrix4.identity()
-        : transformationResolver!.call(states) as Matrix4);
-  }
+  LinearTransformer resolveTransformation(Set<T> states) =>
+      LinearTransformer.single(transformationResolver == null
+          ? Matrix4.identity()
+          : transformationResolver!.call(states) as Matrix4);
 }
 
 @immutable
@@ -69,14 +62,10 @@ class SpriteSetAll with EquatableMixin implements SpriteSet<dynamic> {
   const SpriteSetAll(this.value, {required this.transform});
 
   @override
-  SpriteTextureKey resolveTextureKey(Set<dynamic> states) {
-    return value;
-  }
+  SpriteTextureKey resolveTextureKey(Set<dynamic> states) => value;
 
   @override
-  LinearTransformer resolveTransformation(Set<dynamic> states) {
-    return transform;
-  }
+  LinearTransformer resolveTransformation(Set<dynamic> states) => transform;
 
   @override
   List<Object?> get props => <Object?>[value, transform];
@@ -112,9 +101,8 @@ class SpriteSetMapper<T> extends SpriteSet<T> {
   int get hashCode => _map.hashCode;
 
   @override
-  bool operator ==(Object other) {
-    return other is SpriteSetMapper<T> && mapEquals(_map, other._map);
-  }
+  bool operator ==(Object other) =>
+      other is SpriteSetMapper<T> && mapEquals(_map, other._map);
 
   @override
   LinearTransformer resolveTransformation(Set<T> states) {
@@ -179,13 +167,9 @@ class TextureMap {
     _sprites[spriteName] = sprite;
   }
 
-  bool containsSprite(AtlasSprite sprite) {
-    return _sprites.containsValue(sprite);
-  }
+  bool containsSprite(AtlasSprite sprite) => _sprites.containsValue(sprite);
 
-  bool containsKey(String key) {
-    return _sprites.containsKey(key);
-  }
+  bool containsKey(String key) => _sprites.containsKey(key);
 
   Iterable<AtlasSprite> get sprites => _sprites.values;
 }
