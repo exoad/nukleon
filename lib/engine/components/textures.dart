@@ -47,10 +47,9 @@ class SpriteSetResolver<T> implements SpriteSet<T> {
   SpriteTextureKey resolveTextureKey(Set<T> states) => resolver(states);
 
   @override
-  LinearTransformer resolveTransformation(Set<T> states) =>
-      LinearTransformer.single(transformationResolver == null
-          ? Matrix4.identity()
-          : transformationResolver!.call(states) as Matrix4);
+  LinearTransformer resolveTransformation(Set<T> states) => transformationResolver == null
+      ? LinearTransformer.identity()
+      : transformationResolver!.call(states);
 }
 
 @immutable

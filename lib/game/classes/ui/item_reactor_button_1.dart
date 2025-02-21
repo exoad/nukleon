@@ -16,10 +16,14 @@ class Button1 extends ButtonFacet {
 
   @override
   SpriteSet<ButtonSpriteStates> get spriteSet =>
-      SpriteSet.resolveWith<ButtonSpriteStates>((Set<ButtonSpriteStates> states) =>
-          states.first == ButtonSpriteStates.normal
+      SpriteSet.resolveWith<ButtonSpriteStates>(
+          (Set<ButtonSpriteStates> states) => states.first == ButtonSpriteStates.normal
               ? SpriteTextureKey("ui_content", spriteName: "Button_Facet_1_Normal")
-              : SpriteTextureKey("ui_content", spriteName: "Button_Facet_1_Pressed"));
+              : SpriteTextureKey("ui_content", spriteName: "Button_Facet_1_Pressed"),
+          transformationResolver: (Set<ButtonSpriteStates> states) =>
+              states.first == ButtonSpriteStates.normal
+                  ? LinearTransformer.identity()
+                  : LinearTransformer.single(Matrix4.translationValues(0, 1, 0)));
 }
 
 @Deprecated("Please use Button1 Class")

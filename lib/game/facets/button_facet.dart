@@ -29,14 +29,19 @@ class _ButtonFacetWidgetState extends State<ButtonFacetWidget> {
 
   @override
   Widget build(BuildContext context) {
+    Set<ButtonSpriteStates> states = <ButtonSpriteStates>{pressed};
     return GestureDetector(
         onTap: widget.onPressed,
         onTapDown: (_) => setState(() => pressed = ButtonSpriteStates.pressed),
         onTapUp: (_) => setState(() => pressed = ButtonSpriteStates.normal),
         child: NineSpriteWidget(
           border: widget.facet.border,
-          sprite: widget.facet.spriteSet.resolveTextureKey(<ButtonSpriteStates>{pressed}),
-          child: widget.child,
+          sprite: widget.facet.spriteSet.resolveTextureKey(states),
+          child: Transform(
+              transform: widget.facet.spriteSet
+                  .resolveTransformation(states)
+                  .resolve(Size.zero, Size.zero),
+              child: widget.child),
         ));
   }
 }
