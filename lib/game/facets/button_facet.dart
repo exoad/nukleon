@@ -3,7 +3,7 @@ import 'package:shitter/game/classes/classes.dart';
 
 class ButtonFacetWidget extends StatefulWidget {
   final ButtonFacet facet;
-  final Widget child;
+  final SpriteTextureKey child;
   final void Function() onPressed;
   final ButtonSpriteStates? initialState;
 
@@ -35,13 +35,10 @@ class _ButtonFacetWidgetState extends State<ButtonFacetWidget> {
         onTapDown: (_) => setState(() => pressed = ButtonSpriteStates.pressed),
         onTapUp: (_) => setState(() => pressed = ButtonSpriteStates.normal),
         child: NineSpriteWidget(
+          transformer: widget.facet.spriteSet.resolveTransformation(states),
           border: widget.facet.border,
           sprite: widget.facet.spriteSet.resolveTextureKey(states),
-          child: Transform(
-              transform: widget.facet.spriteSet
-                  .resolveTransformation(states)
-                  .resolve(Size.zero, Size.zero),
-              child: widget.child),
+          child: widget.child,
         ));
   }
 }

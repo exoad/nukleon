@@ -75,8 +75,7 @@ class CullingReactorGridPainter extends CustomPainter {
         }
       }
     }
-    canvas.drawAtlas(atlas, transforms, src, null, null,
-        Rect.fromLTWH(0, 0, size.width, size.height), paint);
+    canvas.drawAtlas(atlas, transforms, src, null, null, Offset.zero & size, paint);
     // ! HEAT DEMO
     // canvas.drawRect(
     //     Rect.fromLTWH(0, 0, size.width, size.height),
@@ -176,12 +175,6 @@ class AppRoot extends StatelessWidget {
                             children: <Widget>[
                               FilledButton.tonal(
                                   child: Text("INSHALLAH"), onPressed: () {}),
-                              ButtonFacetWidget(
-                                  facet: Button1(),
-                                  onPressed: () {
-                                    Shared.logger.finer("WTF");
-                                  },
-                                  child: Text("WTF"))
                             ],
                           )),
                       // child: UIToggleButton1(
@@ -211,8 +204,9 @@ class AppRoot extends StatelessWidget {
                               int trueIndex = index + 1;
                               ItemDefinition item = ItemsRegistry.I
                                   .findItemDefinition(trueIndex, Class.ITEMS);
-                              return UIButton1(
-                                  child: item.sprite().findTexture(),
+                              return ButtonFacetWidget(
+                                  facet: Button1(),
+                                  child: item.sprite(),
                                   onPressed: () {
                                     PointerBuffer.of(context, listen: false).primary =
                                         trueIndex;

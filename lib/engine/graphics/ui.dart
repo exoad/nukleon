@@ -1,5 +1,53 @@
 import 'package:shitter/engine/engine.dart';
 import 'package:shitter/engine/utils/geom.dart' as geom;
+import 'package:shitter/game/shared.dart';
+
+/// Drawing a siingle sprite.
+final class SingleSpritePainter extends ContentRenderer with RenderingMixin {
+  final AtlasSprite sprite;
+  final LinearTransformer? transformer;
+
+  const SingleSpritePainter({super.config, required this.sprite, this.transformer});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (transformer != null) {
+      canvas.transform(transformer!
+          .resolve(size, Size(sprite.originalWidth, sprite.originalHeight))
+          .storage);
+    }
+    canvas.drawRect(
+        Offset.zero & sprite.src.size,
+        applyConfig(G.fasterPainter)
+          ..style = PaintingStyle.stroke
+          ..color = C.magenta);
+    canvas.drawRawAtlas(
+        sprite.image,
+        Float32List(4)
+          ..[0] = Shared.tileInitialZoom
+          ..[1] = 0
+          ..[2] = 0
+          ..[3] = 0,
+        Float32List(4)
+          ..[0] = sprite.src.left
+          ..[1] = sprite.src.top
+          ..[2] = sprite.src.right
+          ..[3] = sprite.src.bottom,
+        null,
+        null,
+        Offset.zero & size,
+        applyConfig(G.fasterPainter));
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    if (oldDelegate is! SingleSpritePainter) {
+      return false;
+    } else {
+      return oldDelegate.sprite != sprite;
+    }
+  }
+}
 
 @immutable
 final class _SpriteWidgetPainter extends ContentRenderer {
@@ -27,18 +75,12 @@ final class _SpriteWidgetPainter extends ContentRenderer {
                 .resolve(size, Size(sprites[i].originalWidth, sprites[i].originalHeight))
                 .storage);
           }
-          canvas.drawImageRect(
-              sprites[i].image,
-              sprites[i].src,
-              Rect.fromLTWH(0, 0, size.width, size.height),
+          canvas.drawImageRect(sprites[i].image, sprites[i].src, Offset.zero & size,
               sprites[i].paint..applyConfig(config));
         }
       } else {
         for (int i = 0; i < sprites.length; i++) {
-          canvas.drawImageRect(
-              sprites[i].image,
-              sprites[i].src,
-              Rect.fromLTWH(0, 0, size.width, size.height),
+          canvas.drawImageRect(sprites[i].image, sprites[i].src, Offset.zero & size,
               sprites[i].paint..applyConfig(config));
         }
       }
@@ -69,20 +111,23 @@ class SpriteWidget extends StatelessWidget {
 // atlas needs to be optimized ASF :D
 class _NineSpriteWidgetPainter extends ContentRenderer with RenderingMixin {
   final AtlasSprite sprite;
+  final AtlasSprite? child;
   final LinearTransformer? transformer;
   late final Float32List _corners;
   final Float32List _horiSides;
   final Float32List _vertSides;
   final Float32List _center;
+  final Float32List? _childRect;
   final double _sliceSize;
 
   _NineSpriteWidgetPainter(
-      {required this.sprite, required this.transformer, super.config})
+      {required this.sprite, required this.transformer, super.config, this.child})
       : _sliceSize = sprite.src.width / 3,
         _corners = Float32List(16),
         _horiSides = Float32List(8),
         _vertSides = Float32List(8),
-        _center = Float32List(4) {
+        _center = Float32List(4),
+        _childRect = child == null ? null : Float32List(4) {
     final double sliceSize1X = _sliceSize + sprite.src.topLeft.dx;
     final double sliceSize1Y = _sliceSize + sprite.src.topLeft.dy;
     final double sliceSize2X = sliceSize1X + _sliceSize;
@@ -132,16 +177,19 @@ class _NineSpriteWidgetPainter extends ContentRenderer with RenderingMixin {
     _center[1] = sliceSize1Y;
     _center[2] = sliceSize2X;
     _center[3] = sliceSize2Y;
+    // child
+    if (child != null) {
+      _childRect![0] = child!.src.left;
+      _childRect[1] = child!.src.top;
+      _childRect[2] = child!.src.right;
+      _childRect[3] = child!.src.bottom;
+    }
   }
 
   @override
   void paint(Canvas canvas, Size size) {
     Paint p = applyConfig(G.fasterPainter);
-    if (transformer != null) {
-      canvas.transform(transformer!
-          .resolve(size, Size(sprite.originalWidth, sprite.originalHeight))
-          .storage);
-    }
+
     final Rect frame = Offset.zero & size;
     final Float32List cornersTransforms = Float32List(_corners.length);
     final double cornerWidth = size.width - _sliceSize;
@@ -205,6 +253,7 @@ class _NineSpriteWidgetPainter extends ContentRenderer with RenderingMixin {
     canvas.drawRawAtlas(
         sprite.image, transformVertiSides, _vertSides, null, null, frame, p);
     canvas.restore();
+    canvas.save();
     canvas.scale(horiSideScale, vertSideScale);
     final Float32List transformCenter = Float32List(4);
     // center
@@ -213,6 +262,26 @@ class _NineSpriteWidgetPainter extends ContentRenderer with RenderingMixin {
     transformCenter[2] = horiSideX;
     transformCenter[3] = vertSideY;
     canvas.drawRawAtlas(sprite.image, transformCenter, _center, null, null, frame, p);
+    canvas.restore();
+    if (child != null) {
+      if (transformer != null) {
+        canvas.transform(transformer!
+            .resolve(size, Size(sprite.originalWidth, sprite.originalHeight))
+            .storage);
+      }
+      canvas.drawRawAtlas(
+          child!.image,
+          Float32List(4)
+            ..[0] = 1
+            ..[1] = 0
+            ..[2] = 0
+            ..[3] = 0,
+          _childRect!,
+          null,
+          null,
+          frame,
+          p);
+    }
   }
 
   @override
@@ -231,7 +300,7 @@ class _NineSpriteWidgetPainter extends ContentRenderer with RenderingMixin {
 
 class NineSpriteWidget extends StatelessWidget {
   final SpriteTextureKey sprite;
-  final Widget child;
+  final SpriteTextureKey child;
   final EdgeInsets? border;
   final LinearTransformer? transformer;
   final PaintConfig? config;
@@ -248,8 +317,10 @@ class NineSpriteWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomPaint(
       painter: _NineSpriteWidgetPainter(
-          sprite: sprite.findTexture(), transformer: transformer, config: config),
-      child: (border == null ? child : Padding(padding: border!, child: child)),
+          sprite: sprite.findTexture(),
+          transformer: transformer,
+          config: config,
+          child: child.findTexture()),
     );
   }
 }
