@@ -7,7 +7,6 @@ class ButtonFacetWidget extends StatefulFacet<ButtonSpriteStates> {
 
   ButtonFacetWidget(
       {super.key,
-      super.renderCenter,
       super.renderingHints,
       required super.facet,
       required super.sprite,
@@ -17,7 +16,6 @@ class ButtonFacetWidget extends StatefulFacet<ButtonSpriteStates> {
   const ButtonFacetWidget.widget(
       {super.key,
       required super.facet,
-      super.renderCenter,
       required this.onPressed,
       this.initialState,
       super.renderingHints,
@@ -45,7 +43,7 @@ class _ButtonFacetWidgetState extends State<ButtonFacetWidget> {
         onTapDown: (_) => setState(() => pressed = ButtonSpriteStates.pressed),
         onTapUp: (_) => setState(() => pressed = ButtonSpriteStates.normal),
         child: NineSpriteWidget.resolved(
-          renderCenter: widget.renderCenter,
+          facetHints: widget.facet.facetHints,
           transformer: widget.facet.spriteSet.resolveTransformation(states),
           border: widget.facet.border,
           config: widget.renderingHints,

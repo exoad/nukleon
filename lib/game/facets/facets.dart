@@ -5,14 +5,12 @@ export "package:shitter/game/facets/button_facet.dart";
 
 abstract class StatelessFacet<T> extends StatelessWidget {
   final RenderingHints? renderingHints;
-  final bool renderCenter;
   final Facet<T> facet;
   final AtlasSprite? sprite;
   final Widget? widget;
 
   StatelessFacet(
       {super.key,
-      this.renderCenter = true,
       this.renderingHints,
       required this.facet,
       required SpriteTextureKey sprite})
@@ -20,24 +18,19 @@ abstract class StatelessFacet<T> extends StatelessWidget {
         widget = null;
 
   const StatelessFacet.widget(
-      {super.key,
-      required this.facet,
-      this.renderingHints,
-      this.renderCenter = true,
-      required Widget this.widget})
+      {super.key, required this.facet, this.renderingHints, required Widget this.widget})
       : sprite = null;
 }
 
 abstract class StatefulFacet<T> extends StatefulWidget {
   final RenderingHints? renderingHints;
-  final bool renderCenter;
+
   final Facet<T> facet;
   final AtlasSprite? sprite;
   final Widget? widget;
 
   StatefulFacet(
       {super.key,
-      this.renderCenter = true,
       this.renderingHints,
       required this.facet,
       required SpriteTextureKey sprite})
@@ -45,10 +38,6 @@ abstract class StatefulFacet<T> extends StatefulWidget {
         widget = null;
 
   const StatefulFacet.widget(
-      {super.key,
-      required this.facet,
-      this.renderingHints,
-      this.renderCenter = true,
-      required Widget this.widget})
+      {super.key, required this.facet, this.renderingHints, required Widget this.widget})
       : sprite = null;
 }

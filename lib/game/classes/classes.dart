@@ -1,4 +1,5 @@
 import 'package:auto_injector/auto_injector.dart';
+import 'package:equatable/equatable.dart';
 import 'package:shitter/engine/engine.dart';
 
 export "items/items.dart";
@@ -43,6 +44,38 @@ abstract class Facet<T> extends ItemDefinition {
   }
 
   SpriteSet<T> get spriteSet;
+
+  FacetHints get facetHints => FacetHints.normal;
+}
+
+@immutable
+final class FacetHints with EquatableMixin {
+  final bool renderCenter;
+  final bool renderCorners;
+  final bool renderHorizontalSides;
+  final bool renderVerticalSides;
+
+  static const FacetHints normal = FacetHints(
+      renderCenter: true,
+      renderCorners: true,
+      renderHorizontalSides: true,
+      renderVerticalSides: true);
+
+  static const FacetHints noCenter = FacetHints(
+      renderCenter: false,
+      renderCorners: true,
+      renderHorizontalSides: true,
+      renderVerticalSides: true);
+
+  const FacetHints(
+      {required this.renderCenter,
+      required this.renderCorners,
+      required this.renderHorizontalSides,
+      required this.renderVerticalSides});
+
+  @override
+  List<Object?> get props =>
+      <Object?>[renderCenter, renderCorners, renderHorizontalSides, renderVerticalSides];
 }
 
 abstract class StaticFacet extends Facet<void> {

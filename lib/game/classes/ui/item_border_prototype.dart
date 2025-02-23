@@ -15,4 +15,7 @@ class BorderPrototype extends StaticFacet {
   SpriteSet<void> get spriteSet =>
       SpriteSetAll(SpriteTextureKey("ui_content", spriteName: "Border_Prototype"),
           transform: LinearTransformer.identity());
+
+  @override
+  FacetHints get facetHints => FacetHints.noCenter;
 }
