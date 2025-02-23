@@ -338,7 +338,6 @@ class _ReactorWidgetState extends State<_ReactorWidget> {
           onPanCancel: () => panning = false,
           onPanEnd: (_) => panning = false,
           onTapDown: (TapDownDetails details) {
-            PointerBuffer.of(context, listen: false).use();
             _handleHit(details.localPosition);
           },
           child: CustomPaint(
@@ -359,6 +358,7 @@ class _ReactorWidgetState extends State<_ReactorWidget> {
         pressedLocation = position;
         lastHitLocation = hitLocation;
         hitLocation = newHitLocation;
+        PointerBuffer.of(context, listen: false).use();
         if ((ptr.isErasing || panning || ptr.isUsing) && ptr.resolve() != null) {
           if (GameRoot.I.reactor.safePutCell(hitLocation!, ptr.resolve()!)) {
             setState(() {});

@@ -20,21 +20,21 @@ class PointerBuffer with ChangeNotifier {
   bool get isErasing => !isUsing;
 
   void use([int? newPrimary]) {
-    _usePrimary = true;
-    // if (newPrimary != null) {
-    //   primary = newPrimary;
-    // }
-    // * this part helps with an auto use mode
-    Shared.logger.finer("PointerBuffer USE");
-    notifyListeners();
+    if (!_usePrimary) {
+      _usePrimary = true;
+      Shared.logger.finer("PointerBuffer USE");
+      notifyListeners();
+    }
   }
 
   void swap() => isUsing ? erase() : use();
 
   void erase() {
-    _usePrimary = false;
-    Shared.logger.finer("PointerBuffer ERASE");
-    notifyListeners();
+    if (_usePrimary) {
+      _usePrimary = false;
+      Shared.logger.finer("PointerBuffer ERASE");
+      notifyListeners();
+    }
   }
 
   CellValue? resolve() {
