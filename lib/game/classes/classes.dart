@@ -1,3 +1,4 @@
+import 'package:auto_injector/auto_injector.dart';
 import 'package:shitter/engine/engine.dart';
 
 export "items/items.dart";
@@ -23,6 +24,8 @@ enum FacetType {
 }
 
 abstract class Facet<T> extends ItemDefinition {
+  static final AutoInjector M = AutoInjector(tag: "FacetsModule");
+
   FacetType get type;
 
   String get canonicalName;
@@ -40,6 +43,12 @@ abstract class Facet<T> extends ItemDefinition {
   }
 
   SpriteSet<T> get spriteSet;
+}
+
+abstract class StaticFacet extends Facet<void> {
+  @nonVirtual
+  @override
+  FacetType get type => FacetType.STATIC;
 }
 
 abstract class ButtonFacet extends Facet<ButtonSpriteStates> {

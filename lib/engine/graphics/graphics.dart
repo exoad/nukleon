@@ -25,22 +25,36 @@ final class C {
   static const Color black = Color.fromARGB(255, 0, 0, 0);
 }
 
-class PaintConfig {
+class RenderingHints {
   FilterQuality filterQuality;
   bool isAntialias;
+  bool autoCenter;
+  SpriteRenderStrategy spriteRenderStrategy;
 
-  static final PaintConfig global =
-      PaintConfig(filterQuality: FilterQuality.none, isAntialias: false);
+  static final RenderingHints global = RenderingHints(
+      filterQuality: FilterQuality.none, isAntialias: false, autoCenter: true);
 
-  PaintConfig({required this.filterQuality, required this.isAntialias});
+  RenderingHints(
+      {required this.filterQuality,
+      required this.isAntialias,
+      this.autoCenter = false,
+      this.spriteRenderStrategy = SpriteRenderStrategy.RAW});
 }
 
 abstract class ContentRenderer extends CustomPainter {
-  final PaintConfig? _config;
+  final RenderingHints? _config;
 
-  const ContentRenderer({PaintConfig? config}) : _config = config;
+  const ContentRenderer({RenderingHints? config}) : _config = config;
 
-  PaintConfig get config => _config ?? PaintConfig.global;
+  RenderingHints get config => _config ?? RenderingHints.global;
+}
+
+enum SpriteRenderStrategy {
+  /// Signifies that no transformations should be done by the renderer if the renderer doesn't need to.
+  RAW,
+
+  /// Signifies that the renderer should expand the child to fill the remaining space allowed
+  FILL;
 }
 
 mixin RenderingMixin on ContentRenderer {
@@ -50,7 +64,7 @@ mixin RenderingMixin on ContentRenderer {
 }
 
 extension ConfigurablePaint on Paint {
-  void applyConfig(PaintConfig config) {
+  void applyConfig(RenderingHints config) {
     isAntiAlias = config.isAntialias;
     filterQuality = config.filterQuality;
   }

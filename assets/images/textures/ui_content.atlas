@@ -4,30 +4,23 @@ size: 128, 32
 format: RGBA8888
 filter: Nearest, Nearest
 repeat: none
-Button_Facet_1_Normal
-  rotate: false
-  xy: 32, 0
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-Button_Facet_1_Pressed
+Border_Prototype
   rotate: false
   xy: 0, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-Reactor_Button_1_Normal
+Button_Facet_1_Normal
   rotate: false
-  xy: 96, 0
+  xy: 64, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-Reactor_Button_1_Pressed
+Button_Facet_1_Pressed
   rotate: false
-  xy: 64, 0
+  xy: 32, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0

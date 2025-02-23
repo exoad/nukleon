@@ -70,7 +70,7 @@ class TextureRegistry {
     I._texturesCache[key] = image;
     for (AtlasSprite sprite in I._texturesCache[key]!.sprites) {
       logger.finer(
-          "Registered texture sprite: '${sprite.name}' [${sprite.index}] (${sprite.src})");
+          "Registered texture sprite: '$key'->'${sprite.name}' [${sprite.index}] (${sprite.src})");
     }
   }
 

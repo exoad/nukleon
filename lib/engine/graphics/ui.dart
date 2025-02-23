@@ -1,3 +1,5 @@
+
+import 'package:flame_texturepacker/flame_texturepacker.dart';
 import 'package:shitter/engine/engine.dart';
 import 'package:shitter/engine/utils/geom.dart' as geom;
 import 'package:shitter/game/shared.dart';
@@ -12,9 +14,7 @@ final class SingleSpritePainter extends ContentRenderer with RenderingMixin {
   @override
   void paint(Canvas canvas, Size size) {
     if (transformer != null) {
-      canvas.transform(transformer!
-          .resolve(size, Size(sprite.originalWidth, sprite.originalHeight))
-          .storage);
+      canvas.transform(transformer!.resolve(size, sprite.size).storage);
     }
     canvas.drawRect(
         Offset.zero & sprite.src.size,
@@ -71,9 +71,7 @@ final class _SpriteWidgetPainter extends ContentRenderer {
       if (transformations != null) {
         for (int i = 0; i < sprites.length; i++) {
           if (transformations!.within(i)) {
-            canvas.transform(transformations![i]
-                .resolve(size, Size(sprites[i].originalWidth, sprites[i].originalHeight))
-                .storage);
+            canvas.transform(transformations![i].resolve(size, sprites[i].size).storage);
           }
           canvas.drawImageRect(sprites[i].image, sprites[i].src, Offset.zero & size,
               sprites[i].paint..applyConfig(config));
@@ -96,7 +94,7 @@ class SpriteWidget extends StatelessWidget {
   final List<AtlasSprite> sprites;
   final List<LinearTransformer>? transformers;
   final LinearTransformer? globalTransformer;
-  final PaintConfig? config;
+  final RenderingHints? config;
 
   const SpriteWidget(this.sprites,
       {super.key, this.transformers, this.globalTransformer, this.config});
@@ -109,24 +107,31 @@ class SpriteWidget extends StatelessWidget {
 
 // self implemented cuz the Canvas api doesnt have one lmao and stretching images from an
 // atlas needs to be optimized ASF :D
-class _NineSpriteWidgetPainter extends ContentRenderer with RenderingMixin {
+class NineSliceScaledPainter extends ContentRenderer with RenderingMixin {
   final AtlasSprite sprite;
   final AtlasSprite? child;
+  final EdgeInsets? border;
   final LinearTransformer? transformer;
   late final Float32List _corners;
   final Float32List _horiSides;
   final Float32List _vertSides;
-  final Float32List _center;
+  final Float32List? _center;
+  final bool renderCenter;
   final Float32List? _childRect;
   final double _sliceSize;
 
-  _NineSpriteWidgetPainter(
-      {required this.sprite, required this.transformer, super.config, this.child})
+  NineSliceScaledPainter(
+      {required this.sprite,
+      this.transformer,
+      super.config,
+      this.child,
+      this.renderCenter = true,
+      this.border})
       : _sliceSize = sprite.src.width / 3,
         _corners = Float32List(16),
         _horiSides = Float32List(8),
         _vertSides = Float32List(8),
-        _center = Float32List(4),
+        _center = renderCenter ? Float32List(4) : null,
         _childRect = child == null ? null : Float32List(4) {
     final double sliceSize1X = _sliceSize + sprite.src.topLeft.dx;
     final double sliceSize1Y = _sliceSize + sprite.src.topLeft.dy;
@@ -172,11 +177,13 @@ class _NineSpriteWidgetPainter extends ContentRenderer with RenderingMixin {
     _vertSides[5] = sliceSize1Y;
     _vertSides[6] = sprite.src.centerRight.dx;
     _vertSides[7] = sliceSize2Y;
-    // center piece
-    _center[0] = sliceSize1X;
-    _center[1] = sliceSize1Y;
-    _center[2] = sliceSize2X;
-    _center[3] = sliceSize2Y;
+    if (renderCenter) {
+      // center piece
+      _center![0] = sliceSize1X;
+      _center[1] = sliceSize1Y;
+      _center[2] = sliceSize2X;
+      _center[3] = sliceSize2Y;
+    }
     // child
     if (child != null) {
       _childRect![0] = child!.src.left;
@@ -189,7 +196,6 @@ class _NineSpriteWidgetPainter extends ContentRenderer with RenderingMixin {
   @override
   void paint(Canvas canvas, Size size) {
     Paint p = applyConfig(G.fasterPainter);
-
     final Rect frame = Offset.zero & size;
     final Float32List cornersTransforms = Float32List(_corners.length);
     final double cornerWidth = size.width - _sliceSize;
@@ -255,20 +261,23 @@ class _NineSpriteWidgetPainter extends ContentRenderer with RenderingMixin {
     canvas.restore();
     canvas.save();
     canvas.scale(horiSideScale, vertSideScale);
-    final Float32List transformCenter = Float32List(4);
-    // center
-    transformCenter[0] = 1;
-    transformCenter[1] = 0;
-    transformCenter[2] = horiSideX;
-    transformCenter[3] = vertSideY;
-    canvas.drawRawAtlas(sprite.image, transformCenter, _center, null, null, frame, p);
+    if (renderCenter) {
+      final Float32List transformCenter = Float32List(4);
+      // center
+      transformCenter[0] = 1;
+      transformCenter[1] = 0;
+      transformCenter[2] = horiSideX;
+      transformCenter[3] = vertSideY;
+      canvas.drawRawAtlas(sprite.image, transformCenter, _center!, null, null, frame, p);
+    }
     canvas.restore();
     if (child != null) {
       if (transformer != null) {
-        canvas.transform(transformer!
-            .resolve(size, Size(sprite.originalWidth, sprite.originalHeight))
-            .storage);
+        canvas.transform(transformer!.resolve(size, sprite.size).storage);
       }
+      canvas.transform(Matrix4.translationValues((size.width - sprite.size.width) / 2,
+              (size.height - sprite.size.height) / 2, 0)
+          .storage);
       canvas.drawRawAtlas(
           child!.image,
           Float32List(4)
@@ -286,7 +295,7 @@ class _NineSpriteWidgetPainter extends ContentRenderer with RenderingMixin {
 
   @override
   bool shouldRepaint(covariant ContentRenderer oldDelegate) {
-    if (oldDelegate is! _NineSpriteWidgetPainter) {
+    if (oldDelegate is! NineSliceScaledPainter) {
       return false;
     } else {
       return oldDelegate._center != _center ||
@@ -299,28 +308,44 @@ class _NineSpriteWidgetPainter extends ContentRenderer with RenderingMixin {
 }
 
 class NineSpriteWidget extends StatelessWidget {
-  final SpriteTextureKey sprite;
-  final SpriteTextureKey child;
-  final EdgeInsets? border;
+  final TexturePackerSprite sprite;
+  final TexturePackerSprite? child;
+  final EdgeInsets border;
+  final Widget? widgetChild;
   final LinearTransformer? transformer;
-  final PaintConfig? config;
+  final RenderingHints? config;
+  final bool renderCenter;
 
-  const NineSpriteWidget(
+  NineSpriteWidget(
       {super.key,
-      required this.sprite,
-      required this.child,
-      this.border,
+      required SpriteTextureKey sprite,
+      SpriteTextureKey? child,
+      this.border = EdgeInsets.zero,
+      this.widgetChild,
       this.transformer,
-      this.config});
+      this.renderCenter = true,
+      this.config})
+      : assert(onlyOneNull(widgetChild, child),
+            "Specify either only a [sprite] ($child) or a [widget] ($widgetChild) for a nine slice scaling widget!"),
+        sprite = sprite.findTexture(),
+        child = child?.findTexture();
 
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
-      painter: _NineSpriteWidgetPainter(
-          sprite: sprite.findTexture(),
-          transformer: transformer,
-          config: config,
-          child: child.findTexture()),
+      painter: NineSliceScaledPainter(
+        sprite: sprite,
+        transformer: transformer,
+        config: config,
+        child: child,
+        border: border,
+      ),
+      child: widgetChild != null
+          ? Padding(padding: border, child: widgetChild)
+          : SizedBox(
+              width: border.horizontal,
+              height: border.vertical,
+            ),
     );
   }
 }

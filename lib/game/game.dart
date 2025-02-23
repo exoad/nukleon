@@ -1,5 +1,6 @@
 import 'package:shitter/engine/engine.dart';
 import 'package:shitter/game/classes/items/item_blank.dart';
+import 'package:shitter/game/classes/ui/item_border_prototype.dart';
 import 'package:shitter/game/controllers/pointer.dart';
 import 'package:shitter/game/entities/reactor.dart';
 import 'package:shitter/game/classes/classes.dart';
@@ -32,7 +33,11 @@ class GameRoot {
     ItemsRegistry.I.addItemDefinition(i++, Class.ITEMS, UraniumEnhancedCell());
     // ! TEMP
     i = 1;
-    ItemsRegistry.I.addItemDefinition(i++, Class.UI, Button1());
+    Facet.M.addLazySingleton<Button1>(Button1.new);
+    Facet.M.addLazySingleton<BorderPrototype>(BorderPrototype.new);
+    Facet.M.commit();
+    ItemsRegistry.I.addItemDefinition(i++, Class.UI, Facet.M.get<Button1>());
+    ItemsRegistry.I.addItemDefinition(i++, Class.UI, Facet.M.get<BorderPrototype>());
     Shared.logger.info("Loaded builtin items into the engine registry");
   }
 

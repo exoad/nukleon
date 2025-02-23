@@ -12,7 +12,7 @@ class Button1 extends ButtonFacet {
   bool get locked => true;
 
   @override
-  EdgeInsets get border => EdgeInsets.all(8);
+  EdgeInsets get border => EdgeInsets.symmetric(vertical: 4, horizontal: 8);
 
   @override
   SpriteSet<ButtonSpriteStates> get spriteSet =>
@@ -24,36 +24,4 @@ class Button1 extends ButtonFacet {
               states.first == ButtonSpriteStates.normal
                   ? LinearTransformer.identity()
                   : LinearTransformer.single(Matrix4.translationValues(0, 1, 0)));
-}
-
-@Deprecated("Please use Button1 Class")
-class ReactorButton1Normal extends ItemDefinition {
-  @override
-  String get identifier => "class.ui.button_1#normal";
-
-  @override
-  bool get locked => true;
-
-  @override
-  SpriteTextureKey sprite() =>
-      SpriteTextureKey("ui_content", spriteName: "Reactor_Button_1_Normal");
-
-  @override
-  Class get layer => Class.UI;
-}
-
-@Deprecated("Please use Button1 Class")
-class ReactorButton1Pressed extends ItemDefinition {
-  @override
-  String get identifier => "class.ui.button_1#pressed";
-
-  @override
-  bool get locked => true;
-
-  @override
-  SpriteTextureKey sprite() =>
-      SpriteTextureKey("ui_content", spriteName: "Reactor_Button_1_Pressed");
-
-  @override
-  Class get layer => Class.UI;
 }

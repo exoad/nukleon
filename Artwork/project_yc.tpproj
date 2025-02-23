@@ -34,7 +34,49 @@ prettyPrint=false
 legacyOutput=true
 
 scaleFactors=[{suffix:"",factor:1,resampling:bicubic}]
-inputFiles=[{path:Reactor_Button_1_Normal.png,type:Input,regionName:null},{path:Reactor_Button_1_Pressed.png,type:Input,regionName:null},{path:Button_Facet_1_Normal.png,type:Input,regionName:null},{path:Button_Facet_1_Pressed.png,type:Input,regionName:null}]
+inputFiles=[{path:Button_Facet_1_Normal.png,type:Input,regionName:null},{path:Button_Facet_1_Pressed.png,type:Input,regionName:null}]
+keepInputFileExtensions=false
+
+
+---
+
+name=icons
+filename=icons_content.atlas
+output=../assets/images/textures
+
+alias=true
+alphaThreshold=0
+debug=false
+duplicatePadding=false
+edgePadding=true
+fast=false
+filterMag=Nearest
+filterMin=Nearest
+ignoreBlankImages=false
+maxHeight=2048
+maxWidth=2048
+minHeight=16
+minWidth=16
+paddingX=0
+paddingY=0
+pot=true
+mof=false
+rotation=false
+stripWhitespaceX=false
+stripWhitespaceY=false
+wrapX=ClampToEdge
+wrapY=ClampToEdge
+premultiplyAlpha=false
+grid=false
+square=false
+bleed=true
+limitMemory=true
+useIndexes=true
+prettyPrint=false
+legacyOutput=false
+
+scaleFactors=[{suffix:"",factor:1,resampling:bicubic}]
+inputFiles=[{path:Checkmark.png,type:Input,regionName:null}]
 keepInputFileExtensions=false
 
 
@@ -73,7 +115,7 @@ bleed=true
 limitMemory=true
 useIndexes=true
 prettyPrint=false
-legacyOutput=true
+legacyOutput=false
 
 scaleFactors=[{suffix:"",factor:1,resampling:bicubic}]
 inputFiles=[{path:Empty_Cell.png,type:Input,regionName:null},{path:Reactor_Cell_Uranium.png,type:Input,regionName:null},{path:Reactor_Cell_Uranium_Enhanced.png,type:Input,regionName:null},{path:Reactor_Button_1.png,type:Input,regionName:null},{path:Selector_Border.png,type:Input,regionName:null},{path:Null_Item.png,type:Input,regionName:null}]

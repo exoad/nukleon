@@ -1,9 +1,11 @@
 import "package:shitter/engine/engine.dart";
 import "package:shitter/game/classes/classes.dart";
+import "package:shitter/game/classes/ui/item_border_prototype.dart";
 import "package:shitter/game/colors.dart";
 import "package:shitter/game/controllers/pointer.dart";
 import "package:shitter/game/facets/facets.dart";
 import "package:shitter/game/entities/entities.dart";
+import "package:shitter/game/facets/static_facet.dart";
 import "package:shitter/game/game.dart";
 import "package:shitter/game/utils/surveyor.dart";
 
@@ -175,6 +177,10 @@ class AppRoot extends StatelessWidget {
                             children: <Widget>[
                               FilledButton.tonal(
                                   child: Text("INSHALLAH"), onPressed: () {}),
+                              ButtonFacetWidget.withWidget(
+                                  facet: Button1(),
+                                  onPressed: () {},
+                                  child: Text("Amogus"))
                             ],
                           )),
                       // child: UIToggleButton1(
@@ -191,29 +197,32 @@ class AppRoot extends StatelessWidget {
                         height: size.height * 0.6 - (Shared.uiPadding * 2),
                         width: 260,
                         color: Color.fromARGB(255, 56, 61, 74),
-                        child: GridView.builder(
-                            physics: const AlwaysScrollableScrollPhysics(
-                                parent: BouncingScrollPhysics()),
-                            padding: const EdgeInsets.all(Shared.uiGridParentPadding),
-                            itemCount: ItemsRegistry.I.registeredItems(Class.ITEMS) - 1,
-                            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                                maxCrossAxisExtent: Shared.kTileSize,
-                                crossAxisSpacing: Shared.uiGridChildPadding,
-                                mainAxisSpacing: Shared.uiGridChildPadding),
-                            itemBuilder: (BuildContext context, int index) {
-                              int trueIndex = index + 1;
-                              ItemDefinition item = ItemsRegistry.I
-                                  .findItemDefinition(trueIndex, Class.ITEMS);
-                              return ButtonFacetWidget(
-                                  facet: Button1(),
-                                  child: item.sprite(),
-                                  onPressed: () {
-                                    PointerBuffer.of(context, listen: false).primary =
-                                        trueIndex;
-                                    logger.info(
-                                        "Changed PointerBuffer Primary -> $trueIndex");
-                                  });
-                            }),
+                        child: StaticFacetWidget<void>.widget(
+                          facet: Facet.M.get<BorderPrototype>(),
+                          child: GridView.builder(
+                              physics: const AlwaysScrollableScrollPhysics(
+                                  parent: BouncingScrollPhysics()),
+                              padding: const EdgeInsets.all(Shared.uiGridParentPadding),
+                              itemCount: ItemsRegistry.I.registeredItems(Class.ITEMS) - 1,
+                              gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                                  maxCrossAxisExtent: Shared.kTileSize,
+                                  crossAxisSpacing: Shared.uiGridChildPadding,
+                                  mainAxisSpacing: Shared.uiGridChildPadding),
+                              itemBuilder: (BuildContext context, int index) {
+                                int trueIndex = index + 1;
+                                ItemDefinition item = ItemsRegistry.I
+                                    .findItemDefinition(trueIndex, Class.ITEMS);
+                                return ButtonFacetWidget.withSprite(
+                                    facet: Button1(),
+                                    sprite: item.sprite(),
+                                    onPressed: () {
+                                      PointerBuffer.of(context, listen: false).primary =
+                                          trueIndex;
+                                      logger.info(
+                                          "Changed PointerBuffer Primary -> $trueIndex");
+                                    });
+                              }),
+                        ),
                       ),
                     ]),
                     const SizedBox(width: Shared.uiPadding),
@@ -350,7 +359,7 @@ class _ReactorWidgetState extends State<_ReactorWidget> {
         pressedLocation = position;
         lastHitLocation = hitLocation;
         hitLocation = newHitLocation;
-        if (ptr.isErasing || panning || ptr.isUsing) {
+        if ((ptr.isErasing || panning || ptr.isUsing) && ptr.resolve() != null) {
           if (GameRoot.I.reactor.safePutCell(hitLocation!, ptr.resolve()!)) {
             setState(() {});
           }

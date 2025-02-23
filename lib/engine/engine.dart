@@ -1,6 +1,6 @@
 import 'package:flame/cache.dart';
 import 'package:flame_texturepacker/flame_texturepacker.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:shitter/engine/public.dart';
 import 'package:shitter/engine/registries/textures_registries.dart';
@@ -45,6 +45,17 @@ void panicNow(String label, {String? details, String? help}) {
   logger.severe(
       "[[ !! Engine Panicked ${Public.useLennyFaceOnPanic ? 'ಠ╭╮ಠ' : ''} !! ]] '$label'");
   throw Public.formatErrorMessage(label, details, help);
+}
+
+@pragma("vm:prefer-inline")
+void panicIf(bool condition, {required String label, String? details, String? help}) {
+  if (condition) {
+    panicNow(label, details: details, help: help);
+  }
+}
+
+extension MoreFuncsSprite on AtlasSprite {
+  Size get size => src.size;
 }
 
 class TextureAtlasLoader {

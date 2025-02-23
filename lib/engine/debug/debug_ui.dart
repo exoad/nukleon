@@ -1,10 +1,21 @@
 import 'package:dotted_border/dotted_border.dart';
+import 'package:shitter/engine/debug/debug.dart';
 import 'package:shitter/engine/engine.dart';
 
-class DebugBorderWidget extends StatelessWidget {
+extension DebugifyBorderWidget on Widget {
+  Widget get debuggableStatic =>
+      kShowDebugBorders ? _DebugBorderWidget(child: this) : this;
+}
+
+extension FlashingDebugifyBorderWidget on Widget {
+  Widget get debuggableFlashing =>
+      kShowDebugBorders ? _FlashingDebugWidget(child: this) : this;
+}
+
+class _DebugBorderWidget extends StatelessWidget {
   final Widget child;
 
-  const DebugBorderWidget({super.key, required this.child});
+  const _DebugBorderWidget({required this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -17,17 +28,16 @@ class DebugBorderWidget extends StatelessWidget {
   }
 }
 
-class FlashingDebugWidget extends StatefulWidget {
+class _FlashingDebugWidget extends StatefulWidget {
   final Widget child;
-  final int period;
 
-  const FlashingDebugWidget({super.key, required this.child, this.period = 300});
+  const _FlashingDebugWidget({required this.child});
 
   @override
-  State<FlashingDebugWidget> createState() => _FlashingDebugWidgetState();
+  State<_FlashingDebugWidget> createState() => _FlashingDebugWidgetState();
 }
 
-class _FlashingDebugWidgetState extends State<FlashingDebugWidget>
+class _FlashingDebugWidgetState extends State<_FlashingDebugWidget>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<Color?> _colorAnimation;
@@ -37,7 +47,7 @@ class _FlashingDebugWidgetState extends State<FlashingDebugWidget>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: widget.period),
+      duration: Duration(milliseconds: 300),
     )..repeat(reverse: true);
     _colorAnimation = ColorTween(
       begin: const Color.fromARGB(255, 255, 0, 220),
