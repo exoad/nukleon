@@ -1,5 +1,3 @@
-
-import 'package:flame_texturepacker/flame_texturepacker.dart';
 import 'package:shitter/engine/engine.dart';
 import 'package:shitter/engine/utils/geom.dart' as geom;
 import 'package:shitter/game/shared.dart';
@@ -308,8 +306,8 @@ class NineSliceScaledPainter extends ContentRenderer with RenderingMixin {
 }
 
 class NineSpriteWidget extends StatelessWidget {
-  final TexturePackerSprite sprite;
-  final TexturePackerSprite? child;
+  final AtlasSprite sprite;
+  final AtlasSprite? child;
   final EdgeInsets border;
   final Widget? widgetChild;
   final LinearTransformer? transformer;
@@ -329,6 +327,16 @@ class NineSpriteWidget extends StatelessWidget {
             "Specify either only a [sprite] ($child) or a [widget] ($widgetChild) for a nine slice scaling widget!"),
         sprite = sprite.findTexture(),
         child = child?.findTexture();
+
+  const NineSpriteWidget.resolved(
+      {super.key,
+      required this.sprite,
+      this.child,
+      this.border = EdgeInsets.zero,
+      this.widgetChild,
+      this.transformer,
+      this.renderCenter = true,
+      this.config});
 
   @override
   Widget build(BuildContext context) {

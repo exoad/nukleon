@@ -177,7 +177,7 @@ class AppRoot extends StatelessWidget {
                             children: <Widget>[
                               FilledButton.tonal(
                                   child: Text("INSHALLAH"), onPressed: () {}),
-                              ButtonFacetWidget.withWidget(
+                              ButtonFacetWidget.widget(
                                   facet: Button1(),
                                   onPressed: () {},
                                   child: Text("Amogus"))
@@ -212,7 +212,7 @@ class AppRoot extends StatelessWidget {
                                 int trueIndex = index + 1;
                                 ItemDefinition item = ItemsRegistry.I
                                     .findItemDefinition(trueIndex, Class.ITEMS);
-                                return ButtonFacetWidget.withSprite(
+                                return ButtonFacetWidget(
                                     facet: Button1(),
                                     sprite: item.sprite(),
                                     onPressed: () {
