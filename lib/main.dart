@@ -34,25 +34,23 @@ class CullingReactorGridPainter extends CustomPainter {
         Float32List((GameRoot.I.reactor.rows * GameRoot.I.reactor.columns) * 4);
     {
       ui.Image atlas = TextureRegistry.getTexture("tiles_content")!.atlasImage;
-      for (int i = 0; i < GameRoot.I.reactor.rows; i++) {
-        for (int j = 0; j < GameRoot.I.reactor.columns; j++) {
-          double x = j * (Shared.kTileSize + Shared.kTileSpacing);
-          double y = i * (Shared.kTileSize + Shared.kTileSpacing);
-          ItemDefinition definition = GameRoot.I.reactor
+      for (int i = 0, k = 0; i < GameRoot.I.reactor.rows; i++) {
+        for (int j = 0; j < GameRoot.I.reactor.columns; j++, k += 4) {
+          final AtlasSprite sprite = GameRoot.I.reactor
               .at(i, j)
               .at(Class.TILES)
               .id
-              .findItemDefinition(Class.TILES);
-          AtlasSprite sprite = definition.sprite().findTexture();
-          final int k0 = (i * j) * 4;
-          final int k1 = k0 + 1;
-          final int k2 = k0 + 2;
-          final int k3 = k0 + 3;
-          transforms[k0] = Shared.tileInitialZoom;
+              .findItemDefinition(Class.TILES)
+              .sprite()
+              .findTexture();
+          final int k1 = k + 1;
+          final int k2 = k + 2;
+          final int k3 = k + 3;
+          transforms[k] = Shared.tileInitialZoom;
           transforms[k1] = 0;
-          transforms[k2] = x;
-          transforms[k3] = y;
-          src[k0] = sprite.src.left;
+          transforms[k2] = j * (Shared.kTileSize + Shared.kTileSpacing);
+          transforms[k3] = i * (Shared.kTileSize + Shared.kTileSpacing);
+          src[k] = sprite.src.left;
           src[k1] = sprite.src.top;
           src[k2] = sprite.src.right;
           src[k3] = sprite.src.bottom;
@@ -63,17 +61,16 @@ class CullingReactorGridPainter extends CustomPainter {
     }
     src = Float32List((GameRoot.I.reactor.rows * GameRoot.I.reactor.columns) * 4);
     ui.Image atlas = TextureRegistry.getTexture("content")!.atlasImage;
-    for (int i = 0; i < GameRoot.I.reactor.rows; i++) {
-      for (int j = 0; j < GameRoot.I.reactor.columns; j++) {
+    for (int i = 0, k = 0; i < GameRoot.I.reactor.rows; i++) {
+      for (int j = 0; j < GameRoot.I.reactor.columns; j++, k += 4) {
         int id = GameRoot.I.reactor.at(i, j).at(Class.ITEMS).id;
         if (id != 0) {
-          ItemDefinition definition = id.findItemDefinition(Class.ITEMS);
-          AtlasSprite sprite = definition.sprite().findTexture();
-          final int k0 = (i * j) * 4;
-          final int k1 = k0 + 1;
-          final int k2 = k0 + 2;
-          final int k3 = k0 + 3;
-          src[k0] = sprite.src.left;
+          final AtlasSprite sprite =
+              id.findItemDefinition(Class.ITEMS).sprite().findTexture();
+          final int k1 = k + 1;
+          final int k2 = k + 2;
+          final int k3 = k + 3;
+          src[k] = sprite.src.left;
           src[k1] = sprite.src.top;
           src[k2] = sprite.src.right;
           src[k3] = sprite.src.bottom;
