@@ -28,9 +28,11 @@ class CullingReactorGridPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     Paint paint = G.fasterPainter;
+    Float32List transforms =
+        Float32List((GameRoot.I.reactor.rows * GameRoot.I.reactor.columns) * 4);
+    Float32List src =
+        Float32List((GameRoot.I.reactor.rows * GameRoot.I.reactor.columns) * 4);
     {
-      List<RSTransform> transforms = <RSTransform>[];
-      List<Rect> src = <Rect>[];
       ui.Image atlas = TextureRegistry.getTexture("tiles_content")!.atlasImage;
       for (int i = 0; i < GameRoot.I.reactor.rows; i++) {
         for (int j = 0; j < GameRoot.I.reactor.columns; j++) {
@@ -42,42 +44,43 @@ class CullingReactorGridPainter extends CustomPainter {
               .id
               .findItemDefinition(Class.TILES);
           AtlasSprite sprite = definition.sprite().findTexture();
-          transforms.add(RSTransform.fromComponents(
-              rotation: 0,
-              scale: Shared.tileInitialZoom,
-              anchorX: 0,
-              anchorY: 0,
-              translateX: x,
-              translateY: y));
-          src.add(sprite.src);
+          final int k0 = (i * j) * 4;
+          final int k1 = k0 + 1;
+          final int k2 = k0 + 2;
+          final int k3 = k0 + 3;
+          transforms[k0] = Shared.tileInitialZoom;
+          transforms[k1] = 0;
+          transforms[k2] = x;
+          transforms[k3] = y;
+          src[k0] = sprite.src.left;
+          src[k1] = sprite.src.top;
+          src[k2] = sprite.src.right;
+          src[k3] = sprite.src.bottom;
         }
       }
-      canvas.drawAtlas(atlas, transforms, src, null, null,
+      canvas.drawRawAtlas(atlas, transforms, src, null, null,
           Rect.fromLTWH(0, 0, size.width, size.height), paint);
     }
-    List<RSTransform> transforms = <RSTransform>[];
-    List<Rect> src = <Rect>[];
+    src = Float32List((GameRoot.I.reactor.rows * GameRoot.I.reactor.columns) * 4);
     ui.Image atlas = TextureRegistry.getTexture("content")!.atlasImage;
     for (int i = 0; i < GameRoot.I.reactor.rows; i++) {
       for (int j = 0; j < GameRoot.I.reactor.columns; j++) {
         int id = GameRoot.I.reactor.at(i, j).at(Class.ITEMS).id;
         if (id != 0) {
           ItemDefinition definition = id.findItemDefinition(Class.ITEMS);
-          double x = j * (Shared.kTileSize + Shared.kTileSpacing);
-          double y = i * (Shared.kTileSize + Shared.kTileSpacing);
           AtlasSprite sprite = definition.sprite().findTexture();
-          transforms.add(RSTransform.fromComponents(
-              rotation: 0,
-              scale: Shared.tileInitialZoom,
-              anchorX: 0,
-              anchorY: 0,
-              translateX: x,
-              translateY: y));
-          src.add(sprite.src);
+          final int k0 = (i * j) * 4;
+          final int k1 = k0 + 1;
+          final int k2 = k0 + 2;
+          final int k3 = k0 + 3;
+          src[k0] = sprite.src.left;
+          src[k1] = sprite.src.top;
+          src[k2] = sprite.src.right;
+          src[k3] = sprite.src.bottom;
         }
       }
     }
-    canvas.drawAtlas(atlas, transforms, src, null, null, Offset.zero & size, paint);
+    canvas.drawRawAtlas(atlas, transforms, src, null, null, Offset.zero & size, paint);
     // ! HEAT DEMO
     // canvas.drawRect(
     //     Rect.fromLTWH(0, 0, size.width, size.height),
