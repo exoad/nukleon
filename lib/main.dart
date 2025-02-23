@@ -333,12 +333,16 @@ class _ReactorWidgetState extends State<_ReactorWidget> {
           }
         },
         child: GestureDetector(
-          onPanUpdate: (DragUpdateDetails details) => _handleHit(details.localPosition),
+          onPanUpdate: (DragUpdateDetails details) =>
+              _handleHit(details.localPosition, null),
           onPanStart: (_) => panning = true,
           onPanCancel: () => panning = false,
           onPanEnd: (_) => panning = false,
           onTapDown: (TapDownDetails details) {
-            _handleHit(details.localPosition);
+            _handleHit(details.localPosition, true);
+          },
+          onSecondaryTapDown: (TapDownDetails details) {
+            _handleHit(details.localPosition, false);
           },
           child: CustomPaint(
             painter: CullingReactorGridPainter(hitLocation: hitLocation),
@@ -348,7 +352,7 @@ class _ReactorWidgetState extends State<_ReactorWidget> {
         ),
       );
 
-  void _handleHit(Offset position) {
+  void _handleHit(Offset position, bool? mode /*holy shit tri states !*/) {
     PointerBuffer ptr = PointerBuffer.of(context, listen: false);
     if (ptr.primary != null || ptr.isErasing) {
       CellLocation newHitLocation =
