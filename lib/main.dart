@@ -1,5 +1,4 @@
 import "package:shitter/engine/engine.dart";
-import "package:shitter/engine/graphics/scene2d/scene2d.dart";
 import "package:shitter/game/classes/classes.dart";
 import "package:shitter/game/classes/ui/item_border_prototype.dart";
 import "package:shitter/game/colors.dart";
@@ -9,6 +8,7 @@ import "package:shitter/game/facets/facets.dart";
 import "package:shitter/game/entities/entities.dart";
 import "package:shitter/game/facets/static_facet.dart";
 import "package:shitter/game/game.dart";
+import "package:shitter/game/stages/backdrop_stage.dart";
 import "package:shitter/game/utils/surveyor.dart";
 
 import "dart:ui" as ui;
@@ -21,62 +21,7 @@ void main() async {
   Public.textureFilter = PublicK.TEXTURE_FILTER_NONE;
   await Engine.initializeEngine();
   await GameRoot.I.loadBuiltinItems();
-  Engine.bootstrap(Scaffold(
-      appBar: AppBar(title: Text("Scene Controller Example")),
-      body: Scene2DWidget(
-        root: StageActor<Widget>(
-          0,
-          Text("Root"),
-        )
-          ..addChild(Text("Root_Child_1"))
-          ..addChild(Text("Root_Child_2")),
-        builder: (BuildContext context, Scene2DController controller) {
-          return Column(
-            children: <Widget>[
-              Expanded(
-                child: Center(
-                  child: controller.current,
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  ElevatedButton(
-                    onPressed: () {
-                      controller.down(0);
-                    },
-                    child: Text("Down"),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      controller.shiftTo(1);
-                    },
-                    child: Text("Shift"),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      controller.shiftTo(-1);
-                    },
-                    child: Text("Back"),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      controller.up();
-                    },
-                    child: Text("Up"),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      controller.jumpTo(0);
-                    },
-                    child: Text("Jump to Root"),
-                  ),
-                ],
-              ),
-            ],
-          );
-        },
-      )));
+  Engine.bootstrap(BackdropStage());
 }
 
 class CullingReactorGridPainter extends CustomPainter {
