@@ -5,6 +5,7 @@ Nukleon
   Immerse yourself as a Operations Director at Nuclear Komplex-42
 </p>
 
+![](./assets/backdrops/main_menu_1984.png)
 
 Work In Progress..
 
