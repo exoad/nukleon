@@ -1,9 +1,17 @@
 <h1 align="center">
 Nukleon
 </h1>
-<p align="center">
-  Immerse yourself as a Operations Director at Nuclear Komplex-42
-</p>
+
+> **:: Core Activation Protocol Initiated ::**
+> Report to `Komplex-42`.
+> 
+> Temporary habitation provided.
+> 
+> Expect...MAX_ADHERENCE.
+> 
+> Risk Evaluation: Critical.
+
+
 
 ![](./assets/backdrops/main_menu_1984.png)
 
