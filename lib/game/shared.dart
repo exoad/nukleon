@@ -4,6 +4,8 @@ import 'package:shitter/engine/engine.dart';
 final class Shared {
   Shared._();
 
+  static const num version = 1.0;
+
   static const int reactorRows = 12;
   static const int reactorColumns = 24;
   static const double tileInitialZoom = 1;

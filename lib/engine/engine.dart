@@ -60,7 +60,7 @@ class GameEntry extends StatelessWidget {
               brightness: Brightness.dark,
               primary: Color(0xfffffaff),
               surfaceTint: Color(0xffe5c524),
-              onPrimary: Color(0xff3a3000),
+              onPrimary: Color.fromARGB(255, 0, 0, 0),
               primaryContainer: Color(0xffffde3f),
               onPrimaryContainer: Color(0xff736100),
               secondary: Color(0xffffdbcc),

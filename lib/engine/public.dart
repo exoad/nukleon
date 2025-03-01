@@ -6,6 +6,8 @@ import 'package:shitter/engine/engine.dart';
 final class Public {
   Public._();
 
+  static const String version = "1.0.0-closed-beta";
+
   static bool panicOnNullTextures = true;
 
   static int textureFilter = PublicK.TEXTURE_FILTER_NONE;

@@ -8,7 +8,7 @@ import "package:shitter/game/facets/facets.dart";
 import "package:shitter/game/entities/entities.dart";
 import "package:shitter/game/facets/static_facet.dart";
 import "package:shitter/game/game.dart";
-import "package:shitter/game/stages/backdrop_stage.dart";
+import "package:shitter/game/stages/main_menu.dart";
 import "package:shitter/game/utils/surveyor.dart";
 
 import "dart:ui" as ui;
@@ -21,7 +21,7 @@ void main() async {
   Public.textureFilter = PublicK.TEXTURE_FILTER_NONE;
   await Engine.initializeEngine();
   await GameRoot.I.loadBuiltinItems();
-  Engine.bootstrap(BackdropStage());
+  Engine.bootstrap(MainMenuStage());
 }
 
 class CullingReactorGridPainter extends CustomPainter {

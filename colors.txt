@@ -1,0 +1,2 @@
+Foreground_1: rgb(217, 208, 176)
+Background_1_Menu: rgb(26, 25, 20)

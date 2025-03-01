@@ -2,6 +2,12 @@ import 'package:shitter/engine/engine.dart';
 import 'package:shitter/game/classes/classes.dart';
 
 class Button1 extends ButtonFacet {
+  static final Button1 _i = Button1._();
+
+  Button1._();
+
+  factory Button1() => _i;
+
   @override
   String get canonicalName => "Button Type 1";
 
@@ -17,9 +23,10 @@ class Button1 extends ButtonFacet {
   @override
   SpriteSet<ButtonSpriteStates> get spriteSet =>
       SpriteSet.resolveWith<ButtonSpriteStates>(
-          (Set<ButtonSpriteStates> states) => states.first == ButtonSpriteStates.normal
-              ? SpriteTextureKey("ui_content", spriteName: "Button_Facet_1_Normal")
-              : SpriteTextureKey("ui_content", spriteName: "Button_Facet_1_Pressed"),
+          (Set<ButtonSpriteStates> states) =>
+              states.first == ButtonSpriteStates.normal || states.isEmpty
+                  ? SpriteTextureKey("ui_content", spriteName: "Button_Facet_1_Normal")
+                  : SpriteTextureKey("ui_content", spriteName: "Button_Facet_1_Pressed"),
           transformationResolver: (Set<ButtonSpriteStates> states) =>
               states.first == ButtonSpriteStates.normal
                   ? LinearTransformer.identity()

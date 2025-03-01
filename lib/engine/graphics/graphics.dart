@@ -1,7 +1,15 @@
+import 'dart:ui';
+
 import 'package:shitter/engine/engine.dart';
 
 export "nulls.dart";
 export "ui.dart";
+
+extension FragmentShaderExtension on FragmentShader {
+  void operator []=(int index, double value) {
+    setFloat(index, value);
+  }
+}
 
 final class G {
   G._();
