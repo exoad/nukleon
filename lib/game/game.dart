@@ -20,7 +20,6 @@ class GameRoot {
         _cellLocationBuffer = CellLocationBuffer();
 
   Future<void> loadBuiltinItems() async {
-    await initializeEngine();
     await Shared.initialize();
     ItemsRegistry.I.addItemDefinition(0, Class.TILES, BasicTile());
     ItemsRegistry.I.addItemDefinition(0, Class.ITEMS, BlankItem());

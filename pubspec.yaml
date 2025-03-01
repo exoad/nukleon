@@ -32,9 +32,11 @@ flutter:
   uses-material-design: false
   assets:
     - assets/
+    - assets/backdrops/
     - assets/images/textures/
   shaders:
     - shaders/explosion_distort.frag
+    - shaders/ve_pixelate.frag
   fonts:
     - family: PixelPlay
       fonts:

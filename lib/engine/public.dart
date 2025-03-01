@@ -7,9 +7,13 @@ final class Public {
   Public._();
 
   static bool panicOnNullTextures = true;
+
   static int textureFilter = PublicK.TEXTURE_FILTER_NONE;
   static bool warnOnTextureMapDuplicateSprites = false;
   static bool useLennyFaceOnPanic = true;
+
+  /// The engine will try not to panic if it can. However, this does not mean the program cannot panic.
+  static bool preferWarnings = true;
   static final Random random1 = Random(DateTime.now().microsecondsSinceEpoch);
   static Future<void> initialize() async {
     logger.info("Public Resources initialized.");
