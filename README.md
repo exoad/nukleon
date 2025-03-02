@@ -1,5 +1,5 @@
 <h1 align="center">
-<img src="./Artwork/icon.png" width=64/> Nukleon
+<img src="./Artwork/icon.png" width=64/><br/>Nukleon
 </h1>
 
 > **:: Core Activation Protocol Initiated ::**
