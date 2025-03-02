@@ -1,8 +1,17 @@
 <h1 align="center">
 <img src="./Artwork/icon.png" width=64/><br/>Nukleon
 </h1>
+<p align="center">
+A 2D automation game about operating a nuclear powerplant <em>in an <a href="https://en.wikipedia.org/wiki/Nineteen_Eighty-Four">Orwellian future</a>.</em>
+<br/>
+<br/>
+Created using <a href="https://flutter/">Flutter</a>.
+</p>
+<hr/>
 
+> [!WARNING]
 > **:: Core Activation Protocol Initiated ::**
+> 
 > Report to `Komplex-42`.
 >
 > Temporary habitation provided.
