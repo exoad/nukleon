@@ -9,6 +9,8 @@ Created using <a href="https://flutter/">Flutter</a>.
 </p>
 <hr/>
 
+**Looking for testers and supporters! Join the Discord [here](https://discord.gg/PbJQRT9zQ8)**
+
 > [!WARNING]
 > **:: Core Activation Protocol Initiated ::**
 > 
