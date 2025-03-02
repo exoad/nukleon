@@ -1,7 +1,7 @@
-import 'package:shitter/engine/engine.dart';
-import 'package:shitter/engine/utils/geom.dart' as geom;
-import 'package:shitter/game/classes/classes.dart';
-import 'package:shitter/game/shared.dart';
+import 'package:nukleon/engine/engine.dart';
+import 'package:nukleon/engine/utils/geom.dart' as geom;
+import 'package:nukleon/game/classes/classes.dart';
+import 'package:nukleon/game/shared.dart';
 
 /// Drawing a siingle sprite.
 final class SingleSpritePainter extends ContentRenderer with RenderingMixin {

@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:shitter/engine/engine.dart';
+import 'package:nukleon/engine/engine.dart';
 import "dart:ui" as ui;
 
 @immutable

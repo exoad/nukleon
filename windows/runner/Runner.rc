@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "net.exoad" "\0"
-            VALUE "FileDescription", "project_yellow_cake" "\0"
+            VALUE "FileDescription", "nukleon" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "project_yellow_cake" "\0"
+            VALUE "InternalName", "nukleon" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2025 net.exoad. All rights reserved." "\0"
-            VALUE "OriginalFilename", "project_yellow_cake.exe" "\0"
-            VALUE "ProductName", "project_yellow_cake" "\0"
+            VALUE "OriginalFilename", "nukleon.exe" "\0"
+            VALUE "ProductName", "Nukleon" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

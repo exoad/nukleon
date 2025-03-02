@@ -1,10 +1,10 @@
-import 'package:shitter/engine/engine.dart';
-import 'package:shitter/game/classes/items/item_blank.dart';
-import 'package:shitter/game/classes/ui/item_border_prototype.dart';
-import 'package:shitter/game/controllers/pointer.dart';
-import 'package:shitter/game/entities/reactor.dart';
-import 'package:shitter/game/classes/classes.dart';
-import 'package:shitter/game/shared.dart';
+import 'package:nukleon/engine/engine.dart';
+import 'package:nukleon/game/classes/items/item_blank.dart';
+import 'package:nukleon/game/classes/ui/item_border_prototype.dart';
+import 'package:nukleon/game/controllers/pointer.dart';
+import 'package:nukleon/game/entities/reactor.dart';
+import 'package:nukleon/game/classes/classes.dart';
+import 'package:nukleon/game/shared.dart';
 
 export "shared.dart";
 

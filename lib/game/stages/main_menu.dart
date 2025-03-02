@@ -1,7 +1,7 @@
-import 'package:shitter/engine/engine.dart';
-import 'package:shitter/game/classes/classes.dart';
-import 'package:shitter/game/facets/button_facet.dart';
-import 'package:shitter/game/game.dart';
+import 'package:nukleon/engine/engine.dart';
+import 'package:nukleon/game/classes/classes.dart';
+import 'package:nukleon/game/facets/button_facet.dart';
+import 'package:nukleon/game/game.dart';
 
 class MainMenuStage extends StatelessWidget {
   const MainMenuStage({super.key});

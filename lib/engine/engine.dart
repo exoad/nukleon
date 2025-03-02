@@ -2,8 +2,8 @@ import 'package:flame/cache.dart';
 import 'package:flame_texturepacker/flame_texturepacker.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
-import 'package:shitter/engine/public.dart';
-import 'package:shitter/engine/registries/textures_registries.dart';
+import 'package:nukleon/engine/public.dart';
+import 'package:nukleon/engine/registries/textures_registries.dart';
 
 export "public.dart";
 export "registries/registries.dart";

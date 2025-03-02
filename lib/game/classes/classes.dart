@@ -1,6 +1,6 @@
 import 'package:auto_injector/auto_injector.dart';
 import 'package:equatable/equatable.dart';
-import 'package:shitter/engine/engine.dart';
+import 'package:nukleon/engine/engine.dart';
 
 export "items/items.dart";
 export "ui/ui.dart";

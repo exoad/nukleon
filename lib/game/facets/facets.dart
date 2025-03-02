@@ -1,7 +1,7 @@
-import 'package:shitter/engine/engine.dart';
-import 'package:shitter/game/classes/classes.dart';
+import 'package:nukleon/engine/engine.dart';
+import 'package:nukleon/game/classes/classes.dart';
 
-export "package:shitter/game/facets/button_facet.dart";
+export "package:nukleon/game/facets/button_facet.dart";
 
 abstract class StatelessFacet<T> extends StatelessWidget {
   final RenderingHints? renderingHints;

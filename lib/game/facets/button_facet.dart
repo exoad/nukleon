@@ -1,5 +1,5 @@
-import 'package:shitter/engine/engine.dart';
-import 'package:shitter/game/facets/facets.dart';
+import 'package:nukleon/engine/engine.dart';
+import 'package:nukleon/game/facets/facets.dart';
 
 class ButtonFacetWidget extends StatefulFacet<ButtonSpriteStates> {
   final void Function() onPressed;

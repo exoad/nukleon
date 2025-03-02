@@ -1,14 +1,14 @@
 <h1 align="center">
-Nukleon
+<img src="./Artwork/icon.png" width=64/> Nukleon
 </h1>
 
 > **:: Core Activation Protocol Initiated ::**
 > Report to `Komplex-42`.
-> 
+>
 > Temporary habitation provided.
-> 
+>
 > Expect...MAX_ADHERENCE.
-> 
+>
 > Risk Evaluation: Critical.
 
 
@@ -17,7 +17,7 @@ Nukleon
 
 Work In Progress..
 
---- 
+---
 
 Copyright (C) 2025 Jiaming Meng. All rights reserved. **This is a source available software as of now. Please do not mistake it for free and open-source.**
 

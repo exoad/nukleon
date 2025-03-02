@@ -1,4 +1,4 @@
-import 'package:shitter/engine/engine.dart';
+import 'package:nukleon/engine/engine.dart';
 
 extension DebuggableSprite on Sprite {
   String get richString {

@@ -1,6 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:shitter/engine/engine.dart';
-import 'package:shitter/game/classes/classes.dart';
+import 'package:nukleon/engine/engine.dart';
+import 'package:nukleon/game/classes/classes.dart';
 
 class RawFacet<T extends ItemDefinition> extends StatelessWidget {
   final Facet<T> facet;

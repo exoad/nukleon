@@ -1,6 +1,6 @@
 import 'package:dotted_border/dotted_border.dart';
-import 'package:shitter/engine/debug/debug.dart';
-import 'package:shitter/engine/engine.dart';
+import 'package:nukleon/engine/debug/debug.dart';
+import 'package:nukleon/engine/engine.dart';
 
 extension DebugifyBorderWidget on Widget {
   Widget get debuggableStatic =>

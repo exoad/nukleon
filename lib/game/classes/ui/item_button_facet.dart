@@ -1,5 +1,5 @@
-import 'package:shitter/engine/engine.dart';
-import 'package:shitter/game/classes/classes.dart';
+import 'package:nukleon/engine/engine.dart';
+import 'package:nukleon/game/classes/classes.dart';
 
 class Button1 extends ButtonFacet {
   static final Button1 _i = Button1._();

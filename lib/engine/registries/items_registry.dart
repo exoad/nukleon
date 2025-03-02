@@ -1,4 +1,4 @@
-import 'package:shitter/engine/engine.dart';
+import 'package:nukleon/engine/engine.dart';
 
 final class ItemsRegistry {
   static final ItemsRegistry I = ItemsRegistry._();

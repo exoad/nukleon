@@ -1,4 +1,4 @@
-import 'package:shitter/engine/engine.dart';
+import 'package:nukleon/engine/engine.dart';
 
 class TextureRegistry {
   final Map<String, TextureMap> _texturesCache;

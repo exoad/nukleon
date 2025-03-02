@@ -1,15 +1,15 @@
-import "package:shitter/engine/engine.dart";
-import "package:shitter/game/classes/classes.dart";
-import "package:shitter/game/classes/ui/item_border_prototype.dart";
-import "package:shitter/game/colors.dart";
+import "package:nukleon/engine/engine.dart";
+import "package:nukleon/game/classes/classes.dart";
+import "package:nukleon/game/classes/ui/item_border_prototype.dart";
+import "package:nukleon/game/colors.dart";
 
-import "package:shitter/game/controllers/pointer.dart";
-import "package:shitter/game/facets/facets.dart";
-import "package:shitter/game/entities/entities.dart";
-import "package:shitter/game/facets/static_facet.dart";
-import "package:shitter/game/game.dart";
-import "package:shitter/game/stages/main_menu.dart";
-import "package:shitter/game/utils/surveyor.dart";
+import "package:nukleon/game/controllers/pointer.dart";
+import "package:nukleon/game/facets/facets.dart";
+import "package:nukleon/game/entities/entities.dart";
+import "package:nukleon/game/facets/static_facet.dart";
+import "package:nukleon/game/game.dart";
+import "package:nukleon/game/stages/main_menu.dart";
+import "package:nukleon/game/utils/surveyor.dart";
 
 import "dart:ui" as ui;
 

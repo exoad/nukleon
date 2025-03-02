@@ -1,6 +1,6 @@
-import 'package:shitter/engine/engine.dart';
-import 'package:shitter/game/entities/entities.dart';
-import 'package:shitter/game/game.dart';
+import 'package:nukleon/engine/engine.dart';
+import 'package:nukleon/game/entities/entities.dart';
+import 'package:nukleon/game/game.dart';
 import 'package:provider/provider.dart';
 
 /// Primary is always an element to place

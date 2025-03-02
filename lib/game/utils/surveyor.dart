@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:shitter/game/entities/entities.dart';
+import 'package:nukleon/game/entities/entities.dart';
 
 final class GeomSurveyor {
   GeomSurveyor._();
