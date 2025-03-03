@@ -25,9 +25,9 @@ abstract class SpriteSet<T> {
   SpriteTextureKey resolveTextureKey(Set<T> states);
   LinearTransformer resolveTransformation(Set<T> states);
 
-  static SpriteSetAll all(SpriteTextureKey value,
+  static SpriteSetAll<T> all<T>(SpriteTextureKey value,
           {required LinearTransformer transform}) =>
-      SpriteSetAll(value, transform: transform);
+      SpriteSetAll<T>(value, transform: transform);
 
   static SpriteSetMapper<T> fromMap<T>(Map<T, SpriteSetProperty> map) =>
       SpriteSetMapper<T>(map);

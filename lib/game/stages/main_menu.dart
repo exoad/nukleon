@@ -17,10 +17,7 @@ class MainMenuStage extends StatelessWidget {
         child: Stack(
           children: <Widget>[
             Positioned.fill(
-                child: Image.asset(
-              "assets/backdrops/main_menu_1984.png",
-              fit: BoxFit.cover,
-            )),
+                child: Image.asset("assets/backdrops/shitter.png", fit: BoxFit.fill)),
             Positioned.fill(
               child: Padding(
                 padding: const EdgeInsets.all(52),

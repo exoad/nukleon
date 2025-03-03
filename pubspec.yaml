@@ -39,6 +39,7 @@ flutter:
     - shaders/explosion_distort.frag
     - shaders/ve_pixelate.frag
     - shaders/ve_posterize.frag
+    - shaders/ve_sepia.frag
   fonts:
     - family: PixelPlay
       fonts:

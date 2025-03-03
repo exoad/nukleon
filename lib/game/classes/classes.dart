@@ -2,7 +2,6 @@ import 'package:auto_injector/auto_injector.dart';
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:nukleon/engine/engine.dart';
-import 'package:nukleon/main.dart';
 
 export "items/items.dart";
 export "ui/ui.dart";
