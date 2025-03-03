@@ -1,3 +1,4 @@
+import "package:nukleon/client/client.dart";
 import "package:nukleon/engine/engine.dart";
 import "package:nukleon/game/classes/classes.dart";
 import "package:nukleon/game/classes/ui/item_border_prototype.dart";
@@ -21,6 +22,7 @@ void main() async {
   Public.textureFilter = PublicK.TEXTURE_FILTER_NONE;
   await Engine.initializeEngine();
   await GameRoot.I.loadBuiltinItems();
+  await Client.initialize();
   Engine.bootstrap(MainMenuStage());
 }
 
@@ -115,7 +117,7 @@ class AppRoot extends StatelessWidget {
                       color: Color.fromARGB(255, 56, 61, 74),
                       child: Column(
                         children: <Widget>[
-                          FilledButton.tonal(child: Text("INSHALLAH"), onPressed: () {}),
+                          FilledButton.tonal(child: Text("FFF"), onPressed: () {}),
                           ButtonFacetWidget.widget(
                               facet: Button1(), onPressed: () {}, child: Text("Amogus"))
                         ],

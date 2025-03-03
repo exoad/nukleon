@@ -74,6 +74,12 @@ class TextureRegistry {
     }
   }
 
+  static void registerTextureMaps(Map<String, TextureMap> images) {
+    for (MapEntry<String, TextureMap> entry in images.entries) {
+      registerTextureMap(entry.key, entry.value);
+    }
+  }
+
   static AtlasSprite get nullTextureSprite {
     if (!I._coreCache["internal"]!.containsKey("Null_Texture")) {
       panicNow(

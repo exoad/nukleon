@@ -34,9 +34,11 @@ class GameRoot {
     i = 1;
     Facet.M.addLazySingleton<Button1>(Button1.new);
     Facet.M.addLazySingleton<BorderPrototype>(BorderPrototype.new);
+    Facet.M.addLazySingleton<ButtonFacetConcept1>(ButtonFacetConcept1.new);
     Facet.M.commit();
     ItemsRegistry.I.addItemDefinition(i++, Class.UI, Facet.M.get<Button1>());
     ItemsRegistry.I.addItemDefinition(i++, Class.UI, Facet.M.get<BorderPrototype>());
+    ItemsRegistry.I.addItemDefinition(i++, Class.UI, Facet.M.get<ButtonFacetConcept1>());
     Shared.logger.info("Loaded builtin items into the engine registry");
   }
 

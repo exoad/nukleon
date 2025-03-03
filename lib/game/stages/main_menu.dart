@@ -30,7 +30,7 @@ class MainMenuStage extends StatelessWidget {
                     children: <Widget>[
                       Text.rich(
                         TextSpan(
-                            text: "Shitter",
+                            text: "Nukleon",
                             style: TextStyle(
                                 fontFamily: "Nokia Cellphone FC",
                                 fontSize: 64,
@@ -54,11 +54,15 @@ class MainMenuStage extends StatelessWidget {
                       ),
                       const SizedBox(height: 34),
                       ButtonFacetWidget.widget(
-                          facet: Button1(),
+                          facet: Facet.M.get<ButtonFacetConcept1>(),
                           onPressed: () {},
-                          child: Text(
-                            "New Game",
-                            style: TextStyle(fontSize: 22, fontFamily: "PixelPlay"),
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8, vertical: 1),
+                            child: Text(
+                              "New Game",
+                              style: TextStyle(fontSize: 22, fontFamily: "PixelPlay"),
+                            ),
                           )),
                       const SizedBox(height: 14),
                       ButtonFacetWidget.widget(

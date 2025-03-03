@@ -37,22 +37,21 @@ final class Shared {
           "GAME___[${record.level.name.padRight(7)}]: ${record.time.year}-${record.time.month}-${record.time.day}, ${record.time.hour}:${record.time.minute}:${record.time.millisecond}: ${record.message}";
       print(built);
     });
-    TextureRegistry.registerTextureMap(
-        "content",
-        (await TextureAtlasLoader.loadAssetsAtlas(textureAtlasLocation))
-            .toTextureMap("content"));
-    TextureRegistry.registerTextureMap(
-        "ui_content",
-        (await TextureAtlasLoader.loadAssetsAtlas(uiTextureAtlasLocation))
-            .toTextureMap("ui_content"));
-    TextureRegistry.registerTextureMap(
-        "tiles_content",
-        (await TextureAtlasLoader.loadAssetsAtlas(tilesTextureAtlasLocation))
-            .toTextureMap("tiles_content"));
-    TextureRegistry.registerTextureMap(
-        "icons_content",
-        (await TextureAtlasLoader.loadAssetsAtlas(iconsTextureAtlasLocation))
-            .toTextureMap("icons_content"));
+    TextureRegistry.registerTextureMaps(<String, TextureMap>{
+      "content": (await TextureAtlasLoader.loadAssetsAtlas(textureAtlasLocation))
+          .toTextureMap("content"),
+      "ui_content": (await TextureAtlasLoader.loadAssetsAtlas(uiTextureAtlasLocation))
+          .toTextureMap("ui_content"),
+      "tiles_content":
+          (await TextureAtlasLoader.loadAssetsAtlas(tilesTextureAtlasLocation))
+              .toTextureMap("tiles_content"),
+      "icons_content":
+          (await TextureAtlasLoader.loadAssetsAtlas(iconsTextureAtlasLocation))
+              .toTextureMap("icons_content"),
+      "concept_ui":
+          (await TextureAtlasLoader.loadAssetsAtlas("textures/concept_ui.atlas"))
+              .toTextureMap("concept_ui")
+    });
     // reactorItemsTexture = await TextureAtlasLoader.loadAssetsAtlas(textureAtlasLocation);
     Shared.logger.info("Shared Resources initialized.");
   }

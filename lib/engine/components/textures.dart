@@ -53,17 +53,17 @@ class SpriteSetResolver<T> implements SpriteSet<T> {
 }
 
 @immutable
-class SpriteSetAll with EquatableMixin implements SpriteSet<dynamic> {
+class SpriteSetAll<T> with EquatableMixin implements SpriteSet<T> {
   final SpriteTextureKey value;
   final LinearTransformer transform;
 
   const SpriteSetAll(this.value, {required this.transform});
 
   @override
-  SpriteTextureKey resolveTextureKey(Set<dynamic> states) => value;
+  SpriteTextureKey resolveTextureKey(Set<T> states) => value;
 
   @override
-  LinearTransformer resolveTransformation(Set<dynamic> states) => transform;
+  LinearTransformer resolveTransformation(Set<T> states) => transform;
 
   @override
   List<Object?> get props => <Object?>[value, transform];
