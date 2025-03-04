@@ -13,14 +13,14 @@ Border_Prototype
   index: -1
 Button_Facet_1_Normal
   rotate: false
-  xy: 64, 0
+  xy: 32, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 Button_Facet_1_Pressed
   rotate: false
-  xy: 32, 0
+  xy: 64, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
