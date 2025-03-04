@@ -22,7 +22,7 @@ final class Shared {
   static const double uiGridParentPadding = 10;
   static const double uiGridChildPadding = 10;
 
-  static const String textureAtlasLocation = "textures/content.atlas";
+  static const String textureAtlasLocation = "textures/reactor_items.atlas";
   static const String uiTextureAtlasLocation = "textures/ui_content.atlas";
   static const String tilesTextureAtlasLocation = "textures/tiles_content.atlas";
   static const String iconsTextureAtlasLocation = "textures/icons_content.atlas";

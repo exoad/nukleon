@@ -26,9 +26,10 @@ def __run_cmd__(
     logger.info(f"{name} invoked at {time.ctime(start_build_time)}")
     build_context: subprocess.CompletedProcess[str] = subprocess.run(
         invokes,
-        cwd=os.getcwd() + curr_dir,
+        cwd=os.getcwd(),
         stderr=std_err,
         stdout=std_out,
+        check=True,
         text=True,
     )
     # might need to finish some encoding issues with the output
@@ -47,12 +48,11 @@ if __name__ == "__main__":
     console_handler.setFormatter(formatter)
     logger.addHandler(console_handler)
     logger.setLevel(logging.DEBUG)
+    wd = os.getcwd()
+    os.chdir("tools/TextureMapper")
     __run_cmd__(
         "TEXTURE_COMPACT",
-        curr_dir="/tools/TextureMapper/",
-        invokes=["./gradlew", "run"],
+        curr_dir=".",
+        invokes=["gradlew.bat", "run"],
     )
-    __run_cmd__(
-        "RUN_APP_DEBUG",
-        invokes=["flutter", "run", "-d", current_platform],
-    )
+    os.chdir(wd)
