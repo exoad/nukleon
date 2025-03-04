@@ -24,7 +24,7 @@ final class Shared {
 
   static const String textureAtlasLocation = "textures/reactor_items.atlas";
   static const String uiTextureAtlasLocation = "textures/ui_content.atlas";
-  static const String tilesTextureAtlasLocation = "textures/tiles_content.atlas";
+  static const String tilesTextureAtlasLocation = "textures/tiles.atlas";
   static const String iconsTextureAtlasLocation = "textures/icons_content.atlas";
 
   /// Game side logger
