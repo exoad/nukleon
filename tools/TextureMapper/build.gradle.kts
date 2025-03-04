@@ -1,11 +1,9 @@
 plugins {
     id("java")
-    kotlin("jvm")
+    id("application")
 }
-
 group = "net.exoad"
 version = "1.0-SNAPSHOT"
-
 repositories {
     mavenCentral()
 }
@@ -15,7 +13,9 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter")
     implementation("com.badlogicgames.gdx:gdx-tools:1.13.1")
 }
-
+application {
+    mainClass = "net.exoad.nukleon.tools.texturemapper.Main"
+}
 tasks.test {
     useJUnitPlatform()
 }
