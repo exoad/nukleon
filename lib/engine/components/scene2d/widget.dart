@@ -1,5 +1,6 @@
 import 'package:nukleon/engine/components/scene2d.dart';
 import 'package:nukleon/engine/engine.dart';
+import 'package:provider/provider.dart';
 
 class Scene2DController extends SceneNavigator<Widget> with ChangeNotifier {
   Scene2DController(super.graph);
@@ -42,11 +43,16 @@ class _Scene2DWidgetState extends State<Scene2DWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return widget.atopChild == null
-        ? SizedBox(child: widget.controller.peekNode)
-        : Stack(alignment: Alignment.center, children: <Widget>[
-            Positioned.fill(child: widget.controller.peekNode),
-            widget.atopChild!,
-          ]);
+    return ChangeNotifierProvider<Scene2DController>.value(
+        value: widget.controller,
+        builder: (BuildContext context, Widget? child) {
+          Scene2DController controller = Provider.of<Scene2DController>(context);
+          return widget.atopChild == null
+              ? SizedBox(child: controller.peekNode)
+              : Stack(alignment: Alignment.center, children: <Widget>[
+                  Positioned.fill(child: controller.peekNode),
+                  widget.atopChild!,
+                ]);
+        });
   }
 }

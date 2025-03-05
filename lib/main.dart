@@ -1,4 +1,5 @@
 import "package:nukleon/client/client.dart";
+import "package:nukleon/engine/components/scene2d.dart";
 import "package:nukleon/engine/engine.dart";
 import "package:nukleon/game/classes/classes.dart";
 import "package:nukleon/game/classes/ui/item_border_prototype.dart";
@@ -9,7 +10,6 @@ import "package:nukleon/game/facets/facets.dart";
 import "package:nukleon/game/entities/entities.dart";
 import "package:nukleon/game/facets/static_facet.dart";
 import "package:nukleon/game/game.dart";
-import "package:nukleon/game/stages/main_menu.dart";
 import "package:nukleon/game/utils/surveyor.dart";
 
 import "dart:ui" as ui;
@@ -23,7 +23,25 @@ void main() async {
   await Engine.initializeEngine();
   await GameRoot.I.loadBuiltinItems();
   await Client.initialize();
-  Engine.bootstrap(MainMenuStage());
+  SceneGraph<Widget> testScene = SceneGraph<Widget>();
+  testScene.create(0, ColoredBox(color: Colors.red));
+  testScene.create(1, ColoredBox(color: Colors.blue));
+  testScene.create(2, ColoredBox(color: Colors.green));
+  testScene.create(3, ColoredBox(color: Colors.purple));
+  testScene.linkSequential(const <GraphEdge>[
+    GraphEdge(from: 0, to: 1),
+    GraphEdge(from: 1, to: 2),
+    GraphEdge(from: 2, to: 3)
+  ]);
+  Scene2DController scene2dController = Scene2DController(testScene);
+  scene2dController.sequence = SceneSequence(const <int>[0, 1, 2, 3]);
+  Engine.bootstrap(Scene2DWidget(
+    controller: scene2dController,
+    atopChild: Row(children: <Widget>[
+      FilledButton(onPressed: () => scene2dController.next(true), child: Text("Next")),
+      FilledButton(onPressed: () => scene2dController.back(true), child: Text("Back"))
+    ]),
+  ));
 }
 
 class CullingReactorGridPainter extends CustomPainter {

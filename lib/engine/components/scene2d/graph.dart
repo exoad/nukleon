@@ -2,12 +2,13 @@ import 'dart:collection';
 
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
+import 'package:nukleon/engine/engine.dart';
 
-class _GraphEdge with EquatableMixin {
+class GraphEdge with EquatableMixin {
   final int from;
   final int to;
 
-  const _GraphEdge({required this.from, required this.to});
+  const GraphEdge({required this.from, required this.to});
 
   @override
   List<Object?> get props => <Object?>[from, to];
@@ -23,7 +24,7 @@ class SceneGraph<T> {
 
   void _checkNodeId(int id) {
     if (id < 0) {
-      throw "SceneGraph Node ID must be non-negative. Got $id";
+      panicNow("SceneGraph Node ID must be non-negative.", details: "Got $id");
     }
   }
 
@@ -41,7 +42,7 @@ class SceneGraph<T> {
 
   T peekNode(int i) {
     if (!_dict.containsKey(i)) {
-      throw "Node $i is not defined.";
+      panicNow("Node $i is not defined.");
     }
     return _dict[i]!;
   }
@@ -121,14 +122,30 @@ class SceneGraph<T> {
     }
   }
 
+  /// Simplification for calling [link] multiple times on a sequential link
+  void linkSequential(List<GraphEdge> edges, [List<bool>? bidrectional]) {
+    if (bidrectional != null) {
+      if (bidrectional.length != edges.length) {
+        throw "If supplying bidrectionality, the length of edges [${edges.length}] must equal the bidrectionality properties [${bidrectional.length}]";
+      }
+      for (int i = 0; i < edges.length; i++) {
+        link(from: edges[i].from, to: edges[i].to, bidirectional: bidrectional[i]);
+      }
+    } else {
+      for (int i = 0; i < edges.length; i++) {
+        link(from: edges[i].from, to: edges[i].to);
+      }
+    }
+  }
+
   int get vertices => _dict.length;
 
   int get edges {
-    Set<_GraphEdge> uniqueEdges = <_GraphEdge>{};
+    Set<GraphEdge> uniqueEdges = <GraphEdge>{};
     for (int from in _graph.keys) {
       for (int to in _graph[from]!) {
         uniqueEdges.add(
-            from < to ? _GraphEdge(from: from, to: to) : _GraphEdge(from: to, to: from));
+            from < to ? GraphEdge(from: from, to: to) : GraphEdge(from: to, to: from));
       }
     }
     return uniqueEdges.length;
