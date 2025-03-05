@@ -1,5 +1,6 @@
 import "package:nukleon/client/client.dart";
 import "package:nukleon/engine/components/scene2d.dart";
+import "package:nukleon/engine/debug/debug_scene2d.dart";
 import "package:nukleon/engine/engine.dart";
 import "package:nukleon/game/classes/classes.dart";
 import "package:nukleon/game/classes/ui/item_border_prototype.dart";
@@ -36,12 +37,7 @@ void main() async {
   Scene2DController scene2dController = Scene2DController(testScene);
   scene2dController.sequence = SceneSequence(const <int>[0, 1, 2, 3]);
   Engine.bootstrap(Scene2DWidget(
-    controller: scene2dController,
-    atopChild: Row(children: <Widget>[
-      FilledButton(onPressed: () => scene2dController.next(true), child: Text("Next")),
-      FilledButton(onPressed: () => scene2dController.back(true), child: Text("Back"))
-    ]),
-  ));
+      controller: scene2dController, atopChild: DebugScene2DControls(wrap: true)));
 }
 
 class CullingReactorGridPainter extends CustomPainter {
