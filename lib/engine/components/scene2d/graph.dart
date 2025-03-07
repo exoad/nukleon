@@ -88,12 +88,12 @@ class SceneGraph<T> {
     if (!_graph.containsKey(from)) {
       panicNow(
           "SCENE2D: From node $from (to $to) doesn't exist in the graph. Maybe you forgot to link it?",
-          help: "The current scene:\n${toString()}");
+          help: "\nThe current scene:\n${toString()}");
     }
     if (!_graph.containsKey(to)) {
       panicNow(
           "SCENE2D: To node $to (from $from) doesn't exist in the graph. Maybe you forgot to link it?",
-          help: "The current scene:\n${toString()}");
+          help: "\nThe current scene:\n${toString()}");
     }
     BoolList visited = BoolList(vertices);
     Queue<int> q = Queue<int>();
@@ -150,7 +150,7 @@ class SceneGraph<T> {
       if (bidrectional.length != edges.length) {
         panicNow(
             "SCENE2D: If supplying bidrectionality, the length of edges [${edges.length}] must equal the bidrectionality properties [${bidrectional.length}]",
-            help: "The current scene:\n${toString()}");
+            help: "\nThe current scene:\n${toString()}");
       }
       for (int i = 0; i < edges.length; i++) {
         link(from: edges[i].from, to: edges[i].to, bidirectional: bidrectional[i]);
@@ -187,7 +187,7 @@ class SceneGraph<T> {
   String toString() {
     StringBuffer buffer = StringBuffer("SceneGraph[Vertices=$vertices,Edges=$edges]\n");
     for (MapEntry<int, T> entry in _dict.entries) {
-      buffer.write("\t${entry.key} = ${entry.value}\n");
+      buffer.write("\t${entry.key}=${entry.value}\n");
     }
     buffer.write("\t=");
     for (int i = 0; i < 10; i++) {

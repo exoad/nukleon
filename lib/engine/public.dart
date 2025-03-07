@@ -35,22 +35,28 @@ final class Public {
     return s.longestString.length + 1;
   }
 
+  /// In regards to #19: https://github.com/exoad/nukleon/issues/19
+  static Iterable<String> _wrapperDebugWordWrap(String r) {
+    List<String> res = <String>[];
+    for (String r in r.split("\n")) {
+      res.add(debugWordWrap(r, panicMessageLength, wrapIndent: panicMessageWrapIndent)
+          .join("\n"));
+    }
+    return res;
+  }
+
   static String formatErrorMessage(String message, [String? internal, String? help]) {
     StringBuffer buffer = StringBuffer("\n\n");
-    Iterable<String> messageWrapped =
-        debugWordWrap(message, panicMessageLength, wrapIndent: panicMessageWrapIndent);
-    Iterable<String>? helpWrapped = help == null
-        ? null
-        : debugWordWrap("Help: $help", panicMessageLength,
-            wrapIndent: panicMessageWrapIndent);
+    Iterable<String> messageWrapped = _wrapperDebugWordWrap(message);
+    Iterable<String>? helpWrapped =
+        help == null ? null : _wrapperDebugWordWrap("Help: $help");
     int maxInternalLength = -1;
     StringBuffer? internalStrBuffer;
     if (internal != null) {
       internalStrBuffer = StringBuffer();
       internalStrBuffer.write("\n\n");
       for (String r in internal.split("\n")) {
-        Iterable<String> wrapped =
-            debugWordWrap(r, panicMessageLength, wrapIndent: panicMessageWrapIndent);
+        Iterable<String> wrapped = _wrapperDebugWordWrap(r);
         internalStrBuffer.write(" ${wrapped.join("\n")}");
         maxInternalLength = max(maxInternalLength, wrapped.longestString.length + 1);
       }
