@@ -51,7 +51,7 @@ class _Scene2DWidgetState extends State<Scene2DWidget> {
               ? SizedBox(child: controller.peekNode)
               : Stack(alignment: Alignment.center, children: <Widget>[
                   Positioned.fill(child: controller.peekNode),
-                  widget.atopChild!,
+                  Positioned.fill(child: widget.atopChild!),
                 ]);
         });
   }

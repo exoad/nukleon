@@ -1,4 +1,5 @@
 import 'package:nukleon/engine/components/scene2d.dart';
+import 'package:nukleon/engine/engine.dart';
 
 class SceneNavigator<T> {
   final SceneGraph<T> _graph;
@@ -8,10 +9,11 @@ class SceneNavigator<T> {
 
   set sequence(SceneSequence seq) => _sequence = seq;
 
+  SceneGraph<T> get graph => _graph;
+
   void _checkSequenceExistence() {
-    if (_sequence == null) {
-      throw "Cannot access Scene Sequence because it is not loaded!";
-    }
+    panicIf(_sequence == null,
+        label: "SCENE2D: Cannot access Scene Sequence because it is not loaded!");
   }
 
   /// pretty expensive operation. basically traverses to see if the path represented by [_sequence] exists in the graph. (takes a walk of the graph)
@@ -41,9 +43,10 @@ class SceneNavigator<T> {
 
   /// Loops through the entire sequence ONCE. It does not wrap and does not perform heavy weight path checking, if a path does not exist, it will fail when it arrives at that point, it does not fail prematurely.
   void aggregate({bool reset = true, required void Function(int, T) listener}) {
-    if (_sequence == null) {
-      throw "The supplied sequence is null. Cannot aggregate on a nonexistent sequence!";
-    }
+    panicIf(_sequence == null,
+        label:
+            "SCENE2D_NAV: The supplied sequence is null. Cannot aggregate on a nonexistent sequence!",
+        help: "The current scene:\n${_graph.toString()}");
     if (reset) {
       _sequence!.resetPointer();
     }
@@ -55,9 +58,10 @@ class SceneNavigator<T> {
 
   /// Similar to [aggregate] but returns a list of all of the values encountered in order of their appearance. If [allowDupes] is set to `true`, the aggregator will return an [Iterable] with potential for non-unique values; otherwise it will return a list of unique values.
   Iterable<T> aggregateValues({bool reset = true, bool allowDupes = true}) {
-    if (_sequence == null) {
-      throw "The supplied sequence is null. Cannot aggregate on a nonexistent sequence!";
-    }
+    panicIf(_sequence == null,
+        label:
+            "SCENE2D_NAV: The supplied sequence is null. Cannot aggregate on a nonexistent sequence!",
+        help: "The current scene:\n${_graph.toString()}");
     if (reset) {
       _sequence!.resetPointer();
     }
@@ -77,7 +81,6 @@ class SceneNavigator<T> {
       return values;
     }
   }
-
 
   T get peekNode {
     _checkSequenceExistence();
@@ -101,13 +104,13 @@ class SceneNavigator<T> {
 }
 
 /// A standalone sequence of positions to walk along a graph. Where the positions in the sequence denote from the ith position to the kth position.
-/// i[0] -> i[1] -> ... -> i[len - 1]
+/// `i[0]` -> `i[1]` -> ... -> `i[len - 1]`
 class SceneSequence {
   final List<int> sequence;
   int _ptr;
 
   SceneSequence(this.sequence)
-      : assert(sequence.isNotEmpty, "A sequence cannot be empty!"),
+      : assert(sequence.isNotEmpty, "SCENE2D: A sequence cannot be empty!"),
         _ptr = 0;
 
   void resetPointer() {

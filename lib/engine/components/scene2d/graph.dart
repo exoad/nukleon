@@ -4,11 +4,11 @@ import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:nukleon/engine/engine.dart';
 
-class GraphEdge with EquatableMixin {
+class SceneLink with EquatableMixin {
   final int from;
   final int to;
 
-  const GraphEdge({required this.from, required this.to});
+  const SceneLink({required this.from, required this.to});
 
   @override
   List<Object?> get props => <Object?>[from, to];
@@ -23,9 +23,23 @@ class SceneGraph<T> {
         _dict = <int, T>{};
 
   void _checkNodeId(int id) {
-    if (id < 0) {
-      panicNow("SceneGraph Node ID must be non-negative.", details: "Got $id");
+    // if (id < 0) {
+    //   panicNow("SceneGraph Node ID must be non-negative.", details: "Got $id");
+    // }
+  }
+
+  /// Tries to remove the node [id] from the graph. if [tryFix] is set to `true`, this method
+  /// will try to repair the graph if removals leaves the graph disconnected. otherwise, this function
+  /// will just leave the graph as is if it is disconnected, which is highly unsafe. however, setting it to
+  /// `false` will mean that there are no checks in place thus reducing latency if the programmer gurantees this check implicitly.
+  void removeNode(int id, [bool tryFix = true]) {
+    // TODO: implement
+    if (!_dict.containsKey(id)) {
+      logger.warning(
+          "SCENE2D: The node $id is not defined. Removing can be dangerous without a definition.");
     }
+    if (tryFix) {
+    } else {}
   }
 
   /// Searches for an edge node (the node in the adjacency list with the highest ID)
@@ -40,9 +54,10 @@ class SceneGraph<T> {
     return _graph.keys.min;
   }
 
+  /// Looks up [i] in the dictionary. Good for finding the value of a node relative to the graph.
   T peekNode(int i) {
     if (!_dict.containsKey(i)) {
-      panicNow("Node $i is not defined.");
+      panicNow("SCENE2D: Node $i is not defined.");
     }
     return _dict[i]!;
   }
@@ -58,20 +73,27 @@ class SceneGraph<T> {
         _graph[from]!.contains(to);
   }
 
+  /// Checks if a path exists nodes [from] and nodes [to]. Performs BFS.
   bool containsPath({required int from, required int to}) {
     _checkNodeId(from);
     _checkNodeId(to);
     if (!_dict.containsKey(from)) {
-      print("From node $from (to $to) doesn't have a definition! This can be dangerous.");
+      logger.warning(
+          "SCENE2D: From node $from (to $to) doesn't have a definition! This can be dangerous.");
     }
     if (!_dict.containsKey(to)) {
-      print("To node $to (from $from) doesn't have a definition! This can be dangerous.");
+      logger.warning(
+          "SCENE2D: To node $to (from $from) doesn't have a definition! This can be dangerous.");
     }
     if (!_graph.containsKey(from)) {
-      throw "From node $from (to $to) doesn't exist in the graph. Maybe you forgot to link it?";
+      panicNow(
+          "SCENE2D: From node $from (to $to) doesn't exist in the graph. Maybe you forgot to link it?",
+          help: "The current scene:\n${toString()}");
     }
     if (!_graph.containsKey(to)) {
-      throw "To node $to (from $from) doesn't exist in the graph. Maybe you forgot to link it?";
+      panicNow(
+          "SCENE2D: To node $to (from $from) doesn't exist in the graph. Maybe you forgot to link it?",
+          help: "The current scene:\n${toString()}");
     }
     BoolList visited = BoolList(vertices);
     Queue<int> q = Queue<int>();
@@ -108,12 +130,12 @@ class SceneGraph<T> {
     _checkNodeId(from);
     _checkNodeId(to);
     if (!_dict.containsKey(from)) {
-      print(
-          "Linking from node $from (to $to) doesn't have a definition! This can be dangerous.");
+      logger.warning(
+          "SCENE2D: Linking from node $from (to $to) doesn't have a definition! This can be dangerous.");
     }
     if (!_dict.containsKey(to)) {
-      print(
-          "Linking to node $to (from $from) doesn't have a definition! This can be dangerous.");
+      logger.warning(
+          "SCENE2D: Linking to node $to (from $from) doesn't have a definition! This can be dangerous.");
     }
     _graph.putIfAbsent(from, () => <int>{}).add(to);
     _graph.putIfAbsent(to, () => <int>{});
@@ -123,10 +145,12 @@ class SceneGraph<T> {
   }
 
   /// Simplification for calling [link] multiple times on a sequential link
-  void linkSequential(List<GraphEdge> edges, [List<bool>? bidrectional]) {
+  void linkSequential(List<SceneLink> edges, [List<bool>? bidrectional]) {
     if (bidrectional != null) {
       if (bidrectional.length != edges.length) {
-        throw "If supplying bidrectionality, the length of edges [${edges.length}] must equal the bidrectionality properties [${bidrectional.length}]";
+        panicNow(
+            "SCENE2D: If supplying bidrectionality, the length of edges [${edges.length}] must equal the bidrectionality properties [${bidrectional.length}]",
+            help: "The current scene:\n${toString()}");
       }
       for (int i = 0; i < edges.length; i++) {
         link(from: edges[i].from, to: edges[i].to, bidirectional: bidrectional[i]);
@@ -141,11 +165,11 @@ class SceneGraph<T> {
   int get vertices => _dict.length;
 
   int get edges {
-    Set<GraphEdge> uniqueEdges = <GraphEdge>{};
+    Set<SceneLink> uniqueEdges = <SceneLink>{};
     for (int from in _graph.keys) {
       for (int to in _graph[from]!) {
         uniqueEdges.add(
-            from < to ? GraphEdge(from: from, to: to) : GraphEdge(from: to, to: from));
+            from < to ? SceneLink(from: from, to: to) : SceneLink(from: to, to: from));
       }
     }
     return uniqueEdges.length;

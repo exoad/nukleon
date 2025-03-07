@@ -10,15 +10,25 @@ class DebugScene2DControls extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(spacing: 4, children: <Widget>[
-      DebugButton(
-          text: "NEXT",
-          onPressed: () =>
-              Provider.of<Scene2DController>(context, listen: false).next(wrap)),
-      DebugButton(
-          text: "BACK",
-          onPressed: () =>
-              Provider.of<Scene2DController>(context, listen: false).back(wrap))
-    ]);
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            spacing: 4,
+            children: <Widget>[
+              DebugButton(
+                  text: "BACK",
+                  onPressed: () =>
+                      Provider.of<Scene2DController>(context, listen: false).back(wrap)),
+              DebugButton(
+                  text: "NEXT",
+                  onPressed: () =>
+                      Provider.of<Scene2DController>(context, listen: false).next(wrap)),
+            ]),
+      ),
+    );
   }
 }

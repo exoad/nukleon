@@ -56,6 +56,7 @@ class GameEntry extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         theme: ThemeData(
+            fontFamily: "PixelPlay",
             colorScheme: const ColorScheme(
               brightness: Brightness.dark,
               primary: Color(0xfffffaff),
