@@ -2,12 +2,14 @@
 <img src="./Artwork/icon.png" width=64/><br/>Nukleon
 </h1>
 <p align="center">
-A 2D automation game about operating a nuclear powerplant <em>in an <a href="https://en.wikipedia.org/wiki/Nineteen_Eighty-Four">Orwellian future</a>.</em>
-<br/>
+<strong>A 2D automation game about operating a nuclear powerplant <em>in an <a href="https://en.wikipedia.org/wiki/Nineteen_Eighty-Four">Orwellian future</a>.</em></strong>
 <br/>
 Created using <a href="https://flutter/">Flutter</a>.
 </p>
-<hr/>
+
+<p align="center">
+<img src="https://img.shields.io/github/actions/workflow/status/exoad/nukleon/test.yml?style=plastic&label=auto%20tests"/> <img src="https://img.shields.io/github/actions/workflow/status/exoad/nukleon/api_static.yml?style=plastic&label=api%20docs%20build"/>
+</p>
 
 **Looking for testers and supporters! Join the Discord [here](https://discord.gg/PbJQRT9zQ8)**
 
