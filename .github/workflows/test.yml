@@ -1,0 +1,21 @@
+name: Tests
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+jobs:
+  build_windows:
+    runs-on: windows-latest
+    steps:
+      - name: "setup flutter"
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.x"
+          channel: "stable"
+      - uses: actions/checkout@v3
+      - run: flutter --version
+      - run: flutter config --enable-windows-desktop
+      - run: flutter pub get
+      - name: "Run flutter tests"
+        run: flutter test
