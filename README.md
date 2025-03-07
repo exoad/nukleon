@@ -8,7 +8,7 @@ Created using <a href="https://flutter/">Flutter</a>.
 </p>
 
 <p align="center">
-<img src="https://img.shields.io/github/actions/workflow/status/exoad/nukleon/test.yml?style=plastic&label=auto%20tests"/> <img src="https://img.shields.io/github/actions/workflow/status/exoad/nukleon/api_static.yml?style=plastic&label=api%20docs%20build"/>
+<a href="https://github.com/exoad/nukleon/actions/workflows/test.yml"><img src="https://img.shields.io/github/actions/workflow/status/exoad/nukleon/test.yml?style=plastic&label=auto%20tests"/></a> <a href="https://github.com/exoad/nukleon/actions/workflows/api_static.yml"><img src="https://img.shields.io/github/actions/workflow/status/exoad/nukleon/api_static.yml?style=plastic&label=api%20docs%20build"/></a>
 </p>
 
 **Looking for testers and supporters! Join the Discord [here](https://discord.gg/PbJQRT9zQ8)**
