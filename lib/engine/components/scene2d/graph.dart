@@ -187,7 +187,7 @@ class SceneGraph<T> {
   String toString() {
     StringBuffer buffer = StringBuffer("SceneGraph[Vertices=$vertices,Edges=$edges]\n");
     for (MapEntry<int, T> entry in _dict.entries) {
-      buffer.write("\t${entry.key}=${entry.value}\n");
+      buffer.write("\t${entry.key} = ${entry.value}\n");
     }
     buffer.write("\t=");
     for (int i = 0; i < 10; i++) {

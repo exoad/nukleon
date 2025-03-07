@@ -122,7 +122,7 @@ class GameEntry extends StatelessWidget {
 void panicNow(String label, {String? details, String? help}) {
   logger.severe(
       "[[ !! Engine Panicked ${Public.useLennyFaceOnPanic ? 'ಠ╭╮ಠ' : ''} !! ]] '$label'");
-  throw Public.formatErrorMessage(label, details, help);
+  throw Exception(Public.formatErrorMessage(label, details, help));
 }
 
 @pragma("vm:prefer-inline")
