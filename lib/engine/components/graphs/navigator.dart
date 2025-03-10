@@ -1,15 +1,15 @@
-import 'package:nukleon/engine/components/scene2d.dart';
+import 'package:nukleon/engine/components/graphs/graph.dart';
 import 'package:nukleon/engine/engine.dart';
 
-class SceneNavigator<T> {
-  final SceneGraph<T> _graph;
-  SceneSequence? _sequence;
+class DGraphAggregator<T> {
+  final DGraph<T> _graph;
+  StaticDGraphSeq? _sequence;
 
-  SceneNavigator(SceneGraph<T> graph) : _graph = graph;
+  DGraphAggregator(DGraph<T> graph) : _graph = graph;
 
-  set sequence(SceneSequence seq) => _sequence = seq;
+  set sequence(StaticDGraphSeq seq) => _sequence = seq;
 
-  SceneGraph<T> get graph => _graph;
+  DGraph<T> get graph => _graph;
 
   void _checkSequenceExistence() {
     panicIf(_sequence == null,
@@ -31,7 +31,7 @@ class SceneNavigator<T> {
     return false;
   }
 
-  SceneSequence get sequence {
+  StaticDGraphSeq get sequence {
     _checkSequenceExistence();
     return _sequence!;
   }
@@ -103,27 +103,60 @@ class SceneNavigator<T> {
   }
 }
 
-/// A standalone sequence of positions to walk along a graph. Where the positions in the sequence denote from the ith position to the kth position.
-/// `i[0]` -> `i[1]` -> ... -> `i[len - 1]`
-class SceneSequence {
-  final List<int> sequence;
+sealed class DGraphSeq {
   int _ptr;
 
-  SceneSequence(this.sequence)
-      : assert(sequence.isNotEmpty, "SCENE2D: A sequence cannot be empty!"),
-        _ptr = 0;
+  DGraphSeq() : _ptr = 0;
 
+  void next([bool wrap = false]);
+
+  void back([bool wrap = false]);
+
+  void reset() => _ptr = 0;
+
+  int get location => _ptr;
+}
+
+class VariableDGraphSeq extends DGraphSeq {
+  int max;
+  int min;
+
+  VariableDGraphSeq(this.max, [this.min = 0]) : super();
+
+  @override
+  void back([bool wrap = false]) {
+    if (wrap && _ptr - 1 < min) {
+      _ptr = max;
+    } else {
+      _ptr--;
+    }
+  }
+
+  @override
+  void next([bool wrap = false]) {
+    // TODO: implement next
+  }
+}
+
+/// A standalone sequence of positions to walk along a graph. Where the positions in the sequence denote from the ith position to the kth position.
+/// `i[0]` -> `i[1]` -> ... -> `i[len - 1]`
+class StaticDGraphSeq extends DGraphSeq {
+  final List<int> sequence;
+
+  StaticDGraphSeq(this.sequence)
+      : assert(sequence.isNotEmpty, "SCENE2D: A sequence cannot be empty!"),
+        super();
   void resetPointer() {
     _ptr = 0;
   }
 
-  void next([bool wrap = false]) {
-    _ptr == sequence.length - 1 && wrap ? _ptr = 0 : _ptr++;
-  }
-
+  @override
   void back([bool wrap = false]) {
-    _ptr == 0 && wrap ? _ptr = sequence.length - 1 : _ptr--;
+    // TODO: implement back
   }
 
-  int get location => _ptr;
+  @override
+  void next([bool wrap = false]) {
+    // TODO: implement next
+  }
 }

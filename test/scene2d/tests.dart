@@ -1,13 +1,13 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:nukleon/engine/components/scene2d.dart';
+import 'package:nukleon/engine/components/graphs/graph.dart';
 
 import '../test.dart';
 
 void testScene2d() {
-  SceneGraph<String> graph = SceneGraph<String>();
-  graph.create(0, "Amogus");
-  graph.create(1, "Sus");
-  graph.create(2, "WTF");
+  DGraph<String> graph = DGraph<String>();
+  graph.create(0, "A");
+  graph.create(1, "B");
+  graph.create(2, "C");
   graph.link(from: 0, to: 1);
   graph.link(from: 1, to: 2, bidirectional: false);
   print(graph);
@@ -17,12 +17,12 @@ void testScene2d() {
       throwsException);
   t(
       "ValidSeq=[0,1,2]",
-      (SceneNavigator<String>(graph)..sequence = SceneSequence(<int>[0, 1, 2]))
+      (DGraphAggregator<String>(graph)..sequence = StaticDGraphSeq(<int>[0, 1, 2]))
           .isValidSequence,
       true);
   t(
-      "AggSeq[0,1,2]=[Amogus,Sus,WTF]",
-      (SceneNavigator<String>(graph)..sequence = SceneSequence(<int>[0, 1, 2]))
+      "AggSeq[0,1,2]=[A,B,C]",
+      (DGraphAggregator<String>(graph)..sequence = StaticDGraphSeq(<int>[0, 1, 2]))
           .aggregateValues(),
-      <String>["Amogus", "Sus", "WTF"]);
+      <String>["A", "B", "C"]);
 }

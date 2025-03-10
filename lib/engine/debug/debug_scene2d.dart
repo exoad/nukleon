@@ -1,4 +1,4 @@
-import 'package:nukleon/engine/components/scene2d/widget.dart';
+import 'package:nukleon/engine/components/scene2d.dart';
 import 'package:nukleon/engine/debug/debug_buttons.dart';
 import 'package:nukleon/engine/engine.dart';
 import 'package:provider/provider.dart';

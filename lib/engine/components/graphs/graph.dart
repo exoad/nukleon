@@ -4,21 +4,23 @@ import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:nukleon/engine/engine.dart';
 
-class SceneLink with EquatableMixin {
+export "navigator.dart";
+
+class DGraphLink with EquatableMixin {
   final int from;
   final int to;
 
-  const SceneLink({required this.from, required this.to});
+  const DGraphLink({required this.from, required this.to});
 
   @override
   List<Object?> get props => <Object?>[from, to];
 }
 
-class SceneGraph<T> {
+class DGraph<T> {
   final Map<int, Set<int>> _graph; // adjlist and represents a directed graph
   final Map<int, T> _dict;
 
-  SceneGraph()
+  DGraph()
       : _graph = <int, Set<int>>{},
         _dict = <int, T>{};
 
@@ -145,7 +147,7 @@ class SceneGraph<T> {
   }
 
   /// Simplification for calling [link] multiple times on a sequential link
-  void linkSequential(List<SceneLink> edges, [List<bool>? bidrectional]) {
+  void linkSequential(List<DGraphLink> edges, [List<bool>? bidrectional]) {
     if (bidrectional != null) {
       if (bidrectional.length != edges.length) {
         panicNow(
@@ -165,11 +167,11 @@ class SceneGraph<T> {
   int get vertices => _dict.length;
 
   int get edges {
-    Set<SceneLink> uniqueEdges = <SceneLink>{};
+    Set<DGraphLink> uniqueEdges = <DGraphLink>{};
     for (int from in _graph.keys) {
       for (int to in _graph[from]!) {
         uniqueEdges.add(
-            from < to ? SceneLink(from: from, to: to) : SceneLink(from: to, to: from));
+            from < to ? DGraphLink(from: from, to: to) : DGraphLink(from: to, to: from));
       }
     }
     return uniqueEdges.length;
