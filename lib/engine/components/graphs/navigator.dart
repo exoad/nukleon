@@ -134,7 +134,11 @@ class VariableDGraphSeq extends DGraphSeq {
 
   @override
   void next([bool wrap = false]) {
-    // TODO: implement next
+    if (wrap && _ptr + 1 > max) {
+      _ptr = min;
+    } else {
+      _ptr++;
+    }
   }
 }
 
@@ -152,11 +156,19 @@ class StaticDGraphSeq extends DGraphSeq {
 
   @override
   void back([bool wrap = false]) {
-    // TODO: implement back
+    if (wrap && sequence.within(_ptr - 1)) {
+      _ptr = sequence.length - 1;
+    } else {
+      _ptr--;
+    }
   }
 
   @override
   void next([bool wrap = false]) {
-    // TODO: implement next
+    if (wrap && sequence.within(_ptr + 1)) {
+      _ptr = 0;
+    } else {
+      _ptr++;
+    }
   }
 }
