@@ -146,6 +146,23 @@ class HotDGraphSeq extends DGraphSeq {
   }
 }
 
+mixin DGraphTraverser<T> on DGraph<T> {
+  int _ptr = 0;
+
+  void goto(int ptr) {
+    if (ptr <= max && ptr >= min) {
+      panicNow("D_GRAPH: Cannot move pointer to $ptr. It is out of bounds [$max]");
+    }
+    _ptr = ptr;
+  }
+
+  int get pointer => _ptr;
+
+  T peekNodeAtPointer() {
+    return peekNode(_ptr);
+  }
+}
+
 class BoundedDGraphSeq extends DGraphSeq {
   final int max;
   final int min;

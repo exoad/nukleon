@@ -1,24 +1,15 @@
+import 'package:nukleon/engine/components/graphs/graph.dart';
 import 'package:nukleon/engine/components/scene2d.dart';
 import 'package:nukleon/engine/engine.dart';
 import 'package:provider/provider.dart';
 
-final class Stage2D extends Scene2D with ChangeNotifier {
+final class Stage2D extends Scene2D with ChangeNotifier, DGraphTraverser<Widget> {
   static final Stage2D _instance = Stage2D._();
 
   Stage2D._();
 
   factory Stage2D() {
     return _instance;
-  }
-
-  @override
-  int get max {
-    throw UnsupportedError("Stage2D does not allow for ordered nodes.");
-  }
-
-  @override
-  int get min {
-    throw UnsupportedError("Stage2D does not allow for ordered nodes");
   }
 
   @override
