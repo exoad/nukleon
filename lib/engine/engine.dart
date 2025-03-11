@@ -14,6 +14,10 @@ export "package:flutter/material.dart" hide Route, OverlayRoute;
 export "package:flutter/services.dart";
 export "package:flutter/foundation.dart";
 export "package:flame/components.dart";
+export "package:nukleon/engine/graphics/ui.dart";
+export "package:nukleon/engine/graphics/nulls.dart";
+export "package:nukleon/engine/graphics/vfx.dart";
+export "package:nukleon/engine/registries/items_registry.dart";
 
 typedef TextureAtlas = TexturePackerAtlas;
 typedef AtlasSprite = TexturePackerSprite;
