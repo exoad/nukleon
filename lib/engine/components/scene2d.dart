@@ -1,10 +1,13 @@
 // this more of a tree rather a graph, but a tree is a graph >:)
+import 'package:nukleon/engine/components/graphs/graph.dart';
 import 'package:nukleon/engine/engine.dart';
 
-import 'package:nukleon/engine/components/graphs/navigator.dart';
 import 'package:provider/provider.dart';
 
-class Scene2DController extends DGraphAggregator<Widget> with ChangeNotifier {
+typedef Scene2D = DGraph<Widget>;
+typedef Scene2DNavgiator = DGraphAggregator<Widget>;
+
+class Scene2DController extends DGraphNavigator<Widget> with ChangeNotifier {
   Scene2DController(super.graph);
 
   @override
@@ -50,9 +53,9 @@ class _Scene2DWidgetState extends State<Scene2DWidget> {
         builder: (BuildContext context, Widget? child) {
           Scene2DController controller = Provider.of<Scene2DController>(context);
           return widget.atopChild == null
-              ? SizedBox(child: controller.peekNode)
+              ? SizedBox(child: controller.currentNode)
               : Stack(alignment: Alignment.center, children: <Widget>[
-                  Positioned.fill(child: controller.peekNode),
+                  Positioned.fill(child: controller.currentNode),
                   Positioned.fill(child: widget.atopChild!),
                 ]);
         });

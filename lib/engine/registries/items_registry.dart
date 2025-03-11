@@ -1,13 +1,13 @@
 import 'package:nukleon/engine/engine.dart';
 
 final class ItemsRegistry {
-  static final ItemsRegistry I = ItemsRegistry._();
+  static final ItemsRegistry I = ItemsRegistry();
 
   /// The indices represents the layer
   final Map<Class, Map<int, ItemDefinition>> _items;
   final Map<Class, Map<String, int>> _identifiersRemap;
 
-  ItemsRegistry._()
+  ItemsRegistry()
       : _items = Map<Class, Map<int, ItemDefinition>>.fromIterables(
             Class.values, <Map<int, ItemDefinition>>[
           for (int i = 0; i < Class.values.length; i++) <int, ItemDefinition>{}

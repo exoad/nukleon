@@ -19,15 +19,24 @@ class DGraphLink with EquatableMixin {
 class DGraph<T> {
   final Map<int, Set<int>> _graph; // adjlist and represents a directed graph
   final Map<int, T> _dict;
+  int? _max;
+  int? _min;
 
   DGraph()
       : _graph = <int, Set<int>>{},
         _dict = <int, T>{};
 
-  void _checkNodeId(int id) {
+  @protected
+  void checkNodeId(int id) {
     // if (id < 0) {
     //   panicNow("SceneGraph Node ID must be non-negative.", details: "Got $id");
     // }
+  }
+
+  /// Potentially expensive operation to recalculate [max] and [min] directly. Runs in linear time.
+  void updateBounds() {
+    _max = _dict.keys.max;
+    _min = _dict.keys.min;
   }
 
   /// Tries to remove the node [id] from the graph. if [tryFix] is set to `true`, this method
@@ -38,7 +47,7 @@ class DGraph<T> {
     // TODO: implement
     if (!_dict.containsKey(id)) {
       logger.warning(
-          "SCENE2D: The node $id is not defined. Removing can be dangerous without a definition.");
+          "D_GRAPH: The node $id is not defined. Removing can be dangerous without a definition.");
     }
     if (tryFix) {
     } else {}
@@ -48,18 +57,24 @@ class DGraph<T> {
   ///
   /// This saves us time from using a splayed tree.
   int get max {
-    return _graph.keys.max;
+    if (_max == null) {
+      panicNow("D_GRAPH: Graph not populated, unable to fetch 'max' node handle");
+    }
+    return _max!;
   }
 
   /// Searches for an edge node with the lowest ID
   int get min {
-    return _graph.keys.min;
+    if (_min == null) {
+      panicNow("D_GRAPH: Graph not populated, unable to fetch 'min' node handle");
+    }
+    return _min!;
   }
 
   /// Looks up [i] in the dictionary. Good for finding the value of a node relative to the graph.
   T peekNode(int i) {
     if (!_dict.containsKey(i)) {
-      panicNow("SCENE2D: Node $i is not defined.");
+      panicNow("D_GRAPH: Node $i is not defined.");
     }
     return _dict[i]!;
   }
@@ -77,24 +92,22 @@ class DGraph<T> {
 
   /// Checks if a path exists nodes [from] and nodes [to]. Performs BFS.
   bool containsPath({required int from, required int to}) {
-    _checkNodeId(from);
-    _checkNodeId(to);
+    checkNodeId(from);
+    checkNodeId(to);
     if (!_dict.containsKey(from)) {
-      logger.warning(
-          "SCENE2D: From node $from (to $to) doesn't have a definition! This can be dangerous.");
+      panicNow("D_GRAPH: From node $from (to $to) doesn't have a definition!");
     }
     if (!_dict.containsKey(to)) {
-      logger.warning(
-          "SCENE2D: To node $to (from $from) doesn't have a definition! This can be dangerous.");
+      panicNow("D_GRAPH: To node $to (from $from) doesn't have a definition!");
     }
     if (!_graph.containsKey(from)) {
       panicNow(
-          "SCENE2D: From node $from (to $to) doesn't exist in the graph. Maybe you forgot to link it?",
+          "D_GRAPH: From node $from (to $to) doesn't exist in the graph. Maybe you forgot to link it?",
           help: "\nThe current scene:\n${toString()}");
     }
     if (!_graph.containsKey(to)) {
       panicNow(
-          "SCENE2D: To node $to (from $from) doesn't exist in the graph. Maybe you forgot to link it?",
+          "D_GRAPH: To node $to (from $from) doesn't exist in the graph. Maybe you forgot to link it?",
           help: "\nThe current scene:\n${toString()}");
     }
     BoolList visited = BoolList(vertices);
@@ -124,20 +137,29 @@ class DGraph<T> {
   Iterable<int> operator [](int id) => neighborsOf(id);
 
   void create(int id, T node) {
-    _checkNodeId(id);
+    checkNodeId(id);
+    if (_max == null && _min == null) {
+      _max = id;
+      _min = id;
+    } else {
+      if (id > max) {
+        _max = id;
+      }
+      if (id < min) {
+        _min = id;
+      }
+    }
     _dict[id] = node;
   }
 
   void link({required int from, required int to, bool bidirectional = true}) {
-    _checkNodeId(from);
-    _checkNodeId(to);
+    checkNodeId(from);
+    checkNodeId(to);
     if (!_dict.containsKey(from)) {
-      logger.warning(
-          "SCENE2D: Linking from node $from (to $to) doesn't have a definition! This can be dangerous.");
+      panicNow("D_GRAPH: Linking from node $from (to $to) doesn't have a definition!");
     }
     if (!_dict.containsKey(to)) {
-      logger.warning(
-          "SCENE2D: Linking to node $to (from $from) doesn't have a definition! This can be dangerous.");
+      panicNow("D_GRAPH: Linking to node $to (from $from) doesn't have a definition!");
     }
     _graph.putIfAbsent(from, () => <int>{}).add(to);
     _graph.putIfAbsent(to, () => <int>{});
@@ -151,7 +173,7 @@ class DGraph<T> {
     if (bidrectional != null) {
       if (bidrectional.length != edges.length) {
         panicNow(
-            "SCENE2D: If supplying bidrectionality, the length of edges [${edges.length}] must equal the bidrectionality properties [${bidrectional.length}]",
+            "D_GRAPH: If supplying bidrectionality, the length of edges [${edges.length}] must equal the bidrectionality properties [${bidrectional.length}]",
             help: "\nThe current scene:\n${toString()}");
       }
       for (int i = 0; i < edges.length; i++) {
@@ -187,7 +209,8 @@ class DGraph<T> {
 
   @override
   String toString() {
-    StringBuffer buffer = StringBuffer("SceneGraph[Vertices=$vertices,Edges=$edges]\n");
+    StringBuffer buffer =
+        StringBuffer("DirectedGraph[Vertices=$vertices,Edges=$edges]\n");
     for (MapEntry<int, T> entry in _dict.entries) {
       buffer.write("\t${entry.key} = ${entry.value}\n");
     }

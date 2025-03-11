@@ -1,15 +1,21 @@
 import 'package:nukleon/engine/components/graphs/graph.dart';
 import 'package:nukleon/engine/engine.dart';
 
-class DGraphAggregator<T> {
+class DGraphNavigator<T> with DGraphAggregator<T> {
   final DGraph<T> _graph;
-  StaticDGraphSeq? _sequence;
 
-  DGraphAggregator(DGraph<T> graph) : _graph = graph;
+  DGraphNavigator(DGraph<T> graph) : _graph = graph;
+
+  @override
+  DGraph<T> get graph => _graph;
+}
+
+mixin DGraphAggregator<T> {
+  StaticDGraphSeq? _sequence;
 
   set sequence(StaticDGraphSeq seq) => _sequence = seq;
 
-  DGraph<T> get graph => _graph;
+  DGraph<T> get graph;
 
   void _checkSequenceExistence() {
     panicIf(_sequence == null,
@@ -21,7 +27,7 @@ class DGraphAggregator<T> {
   bool get isValidSequence {
     if (_sequence != null) {
       for (int i = 1; i < _sequence!.sequence.length; i++) {
-        if (!_graph.containsPath(
+        if (!graph.containsPath(
             from: _sequence!.sequence[i - 1], to: _sequence!.sequence[i])) {
           return false;
         }
@@ -46,12 +52,12 @@ class DGraphAggregator<T> {
     panicIf(_sequence == null,
         label:
             "SCENE2D_NAV: The supplied sequence is null. Cannot aggregate on a nonexistent sequence!",
-        help: "The current scene:\n${_graph.toString()}");
+        help: "The current scene:\n${graph.toString()}");
     if (reset) {
       _sequence!.resetPointer();
     }
     for (int i = 0; i < _sequence!.sequence.length; i++) {
-      listener(_sequence!.location, _graph.peekNode(_sequence!.location));
+      listener(_sequence!.location, graph.peekNode(_sequence!.location));
       _sequence!.next();
     }
   }
@@ -61,35 +67,35 @@ class DGraphAggregator<T> {
     panicIf(_sequence == null,
         label:
             "SCENE2D_NAV: The supplied sequence is null. Cannot aggregate on a nonexistent sequence!",
-        help: "The current scene:\n${_graph.toString()}");
+        help: "The current scene:\n${graph.toString()}");
     if (reset) {
       _sequence!.resetPointer();
     }
     if (allowDupes) {
       List<T> values = <T>[];
       for (int i = 0; i < _sequence!.sequence.length; i++) {
-        values.add(_graph.peekNode(_sequence!.location));
+        values.add(graph.peekNode(_sequence!.location));
         _sequence!.next();
       }
       return values;
     } else {
       Set<T> values = <T>{};
       for (int i = 0; i < _sequence!.sequence.length; i++) {
-        values.add(_graph.peekNode(_sequence!.location));
+        values.add(graph.peekNode(_sequence!.location));
         _sequence!.next();
       }
       return values;
     }
   }
 
-  T get peekNode {
+  T get currentNode {
     _checkSequenceExistence();
-    return _graph.peekNode(location);
+    return graph.peekNode(location);
   }
 
   Iterable<int> get peekNeighbors {
     _checkSequenceExistence();
-    return _graph.neighborsOf(_sequence!._ptr);
+    return graph.neighborsOf(_sequence!._ptr);
   }
 
   void next([bool wrap = false]) {
@@ -117,16 +123,39 @@ sealed class DGraphSeq {
   int get location => _ptr;
 }
 
-class VariableDGraphSeq extends DGraphSeq {
-  int max;
-  int min;
+enum DGraphSeqDirection {
+  BACK,
+  NEXT;
+}
 
-  VariableDGraphSeq(this.max, [this.min = 0]) : super();
+class HotDGraphSeq extends DGraphSeq {
+  final int Function(int ptr, DGraphSeqDirection dir, bool wrap) _delegate;
+
+  HotDGraphSeq(int Function(int ptr, DGraphSeqDirection dir, bool wrap) delegate)
+      : _delegate = delegate,
+        super();
 
   @override
   void back([bool wrap = false]) {
-    if (wrap && _ptr - 1 < min) {
-      _ptr = max;
+    _ptr = _delegate(_ptr, DGraphSeqDirection.BACK, wrap);
+  }
+
+  @override
+  void next([bool wrap = false]) {
+    _ptr = _delegate(_ptr, DGraphSeqDirection.NEXT, wrap);
+  }
+}
+
+class BoundedDGraphSeq extends DGraphSeq {
+  final int max;
+  final int min;
+
+  BoundedDGraphSeq({required this.max, required this.min}) : super();
+
+  @override
+  void back([bool wrap = false]) {
+    if (_ptr - 1 < min) {
+      _ptr = wrap ? max : min;
     } else {
       _ptr--;
     }
@@ -134,8 +163,8 @@ class VariableDGraphSeq extends DGraphSeq {
 
   @override
   void next([bool wrap = false]) {
-    if (wrap && _ptr + 1 > max) {
-      _ptr = min;
+    if (_ptr + 1 > max) {
+      _ptr = wrap ? min : max;
     } else {
       _ptr++;
     }
@@ -145,10 +174,11 @@ class VariableDGraphSeq extends DGraphSeq {
 /// A standalone sequence of positions to walk along a graph. Where the positions in the sequence denote from the ith position to the kth position.
 /// `i[0]` -> `i[1]` -> ... -> `i[len - 1]`
 class StaticDGraphSeq extends DGraphSeq {
-  final List<int> sequence;
+  final List<int> _sequence;
 
-  StaticDGraphSeq(this.sequence)
+  StaticDGraphSeq(List<int> sequence)
       : assert(sequence.isNotEmpty, "SCENE2D: A sequence cannot be empty!"),
+        _sequence = sequence,
         super();
   void resetPointer() {
     _ptr = 0;
@@ -156,8 +186,8 @@ class StaticDGraphSeq extends DGraphSeq {
 
   @override
   void back([bool wrap = false]) {
-    if (wrap && sequence.within(_ptr - 1)) {
-      _ptr = sequence.length - 1;
+    if (wrap && _sequence.within(_ptr - 1)) {
+      _ptr = _sequence.length - 1;
     } else {
       _ptr--;
     }
@@ -165,10 +195,15 @@ class StaticDGraphSeq extends DGraphSeq {
 
   @override
   void next([bool wrap = false]) {
-    if (wrap && sequence.within(_ptr + 1)) {
+    if (wrap && _sequence.within(_ptr + 1)) {
       _ptr = 0;
     } else {
       _ptr++;
     }
   }
+
+  List<int> get sequence => _sequence;
+
+  @override
+  int get location => _sequence[_ptr];
 }

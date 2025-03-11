@@ -33,6 +33,10 @@ class SingleLinearTransformer extends LinearTransformer {
   final Matrix4 transformation;
   SingleLinearTransformer(this.transformation);
 
+  Matrix4 resolveSingle() {
+    return resolve(Size.zero, Size.zero);
+  }
+
   @override
   Matrix4 resolve(Size canvasSize, Size itemSize) {
     return transformation;
