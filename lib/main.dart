@@ -9,6 +9,7 @@ import "package:nukleon/game/facets/facets.dart";
 import "package:nukleon/game/entities/entities.dart";
 import "package:nukleon/game/facets/static_facet.dart";
 import "package:nukleon/game/game.dart";
+import "package:nukleon/game/stages/stages.dart";
 import "package:nukleon/game/utils/surveyor.dart";
 
 import "dart:ui" as ui;
@@ -22,6 +23,8 @@ void main() async {
   await Engine.initializeEngine();
   await GameRoot.I.loadBuiltinItems();
   await Client.initialize();
+  Stage2D.I.create(0, SimpleLoreTextScene(child: Text("Hello World!")));
+  Engine.bootstrap(GameStage(start: 0));
 }
 
 class CullingReactorGridPainter extends CustomPainter {

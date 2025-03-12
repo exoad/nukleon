@@ -18,13 +18,14 @@ class DGraphLink with EquatableMixin {
 
 class DGraph<T> {
   final Map<int, Set<int>> _graph; // adjlist and represents a directed graph
-  final Map<int, T> _dict;
+  @protected
+  final Map<int, T> dict;
   int? _max;
   int? _min;
 
   DGraph()
       : _graph = <int, Set<int>>{},
-        _dict = <int, T>{};
+        dict = <int, T>{};
 
   @protected
   void checkNodeId(int id) {
@@ -35,8 +36,8 @@ class DGraph<T> {
 
   /// Potentially expensive operation to recalculate [max] and [min] directly. Runs in linear time.
   void updateBounds() {
-    _max = _dict.keys.max;
-    _min = _dict.keys.min;
+    _max = dict.keys.max;
+    _min = dict.keys.min;
   }
 
   /// Tries to remove the node [id] from the graph. if [tryFix] is set to `true`, this method
@@ -45,7 +46,7 @@ class DGraph<T> {
   /// `false` will mean that there are no checks in place thus reducing latency if the programmer gurantees this check implicitly.
   void removeNode(int id, [bool tryFix = true]) {
     // TODO: implement
-    if (!_dict.containsKey(id)) {
+    if (!dict.containsKey(id)) {
       logger.warning(
           "D_GRAPH: The node $id is not defined. Removing can be dangerous without a definition.");
     }
@@ -73,14 +74,14 @@ class DGraph<T> {
 
   /// Looks up [i] in the dictionary. Good for finding the value of a node relative to the graph.
   T peekNode(int i) {
-    if (!_dict.containsKey(i)) {
+    if (!dict.containsKey(i)) {
       panicNow("D_GRAPH: Node $i is not defined.");
     }
-    return _dict[i]!;
+    return dict[i]!;
   }
 
   bool containsNode(int id) {
-    return _dict.containsKey(id);
+    return dict.containsKey(id);
   }
 
   /// Check is a directed edge exists. this doesnt check for bidirectionality, if you want to check for that, swap the parameters and call this again
@@ -94,10 +95,10 @@ class DGraph<T> {
   bool containsPath({required int from, required int to}) {
     checkNodeId(from);
     checkNodeId(to);
-    if (!_dict.containsKey(from)) {
+    if (!dict.containsKey(from)) {
       panicNow("D_GRAPH: From node $from (to $to) doesn't have a definition!");
     }
-    if (!_dict.containsKey(to)) {
+    if (!dict.containsKey(to)) {
       panicNow("D_GRAPH: To node $to (from $from) doesn't have a definition!");
     }
     if (!_graph.containsKey(from)) {
@@ -149,16 +150,16 @@ class DGraph<T> {
         _min = id;
       }
     }
-    _dict[id] = node;
+    dict[id] = node;
   }
 
   void link({required int from, required int to, bool bidirectional = true}) {
     checkNodeId(from);
     checkNodeId(to);
-    if (!_dict.containsKey(from)) {
+    if (!dict.containsKey(from)) {
       panicNow("D_GRAPH: Linking from node $from (to $to) doesn't have a definition!");
     }
-    if (!_dict.containsKey(to)) {
+    if (!dict.containsKey(to)) {
       panicNow("D_GRAPH: Linking to node $to (from $from) doesn't have a definition!");
     }
     _graph.putIfAbsent(from, () => <int>{}).add(to);
@@ -186,7 +187,7 @@ class DGraph<T> {
     }
   }
 
-  int get vertices => _dict.length;
+  int get vertices => dict.length;
 
   int get edges {
     Set<DGraphLink> uniqueEdges = <DGraphLink>{};
@@ -204,14 +205,14 @@ class DGraph<T> {
   }
 
   Iterable<MapEntry<int, T>> get definitions {
-    return _dict.entries;
+    return dict.entries;
   }
 
   @override
   String toString() {
     StringBuffer buffer =
         StringBuffer("DirectedGraph[Vertices=$vertices,Edges=$edges]\n");
-    for (MapEntry<int, T> entry in _dict.entries) {
+    for (MapEntry<int, T> entry in dict.entries) {
       buffer.write("\t${entry.key} = ${entry.value}\n");
     }
     buffer.write("\t=");

@@ -1,6 +1,8 @@
 import 'package:nukleon/engine/engine.dart';
 
 class NullPainter extends CustomPainter {
+  const NullPainter();
+
   @override
   void paint(Canvas canvas, Size size) {
     Paint p = G.fasterPainter;
