@@ -1,4 +1,5 @@
 import 'package:nukleon/engine/engine.dart';
+import 'package:nukleon/game/classes/character/dresses.dart';
 import 'package:nukleon/game/classes/items/item_blank.dart';
 import 'package:nukleon/game/classes/ui/item_border_prototype.dart';
 import 'package:nukleon/game/controllers/pointer.dart';
@@ -39,6 +40,8 @@ class GameRoot {
     ItemsRegistry.I.addItemDefinition(i++, Class.UI, Facet.M.get<Button1>());
     ItemsRegistry.I.addItemDefinition(i++, Class.UI, Facet.M.get<BorderPrototype>());
     ItemsRegistry.I.addItemDefinition(i++, Class.UI, Facet.M.get<ButtonFacetConcept1>());
+    i = 1;
+    ItemsRegistry.I.addItemDefinition(i++, Class.CHARACTER, DressesUniform1());
     Shared.logger.info("Loaded builtin items into the engine registry");
   }
 

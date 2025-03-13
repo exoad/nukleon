@@ -48,3 +48,6 @@ flutter:
     - family: Nokia Cellphone FC
       fonts:
         - asset: fonts/nokiafc22.ttf
+    - family: "Motorola Screentype"
+      fonts:
+        - asset: fonts/MotorolaScreentype.ttf

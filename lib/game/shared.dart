@@ -1,6 +1,15 @@
 import 'package:logging/logging.dart';
 import 'package:nukleon/engine/engine.dart';
 
+const String ffBold = "Motorola Screentype";
+
+final class Thematic {
+  Thematic._();
+
+  static const Color fg1 = Color.fromARGB(255, 217, 208, 176);
+  static const Color sh1 = Color.fromARGB(255, 51, 48, 37);
+}
+
 final class Shared {
   Shared._();
 
@@ -50,7 +59,9 @@ final class Shared {
               .toTextureMap("icons_content"),
       "concept_ui":
           (await TextureAtlasLoader.loadAssetsAtlas("textures/concept_ui.atlas"))
-              .toTextureMap("concept_ui")
+              .toTextureMap("concept_ui"),
+      "character": (await TextureAtlasLoader.loadAssetsAtlas("textures/character.atlas"))
+          .toTextureMap("character")
     });
     // reactorItemsTexture = await TextureAtlasLoader.loadAssetsAtlas(textureAtlasLocation);
     Shared.logger.info("Shared Resources initialized.");

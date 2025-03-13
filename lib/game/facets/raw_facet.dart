@@ -11,7 +11,6 @@ class RawFacet<T extends ItemDefinition> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-        painter: SingleSpritePainter(sprite: facet.sprite().findTexture()));
+    return CustomPaint(painter: SingleSpritePainter(sprite: facet.sprite()));
   }
 }

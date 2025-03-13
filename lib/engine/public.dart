@@ -109,5 +109,6 @@ enum Class {
   ITEMS,
   INFO,
   OVERLAY,
-  UI;
+  UI,
+  CHARACTER;
 }

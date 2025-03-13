@@ -3,23 +3,19 @@ import 'package:nukleon/engine/utils/geom.dart' as geom;
 import 'package:nukleon/game/classes/classes.dart';
 import 'package:nukleon/game/shared.dart';
 
-/// Drawing a siingle sprite.
+/// Drawing a single sprite. Decently performant for a single one
 final class SingleSpritePainter extends ContentRenderer with RenderingMixin {
   final AtlasSprite sprite;
   final LinearTransformer? transformer;
 
-  const SingleSpritePainter({super.config, required this.sprite, this.transformer});
+  SingleSpritePainter({super.config, required SpriteTextureKey sprite, this.transformer})
+      : sprite = sprite.findTexture();
 
   @override
   void paint(Canvas canvas, Size size) {
     if (transformer != null) {
       canvas.transform(transformer!.resolve(size, sprite.size).storage);
     }
-    canvas.drawRect(
-        Offset.zero & sprite.src.size,
-        applyConfig(G.fasterPainter)
-          ..style = PaintingStyle.stroke
-          ..color = C.magenta);
     canvas.drawRawAtlas(
         sprite.image,
         Float32List(4)
@@ -48,14 +44,34 @@ final class SingleSpritePainter extends ContentRenderer with RenderingMixin {
   }
 }
 
+class SingleSpriteWidget extends StatelessWidget {
+  final SpriteTextureKey sprite;
+  final LinearTransformer? transformer;
+  final Widget? child;
+
+  const SingleSpriteWidget(
+      {super.key, required this.sprite, this.transformer, this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+        painter: SingleSpritePainter(sprite: sprite, transformer: transformer),
+        child: child);
+  }
+}
+
 @immutable
-final class _SpriteWidgetPainter extends ContentRenderer {
+final class SpriteWidgetPainter extends ContentRenderer {
   final List<AtlasSprite> sprites;
   final List<LinearTransformer>? transformations;
   final LinearTransformer? globalTransformer;
 
-  const _SpriteWidgetPainter(this.sprites, this.transformations,
-      {this.globalTransformer, super.config});
+  SpriteWidgetPainter(
+      {super.config,
+      required List<SpriteTextureKey> sprites,
+      required this.transformations,
+      required this.globalTransformer})
+      : sprites = sprites.map((SpriteTextureKey key) => key.findTexture()).toList();
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -67,17 +83,49 @@ final class _SpriteWidgetPainter extends ContentRenderer {
       if (globalTransformer != null) {
         canvas.transform(globalTransformer!.resolve(size, size).storage);
       }
-      if (transformations != null) {
+      if (transformations != null || transformations!.isNotEmpty) {
         for (int i = 0; i < sprites.length; i++) {
           if (transformations!.within(i)) {
+            canvas.save();
             canvas.transform(transformations![i].resolve(size, sprites[i].size).storage);
           }
-          canvas.drawImageRect(sprites[i].image, sprites[i].src, Offset.zero & size,
+          canvas.drawRawAtlas(
+              sprites[i].image,
+              Float32List(4)
+                ..[0] = Shared.tileInitialZoom
+                ..[1] = 0
+                ..[2] = 0
+                ..[3] = 0,
+              Float32List(4)
+                ..[0] = sprites[i].src.left
+                ..[1] = sprites[i].src.top
+                ..[2] = sprites[i].src.right
+                ..[3] = sprites[i].src.bottom,
+              null,
+              null,
+              Offset.zero & size,
               sprites[i].paint..applyConfig(config));
+          if (canvas.getSaveCount() > 0) {
+            canvas.restore();
+          }
         }
       } else {
         for (int i = 0; i < sprites.length; i++) {
-          canvas.drawImageRect(sprites[i].image, sprites[i].src, Offset.zero & size,
+          canvas.drawRawAtlas(
+              sprites[i].image,
+              Float32List(4)
+                ..[0] = Shared.tileInitialZoom
+                ..[1] = 0
+                ..[2] = 0
+                ..[3] = 0,
+              Float32List(4)
+                ..[0] = sprites[i].src.left
+                ..[1] = sprites[i].src.top
+                ..[2] = sprites[i].src.right
+                ..[3] = sprites[i].src.bottom,
+              null,
+              null,
+              Offset.zero & size,
               sprites[i].paint..applyConfig(config));
         }
       }
@@ -85,23 +133,31 @@ final class _SpriteWidgetPainter extends ContentRenderer {
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return oldDelegate is SpriteWidgetPainter &&
+        (oldDelegate.globalTransformer != globalTransformer ||
+            oldDelegate.sprites != sprites ||
+            oldDelegate.transformations != transformations);
+  }
 }
 
 @immutable
 class SpriteWidget extends StatelessWidget {
-  final List<AtlasSprite> sprites;
+  final List<SpriteTextureKey> spriteKeys;
   final List<LinearTransformer>? transformers;
   final LinearTransformer? globalTransformer;
-  final RenderingHints? config;
 
-  const SpriteWidget(this.sprites,
-      {super.key, this.transformers, this.globalTransformer, this.config});
+  const SpriteWidget(this.spriteKeys,
+      {super.key, this.transformers, this.globalTransformer});
 
   @override
-  Widget build(BuildContext context) => CustomPaint(
-      painter: _SpriteWidgetPainter(sprites, transformers,
-          globalTransformer: globalTransformer, config: config));
+  Widget build(BuildContext context) {
+    return CustomPaint(
+        painter: SpriteWidgetPainter(
+            sprites: spriteKeys,
+            transformations: transformers,
+            globalTransformer: globalTransformer));
+  }
 }
 
 // self implemented cuz the Canvas api doesnt have one lmao and stretching images from an

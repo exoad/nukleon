@@ -1,18 +1,8 @@
 import 'package:nukleon/engine/components/graphs/graph.dart';
 import 'package:nukleon/engine/components/scene2d.dart';
 import 'package:nukleon/engine/engine.dart';
+import 'package:nukleon/game/game.dart';
 import 'package:provider/provider.dart';
-
-class SimpleLoreTextScene extends StatelessWidget {
-  final Widget child;
-
-  const SimpleLoreTextScene({super.key, required this.child});
-
-  @override
-  Widget build(BuildContext context) {
-    return ColoredBox(color: C.black, child: Center(child: child));
-  }
-}
 
 final class Stage2D extends Scene2D with ChangeNotifier, DGraphTraverser<Widget> {
   static final Stage2D I = Stage2D._();
@@ -21,6 +11,13 @@ final class Stage2D extends Scene2D with ChangeNotifier, DGraphTraverser<Widget>
 
   factory Stage2D() {
     return I;
+  }
+
+  @override
+  void goto(int ptr) {
+    Shared.logger.fine("STAGE2D: Goto $ptr (from $pointer)");
+    super.goto(ptr);
+    notifyListeners();
   }
 
   @override
@@ -68,8 +65,9 @@ class _GameStageState extends State<GameStage> {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<Stage2D>.value(
-      value: Stage2D(),
-      builder: (BuildContext context, Widget? child) => Stage2D().currentNode,
+      value: Stage2D.I,
+      builder: (BuildContext context, Widget? child) =>
+          Provider.of<Stage2D>(context).currentNode,
     );
   }
 }

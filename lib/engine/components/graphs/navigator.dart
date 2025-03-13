@@ -150,7 +150,7 @@ mixin DGraphTraverser<T> on DGraph<T> {
   int _ptr = 0;
 
   void goto(int ptr) {
-    if (ptr <= max && ptr >= min) {
+    if (ptr < max && ptr > min) {
       panicNow("D_GRAPH: Cannot move pointer to $ptr. It is out of bounds [$max]");
     }
     _ptr = ptr;

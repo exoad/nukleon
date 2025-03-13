@@ -1,5 +1,6 @@
 import "package:nukleon/client/client.dart";
 import "package:nukleon/engine/engine.dart";
+import "package:nukleon/engine/utils/geom.dart";
 import "package:nukleon/game/classes/classes.dart";
 import "package:nukleon/game/classes/ui/item_border_prototype.dart";
 import "package:nukleon/game/colors.dart";
@@ -12,6 +13,8 @@ import "package:nukleon/game/game.dart";
 import "package:nukleon/game/stages/stages.dart";
 import "package:nukleon/game/utils/surveyor.dart";
 
+import "package:nukleon/game/stages/scenes.dart" as scenes;
+
 import "dart:ui" as ui;
 
 import "package:provider/provider.dart";
@@ -23,8 +26,33 @@ void main() async {
   await Engine.initializeEngine();
   await GameRoot.I.loadBuiltinItems();
   await Client.initialize();
-  Stage2D.I.create(0, SimpleLoreTextScene(child: Text("Hello World!")));
-  Engine.bootstrap(GameStage(start: 0));
+  Engine.bootstrap(GameStage());
+  Stage2D.I.create(
+      0,
+      scenes.ClickToContinue(
+          subScene: scenes.Textual(children: <InlineSpan>[
+            TextSpan(
+                text: "Summer, June 1, 1987",
+                style: TextStyle(fontSize: 32, fontFamily: ffBold)),
+          ]),
+          buttonText: "Next",
+          onPressed: () => Stage2D.I.goto(1)));
+  Stage2D.I.create(
+      1,
+      scenes.CinematicImagery(
+          top: SpriteWidget(
+            const <SpriteTextureKey>[
+              SpriteTextureKey("character", spriteName: "uniform_1"),
+              SpriteTextureKey("character", spriteName: "head_1"),
+            ],
+            transformers: <LinearTransformer>[
+              LinearTransformer.contextAware(
+                  FittingTransform.rectInRectScaledBottomCenter),
+              LinearTransformer.contextAware(
+                  FittingTransform.rectInRectScaledBottomCenter)
+            ],
+          ),
+          bottom: "Welcome to Province-4"));
 }
 
 class CullingReactorGridPainter extends CustomPainter {
@@ -185,21 +213,18 @@ class AppRoot extends StatelessWidget {
                               ),
                               SizedBox.square(
                                   dimension: Shared.kTileSize + Shared.kTileSpacing,
-                                  child: SpriteWidget(<AtlasSprite>[
-                                    TextureRegistry.getTextureSprite(SpriteTextureKey(
-                                        "content",
-                                        spriteName: "Selector_Border")),
+                                  child: SpriteWidget(<SpriteTextureKey>[
+                                    SpriteTextureKey("content",
+                                        spriteName: "Selector_Border"),
                                     if (PointerBuffer.of(context).primary != null)
                                       ItemsRegistry.I
                                           .findItemDefinition(
                                               PointerBuffer.of(context).primary!,
                                               Class.ITEMS)
                                           .sprite()
-                                          .findTexture()
                                     else
-                                      TextureRegistry.getTextureSprite(SpriteTextureKey(
-                                          "content",
-                                          spriteName: "Null_Item")),
+                                      SpriteTextureKey("content",
+                                          spriteName: "Null_Item"),
                                   ], transformers: <LinearTransformer>[])),
                             ],
                           )),
