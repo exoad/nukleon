@@ -30,3 +30,4 @@ linter:
     always_use_package_imports: true
     unnecessary_statements: true
     avoid_equals_and_hash_code_on_mutable_classes: true
+    prefer_const_constructors: true

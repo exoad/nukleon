@@ -1,3 +1,4 @@
+import "package:flutter_animate/flutter_animate.dart";
 import "package:nukleon/client/client.dart";
 import "package:nukleon/engine/engine.dart";
 import "package:nukleon/engine/utils/geom.dart";
@@ -10,6 +11,7 @@ import "package:nukleon/game/facets/facets.dart";
 import "package:nukleon/game/entities/entities.dart";
 import "package:nukleon/game/facets/static_facet.dart";
 import "package:nukleon/game/game.dart";
+import "package:nukleon/game/stages/routes/main_menu.dart";
 import "package:nukleon/game/stages/stages.dart";
 import "package:nukleon/game/utils/surveyor.dart";
 
@@ -26,33 +28,123 @@ void main() async {
   await Engine.initializeEngine();
   await GameRoot.I.loadBuiltinItems();
   await Client.initialize();
-  Engine.bootstrap(GameStage());
+  Engine.bootstrap(const GameStage());
+  Stage2D.I.create(0, const MainMenuStage());
   Stage2D.I.create(
-      0,
+      1,
       scenes.ClickToContinue(
-          subScene: scenes.Textual(children: <InlineSpan>[
+          subScene: const scenes.Textual(children: <InlineSpan>[
             TextSpan(
                 text: "Summer, June 1, 1987",
                 style: TextStyle(fontSize: 32, fontFamily: ffBold)),
           ]),
           buttonText: "Next",
-          onPressed: () => Stage2D.I.goto(1)));
+          onPressed: () => Stage2D.I.goto(2)));
   Stage2D.I.create(
-      1,
-      scenes.CinematicImagery(
-          top: SpriteWidget(
-            const <SpriteTextureKey>[
-              SpriteTextureKey("character", spriteName: "uniform_1"),
-              SpriteTextureKey("character", spriteName: "head_1"),
-            ],
-            transformers: <LinearTransformer>[
-              LinearTransformer.contextAware(
-                  FittingTransform.rectInRectScaledBottomCenter),
-              LinearTransformer.contextAware(
-                  FittingTransform.rectInRectScaledBottomCenter)
-            ],
-          ),
-          bottom: "Welcome to Province-4"));
+      2,
+      scenes.ClickToContinue(
+        buttonText: "Next",
+        onPressed: () => Stage2D.I.goto(3),
+        subScene: scenes.CinematicImagery(
+            top: SpriteWidget(
+              const <SpriteTextureKey>[
+                SpriteTextureKey("character", spriteName: "uniform_1"),
+                SpriteTextureKey("character", spriteName: "head_1"),
+              ],
+              transformers: <LinearTransformer>[
+                LinearTransformer.contextAware(
+                    FittingTransform.rectInRectScaledBottomCenter),
+                LinearTransformer.contextAware(
+                    FittingTransform.rectInRectScaledBottomCenter)
+              ],
+            ).animate(autoPlay: true).shakeY(
+                delay: const Duration(milliseconds: 300),
+                hz: 4.2,
+                duration: const Duration(milliseconds: 750)),
+            bottom: "Good Morning Citizen 115."),
+      ));
+  Stage2D.I.create(
+      3,
+      scenes.ClickToContinue(
+          buttonText: "Next",
+          onPressed: () => Stage2D.I.goto(4),
+          subScene: scenes.CinematicImagery(
+              top: SpriteWidget(
+                const <SpriteTextureKey>[
+                  SpriteTextureKey("character", spriteName: "uniform_1"),
+                  SpriteTextureKey("character", spriteName: "head_1"),
+                ],
+                transformers: <LinearTransformer>[
+                  LinearTransformer.contextAware(
+                      FittingTransform.rectInRectScaledBottomCenter),
+                  LinearTransformer.contextAware(
+                      FittingTransform.rectInRectScaledBottomCenter)
+                ],
+              ).animate(autoPlay: true).shakeY(
+                  delay: const Duration(milliseconds: 300),
+                  hz: 4.2,
+                  duration: const Duration(milliseconds: 750)),
+              bottom: "You have been selected for mandatory duties.")));
+  Stage2D.I.create(
+      4,
+      scenes.ClickToContinue(
+          buttonText: "Next",
+          onPressed: () => Stage2D.I.goto(5),
+          subScene: scenes.CinematicImagery(
+              top: SpriteWidget(
+                const <SpriteTextureKey>[
+                  SpriteTextureKey("character", spriteName: "uniform_1"),
+                  SpriteTextureKey("character", spriteName: "head_1"),
+                ],
+                transformers: <LinearTransformer>[
+                  LinearTransformer.contextAware(
+                      FittingTransform.rectInRectScaledBottomCenter),
+                  LinearTransformer.contextAware(
+                      FittingTransform.rectInRectScaledBottomCenter)
+                ],
+              ).animate(autoPlay: true).shakeY(
+                  delay: const Duration(milliseconds: 300),
+                  hz: 4.2,
+                  duration: const Duration(milliseconds: 1250)),
+              bottom:
+                  "As a citizen of Province-4, you have been appointed\nthe new Nuclear Directorate of Facility-42.")));
+  Stage2D.I.create(
+      5,
+      scenes.ClickToContinue(
+          buttonText: "Next",
+          onPressed: () => Stage2D.I.goto(6),
+          subScene: scenes.CustomCinematicImagery(
+              top: SpriteWidget(
+                const <SpriteTextureKey>[
+                  SpriteTextureKey("character", spriteName: "uniform_1"),
+                  SpriteTextureKey("character", spriteName: "head_1"),
+                ],
+                transformers: <LinearTransformer>[
+                  LinearTransformer.contextAware(
+                      FittingTransform.rectInRectScaledBottomCenter),
+                  LinearTransformer.contextAware(
+                      FittingTransform.rectInRectScaledBottomCenter)
+                ],
+              ).animate(autoPlay: true).shakeY(
+                  delay: const Duration(milliseconds: 300),
+                  hz: 4.2,
+                  duration: const Duration(milliseconds: 750)),
+              bottom: Column(
+                children: <Widget>[
+                  const Text("Temporary habitation has been provided."),
+                  const SizedBox(height: 10),
+                  const Text(
+                    "We expect max adherence and success from you.",
+                    style: TextStyle(fontSize: 30, fontFamily: ffBold),
+                  )
+                      .animate(autoPlay: true)
+                      .visibility(delay: const Duration(milliseconds: 1000))
+                      .shakeY(
+                          delay: const Duration(milliseconds: 1000),
+                          hz: 3.2,
+                          duration: const Duration(seconds: 3))
+                ],
+              ))));
 }
 
 class CullingReactorGridPainter extends CustomPainter {
@@ -143,19 +235,21 @@ class AppRoot extends StatelessWidget {
                   Container(
                       height: size.height * 0.4 - (Shared.uiPadding * 2),
                       width: 260,
-                      color: Color.fromARGB(255, 56, 61, 74),
+                      color: const Color.fromARGB(255, 56, 61, 74),
                       child: Column(
                         children: <Widget>[
-                          FilledButton.tonal(child: Text("FFF"), onPressed: () {}),
+                          FilledButton.tonal(child: const Text("FFF"), onPressed: () {}),
                           ButtonFacetWidget.widget(
-                              facet: Button1(), onPressed: () {}, child: Text("Amogus"))
+                              facet: Button1(),
+                              onPressed: () {},
+                              child: const Text("Amogus"))
                         ],
                       )),
                   const SizedBox(height: Shared.uiPadding),
                   Container(
                     height: size.height * 0.6 - (Shared.uiPadding * 2),
                     width: 260,
-                    color: Color.fromARGB(255, 56, 61, 74),
+                    color: const Color.fromARGB(255, 56, 61, 74),
                     child: StaticFacetWidget<void>.widget(
                       facet: Facet.M.get<BorderPrototype>(),
                       child: GridView.builder(
@@ -163,7 +257,7 @@ class AppRoot extends StatelessWidget {
                               parent: BouncingScrollPhysics()),
                           padding: const EdgeInsets.all(Shared.uiGridParentPadding),
                           itemCount: ItemsRegistry.I.registeredItems(Class.ITEMS) - 1,
-                          gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                               maxCrossAxisExtent: Shared.kTileSize,
                               crossAxisSpacing: Shared.uiGridChildPadding,
                               mainAxisSpacing: Shared.uiGridChildPadding),
@@ -214,7 +308,7 @@ class AppRoot extends StatelessWidget {
                               SizedBox.square(
                                   dimension: Shared.kTileSize + Shared.kTileSpacing,
                                   child: SpriteWidget(<SpriteTextureKey>[
-                                    SpriteTextureKey("content",
+                                    const SpriteTextureKey("content",
                                         spriteName: "Selector_Border"),
                                     if (PointerBuffer.of(context).primary != null)
                                       ItemsRegistry.I
@@ -223,7 +317,7 @@ class AppRoot extends StatelessWidget {
                                               Class.ITEMS)
                                           .sprite()
                                     else
-                                      SpriteTextureKey("content",
+                                      const SpriteTextureKey("content",
                                           spriteName: "Null_Item"),
                                   ], transformers: <LinearTransformer>[])),
                             ],

@@ -12,9 +12,9 @@ class BorderPrototype extends StaticFacet {
   bool get locked => false;
 
   @override
-  SpriteSet<void> get spriteSet =>
-      SpriteSetAll(SpriteTextureKey("ui_content", spriteName: "Border_Prototype"),
-          transform: LinearTransformer.identity());
+  SpriteSet<void> get spriteSet => SpriteSetAll<void>(
+      const SpriteTextureKey("ui_content", spriteName: "Border_Prototype"),
+      transform: LinearTransformer.identity());
 
   @override
   FacetHints get facetHints => FacetHints.noCenter;

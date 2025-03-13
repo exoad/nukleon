@@ -6,7 +6,10 @@ import 'package:nukleon/engine/engine.dart';
 final class Public {
   Public._();
 
+  static const bool devMode = true;
   static const String version = "1.0.0-closed-beta";
+  static const String kVersionDisplayString =
+      "$version\nClosed-Beta (${devMode ? "DEV_MODE" : "NORMAL"})\nPerformance and Content are subject to change";
 
   static bool panicOnNullTextures = true;
 

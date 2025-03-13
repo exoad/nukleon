@@ -10,6 +10,6 @@ class ButtonFacetConcept1 extends ButtonFacet {
 
   @override
   SpriteSet<ButtonSpriteStates> get spriteSet => SpriteSetAll<ButtonSpriteStates>(
-      SpriteTextureKey("concept_ui", spriteName: "Concept_Button_1"),
+      const SpriteTextureKey("concept_ui", spriteName: "Concept_Button_1"),
       transform: LinearTransformer.identity());
 }

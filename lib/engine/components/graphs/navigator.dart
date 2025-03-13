@@ -149,9 +149,14 @@ class HotDGraphSeq extends DGraphSeq {
 mixin DGraphTraverser<T> on DGraph<T> {
   int _ptr = 0;
 
-  void goto(int ptr) {
-    if (ptr < max && ptr > min) {
-      panicNow("D_GRAPH: Cannot move pointer to $ptr. It is out of bounds [$max]");
+  void goto(int ptr, [bool panic = true]) {
+    if (panic && (ptr > max || ptr < min)) {
+      panicNow(
+          "D_GRAPH: Cannot move pointer to $ptr. It is out of bounds [${definitions.map((MapEntry<int, T> entry) => entry.key)}]");
+    }
+    if (ptr == pointer) {
+      logger.warning(
+          "Trying to go to $ptr from $pointer, these are the same location! Is this a mistake?");
     }
     _ptr = ptr;
   }

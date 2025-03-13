@@ -91,13 +91,37 @@ class CinematicImagery extends StatelessWidget {
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
             SizedBox(height: 160, width: 400, child: top),
             const SizedBox(height: 22),
-            Text(
-              bottom,
-              style: style != null
-                  ? (style!..copyWith(color: Thematic.fg1))
-                  : TextStyle(color: Thematic.fg1, fontSize: 24),
+            Text.rich(
+              TextSpan(
+                  text: bottom,
+                  style: style != null
+                      ? (style!..copyWith(color: Thematic.fg1))
+                      : TextStyle(color: Thematic.fg1, fontSize: 24)),
               textAlign: TextAlign.center,
             )
+          ]),
+        ));
+  }
+}
+
+class CustomCinematicImagery extends StatelessWidget {
+  final Widget top;
+  final Widget bottom;
+  final TextStyle? style;
+
+  const CustomCinematicImagery(
+      {super.key, required this.top, required this.bottom, this.style});
+
+  @override
+  Widget build(BuildContext context) {
+    return ColoredBox(
+        color: C.black,
+        child: Padding(
+          padding: const EdgeInsets.all(42),
+          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+            SizedBox(height: 160, width: 400, child: top),
+            const SizedBox(height: 22),
+            bottom
           ]),
         ));
   }

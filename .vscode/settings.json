@@ -9,5 +9,6 @@
         "*.dirt": "groovy",
         "vector": "cpp",
         "xstring": "cpp"
-    }
+    },
+    "java.configuration.updateBuildConfiguration": "interactive"
 }

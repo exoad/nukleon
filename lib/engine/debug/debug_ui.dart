@@ -47,7 +47,7 @@ class _FlashingDebugWidgetState extends State<_FlashingDebugWidget>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 300),
     )..repeat(reverse: true);
     _colorAnimation = ColorTween(
       begin: const Color.fromARGB(255, 255, 0, 220),

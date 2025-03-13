@@ -2,6 +2,7 @@ import 'package:flame/cache.dart';
 import 'package:flame_texturepacker/flame_texturepacker.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
+import 'package:nukleon/engine/graphics/graphics.dart';
 import 'package:nukleon/engine/public.dart';
 import 'package:nukleon/engine/registries/textures_registries.dart';
 
@@ -118,7 +119,24 @@ class GameEntry extends StatelessWidget {
         home: DefaultTextStyle(
             style: const TextStyle(
                 fontFamily: "PixelPlay", color: Colors.white, fontSize: 16),
-            child: child));
+            child: Stack(children: <Widget>[
+              Positioned.fill(child: child),
+              Align(
+                alignment: Alignment.topRight,
+                child: Container(
+                    decoration: BoxDecoration(
+                        color: C.black.withAlpha(200),
+                        border: Border.all(color: Colors.white),
+                        borderRadius: BorderRadius.circular(0)),
+                    padding: EdgeInsets.all(4),
+                    child: Text.rich(
+                      TextSpan(
+                          text: Public.kVersionDisplayString,
+                          style: TextStyle(fontSize: 12, color: Colors.white)),
+                      textAlign: TextAlign.right,
+                    )),
+              )
+            ])));
   }
 }
 

@@ -16,8 +16,8 @@ class MainMenuStage extends StatelessWidget {
       child: SizedBox.expand(
         child: Stack(
           children: <Widget>[
-            Positioned.fill(
-                child: Image.asset("assets/backdrops/shitter.png", fit: BoxFit.fill)),
+            const Positioned.fill(
+                child: ColoredBox(color: Color.fromARGB(255, 26, 25, 20))),
             Positioned.fill(
               child: Padding(
                 padding: const EdgeInsets.all(52),
@@ -25,7 +25,7 @@ class MainMenuStage extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text.rich(
+                      const Text.rich(
                         TextSpan(
                             text: "Nukleon",
                             style: TextStyle(
@@ -33,16 +33,16 @@ class MainMenuStage extends StatelessWidget {
                                 fontSize: 64,
                                 shadows: <BoxShadow>[
                                   BoxShadow(
-                                      color: const Color.fromARGB(255, 51, 48, 37),
+                                      color: Color.fromARGB(255, 51, 48, 37),
                                       blurStyle: BlurStyle.solid,
-                                      offset: const Offset(0, 6))
+                                      offset: Offset(0, 6))
                                 ],
-                                color: const Color.fromARGB(255, 217, 208, 176)),
+                                color: Color.fromARGB(255, 217, 208, 176)),
                             children: <InlineSpan>[
                               TextSpan(
                                   text:
                                       "\nBuild ${Shared.version}\nEngine: ${Public.version}",
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                       shadows: <BoxShadow>[], // ignore parent paint
                                       fontFamily: "Resource",
                                       fontSize: 20,
@@ -53,9 +53,8 @@ class MainMenuStage extends StatelessWidget {
                       ButtonFacetWidget.widget(
                           facet: Facet.M.get<ButtonFacetConcept1>(),
                           onPressed: () {},
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 8, vertical: 1),
+                          child: const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 1),
                             child: Text(
                               "New Game",
                               style: TextStyle(fontSize: 22, fontFamily: "PixelPlay"),
@@ -65,7 +64,7 @@ class MainMenuStage extends StatelessWidget {
                       ButtonFacetWidget.widget(
                           facet: Button1(),
                           onPressed: () {},
-                          child: Text(
+                          child: const Text(
                             "Settings",
                             style: TextStyle(fontSize: 22, fontFamily: "PixelPlay"),
                           )),
@@ -73,7 +72,7 @@ class MainMenuStage extends StatelessWidget {
                       ButtonFacetWidget.widget(
                           facet: Button1(),
                           onPressed: () {},
-                          child: Text(
+                          child: const Text(
                             "Information",
                             style: TextStyle(fontSize: 22, fontFamily: "PixelPlay"),
                           )),

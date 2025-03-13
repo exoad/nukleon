@@ -20,7 +20,7 @@ class DebugButton extends StatelessWidget {
         style: ButtonStyle(
             visualDensity: VisualDensity.compact,
             backgroundColor: WidgetStatePropertyAll<Color>(color),
-            shadowColor: WidgetStatePropertyAll<Color>(Colors.transparent),
+            shadowColor: const WidgetStatePropertyAll<Color>(Colors.transparent),
             shape: WidgetStatePropertyAll<RoundedRectangleBorder>(RoundedRectangleBorder(
                 borderRadius: BorderRadius.zero,
                 side: BorderSide(color: textColor, width: 1.5)))),

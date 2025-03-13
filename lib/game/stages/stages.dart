@@ -1,5 +1,6 @@
 import 'package:nukleon/engine/components/graphs/graph.dart';
 import 'package:nukleon/engine/components/scene2d.dart';
+import 'package:nukleon/engine/debug/debug_buttons.dart';
 import 'package:nukleon/engine/engine.dart';
 import 'package:nukleon/game/game.dart';
 import 'package:provider/provider.dart';
@@ -14,9 +15,9 @@ final class Stage2D extends Scene2D with ChangeNotifier, DGraphTraverser<Widget>
   }
 
   @override
-  void goto(int ptr) {
+  void goto(int ptr, [bool panic = false]) {
     Shared.logger.fine("STAGE2D: Goto $ptr (from $pointer)");
-    super.goto(ptr);
+    super.goto(ptr, panic);
     notifyListeners();
   }
 
@@ -66,8 +67,31 @@ class _GameStageState extends State<GameStage> {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<Stage2D>.value(
       value: Stage2D.I,
-      builder: (BuildContext context, Widget? child) =>
-          Provider.of<Stage2D>(context).currentNode,
+      builder: (BuildContext context, Widget? child) => Public.devMode
+          ? Stack(children: <Widget>[
+              Positioned.fill(child: Provider.of<Stage2D>(context).currentNode),
+              Align(
+                alignment: Alignment.topCenter,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      spacing: 4,
+                      children: <Widget>[
+                        DebugButton(
+                            text: "BACK",
+                            onPressed: () => Provider.of<Stage2D>(context, listen: false)
+                                .goto(Stage2D.I.pointer - 1)),
+                        DebugButton(
+                            text: "NEXT",
+                            onPressed: () => Provider.of<Stage2D>(context, listen: false)
+                                .goto(Stage2D.I.pointer + 1)),
+                      ]),
+                ),
+              )
+            ])
+          : Provider.of<Stage2D>(context).currentNode,
     );
   }
 }
