@@ -13,21 +13,6 @@ Created using <a href="https://flutter/">Flutter</a>.
 
 **Looking for testers and supporters! Join the Discord [here](https://discord.gg/PbJQRT9zQ8)**
 
-> [!WARNING]
-> **:: Core Activation Protocol Initiated ::**
-> 
-> Report to `Komplex-42`.
->
-> Temporary habitation provided.
->
-> Expect...MAX_ADHERENCE.
->
-> Risk Evaluation: Critical.
-
-
-
-![](./assets/backdrops/main_menu_1984.png)
-
 Work In Progress..
 
 ---

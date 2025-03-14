@@ -4,9 +4,7 @@ import com.badlogic.gdx.tools.texturepacker.TexturePacker
 import kotlin.io.path.Path
 import kotlin.io.path.copyTo
 import kotlin.io.path.listDirectoryEntries
-import kotlin.io.path.moveTo
 import kotlin.io.path.name
-import kotlin.io.path.pathString
 import java.io.File
 import java.io.FileFilter
 import java.util.*
@@ -52,7 +50,7 @@ object Main
 		logger.info("Operating Backgrounds folder!")
 		for (bg in Path("$CONTENT_FOLDER/backgrounds/").listDirectoryEntries())
 		{
-			logger.info("Moving background: ${bg.name} -> $BACKGROUND_OUTPUT_FOLDER")
+			logger.info("Moving background: $bg -> $BACKGROUND_OUTPUT_FOLDER/${bg.name}")
 			bg.copyTo(Path("$BACKGROUND_OUTPUT_FOLDER/${bg.name}") , overwrite=true)
 		}
 	}

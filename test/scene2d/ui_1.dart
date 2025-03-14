@@ -5,7 +5,7 @@ import 'package:nukleon/engine/debug/debug_scene2d.dart';
 import 'package:nukleon/engine/engine.dart';
 
 void main() async {
-  Public.textureFilter = PublicK.TEXTURE_FILTER_NONE;
+  Public.textureFilter = FilterQuality.none;
   await Engine.initializeEngine();
   DGraph<Widget> testScene = DGraph<Widget>();
   testScene.create(

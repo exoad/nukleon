@@ -13,7 +13,7 @@ final class Public {
 
   static bool panicOnNullTextures = true;
 
-  static int textureFilter = PublicK.TEXTURE_FILTER_NONE;
+  static FilterQuality textureFilter = FilterQuality.none;
   static bool warnOnTextureMapDuplicateSprites = false;
   static bool useLennyFaceOnPanic = true;
 

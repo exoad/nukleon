@@ -16,7 +16,7 @@ final class G {
 
   static Paint get fasterPainter {
     return Paint()
-      ..filterQuality = FilterQuality.values[Public.textureFilter]
+      ..filterQuality = Public.textureFilter
       ..isAntiAlias = false;
   }
 

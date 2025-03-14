@@ -24,7 +24,7 @@ import "package:provider/single_child_widget.dart";
 
 int i = 0;
 void main() async {
-  Public.textureFilter = PublicK.TEXTURE_FILTER_NONE;
+  Public.textureFilter = FilterQuality.none;
   await Engine.initializeEngine();
   await GameRoot.I.loadBuiltinItems();
   await Client.initialize();
