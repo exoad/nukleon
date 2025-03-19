@@ -1,8 +1,8 @@
-import 'package:nukleon/engine/components/scene2d.dart';
-import 'package:nukleon/engine/components/graphs/graph.dart';
+import 'package:nukleon/src/engine/components/scene2d.dart';
+import 'package:nukleon/src/engine/components/graphs/graph.dart';
 
-import 'package:nukleon/engine/debug/debug_scene2d.dart';
-import 'package:nukleon/engine/engine.dart';
+import 'package:nukleon/src/engine/debug/debug_scene2d.dart';
+import 'package:nukleon/src/engine/engine.dart';
 
 void main() async {
   Public.textureFilter = FilterQuality.none;
@@ -24,5 +24,5 @@ void main() async {
   Scene2DController scene2dController = Scene2DController(testScene);
   scene2dController.sequence = StaticDGraphSeq(const <int>[0, 1, 2, 3]);
   Engine.bootstrap(Scene2DWidget(
-      controller: scene2dController, atopChild: DebugScene2DControls(wrap: true)));
+      controller: scene2dController, atopChild: const DebugScene2DControls(wrap: true)));
 }

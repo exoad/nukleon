@@ -25,7 +25,7 @@
   <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
   <ol class="breadcrumbs gt-separated dark hidden-xs">
     <li><a href="../../index.html">nukleon</a></li>
-    <li><a href="../../engine_components_graphs_graph/engine_components_graphs_graph-library.html">engine\components\graphs\graph.dart</a></li>
+    <li><a href="../../engine_components_graphs_graph">engine\components\graphs\graph.dart</a></li>
     <li><a href="../../engine_components_graphs_graph/DGraph-class.html">DGraph<span class="signature">&lt;<wbr><span class="type-parameter">T</span>&gt;</span></a></li>
     <li class="self-crumb">toString method</li>
   </ol>
@@ -90,7 +90,7 @@ mainly for debugging or logging.</p>
 String toString() {
   StringBuffer buffer =
       StringBuffer(&quot;DirectedGraph[Vertices=$vertices,Edges=$edges]\n&quot;);
-  for (MapEntry&lt;int, T&gt; entry in _dict.entries) {
+  for (MapEntry&lt;int, T&gt; entry in dict.entries) {
     buffer.write(&quot;\t${entry.key} = ${entry.value}\n&quot;);
   }
   buffer.write(&quot;\t=&quot;);
@@ -123,7 +123,7 @@ String toString() {
 </header>
 <ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
     <li><a href="../../index.html">nukleon</a></li>
-    <li><a href="../../engine_components_graphs_graph/engine_components_graphs_graph-library.html">graph</a></li>
+    <li><a href="../../engine_components_graphs_graph">graph</a></li>
     <li><a href="../../engine_components_graphs_graph/DGraph-class.html">DGraph<span class="signature">&lt;<wbr><span class="type-parameter">T</span>&gt;</span></a></li>
     <li class="self-crumb">toString method</li>
 </ol>

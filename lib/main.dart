@@ -1,22 +1,21 @@
 import "package:flutter_animate/flutter_animate.dart";
-import "package:flutter_soloud/flutter_soloud.dart";
-import "package:nukleon/client/client.dart";
-import "package:nukleon/engine/engine.dart";
-import "package:nukleon/engine/utils/geom.dart";
-import "package:nukleon/game/classes/classes.dart";
-import "package:nukleon/game/classes/ui/item_border_prototype.dart";
-import "package:nukleon/game/colors.dart";
+import "package:nukleon/src/client/client.dart";
+import "package:nukleon/src/engine/engine.dart";
+import "package:nukleon/src/engine/utils/geom.dart";
+import "package:nukleon/src/game/classes/classes.dart";
+import "package:nukleon/src/game/classes/ui/item_border_prototype.dart";
+import "package:nukleon/src/game/colors.dart";
 
-import "package:nukleon/game/controllers/pointer.dart";
-import "package:nukleon/game/facets/facets.dart";
-import "package:nukleon/game/entities/entities.dart";
-import "package:nukleon/game/facets/static_facet.dart";
-import "package:nukleon/game/game.dart";
-import "package:nukleon/game/stages/routes/main_menu.dart";
-import "package:nukleon/game/stages/stages.dart";
-import "package:nukleon/game/utils/surveyor.dart";
+import "package:nukleon/src/game/controllers/pointer.dart";
+import "package:nukleon/src/game/facets/facets.dart";
+import "package:nukleon/src/game/entities/entities.dart";
+import "package:nukleon/src/game/facets/static_facet.dart";
+import "package:nukleon/src/game/game.dart";
+import "package:nukleon/src/game/stages/routes/main_menu.dart";
+import "package:nukleon/src/game/stages/stages.dart";
+import "package:nukleon/src/game/utils/surveyor.dart";
 
-import "package:nukleon/game/stages/scenes.dart" as scenes;
+import "package:nukleon/src/game/stages/scenes.dart" as scenes;
 
 import "dart:ui" as ui;
 

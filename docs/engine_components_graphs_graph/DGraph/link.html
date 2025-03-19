@@ -25,7 +25,7 @@
   <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
   <ol class="breadcrumbs gt-separated dark hidden-xs">
     <li><a href="../../index.html">nukleon</a></li>
-    <li><a href="../../engine_components_graphs_graph/engine_components_graphs_graph-library.html">engine\components\graphs\graph.dart</a></li>
+    <li><a href="../../engine_components_graphs_graph">engine\components\graphs\graph.dart</a></li>
     <li><a href="../../engine_components_graphs_graph/DGraph-class.html">DGraph<span class="signature">&lt;<wbr><span class="type-parameter">T</span>&gt;</span></a></li>
     <li class="self-crumb">link method</li>
   </ol>
@@ -75,10 +75,10 @@
   <pre class="language-dart"><code class="language-dart">void link({required int from, required int to, bool bidirectional = true}) {
   checkNodeId(from);
   checkNodeId(to);
-  if (!_dict.containsKey(from)) {
+  if (!dict.containsKey(from)) {
     panicNow(&quot;D_GRAPH: Linking from node $from (to $to) doesn&#39;t have a definition!&quot;);
   }
-  if (!_dict.containsKey(to)) {
+  if (!dict.containsKey(to)) {
     panicNow(&quot;D_GRAPH: Linking to node $to (from $from) doesn&#39;t have a definition!&quot;);
   }
   _graph.putIfAbsent(from, () =&gt; &lt;int&gt;{}).add(to);
@@ -100,7 +100,7 @@
 </header>
 <ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
     <li><a href="../../index.html">nukleon</a></li>
-    <li><a href="../../engine_components_graphs_graph/engine_components_graphs_graph-library.html">graph</a></li>
+    <li><a href="../../engine_components_graphs_graph">graph</a></li>
     <li><a href="../../engine_components_graphs_graph/DGraph-class.html">DGraph<span class="signature">&lt;<wbr><span class="type-parameter">T</span>&gt;</span></a></li>
     <li class="self-crumb">link method</li>
 </ol>
