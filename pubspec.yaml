@@ -23,6 +23,7 @@ dependencies:
   logging: ^1.3.0
   path: ^1.9.0
   provider: ^6.1.2
+  vector_math: ^2.1.4
 
 dev_dependencies:
   flutter_test:
@@ -34,6 +35,7 @@ flutter:
   uses-material-design: false
   assets:
     - assets/
+    - assets/audio/tones/
     - assets/backdrops/
     - assets/backgrounds/
     - assets/images/textures/

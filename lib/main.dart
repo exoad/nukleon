@@ -1,4 +1,5 @@
 import "package:flutter_animate/flutter_animate.dart";
+import "package:flutter_soloud/flutter_soloud.dart";
 import "package:nukleon/client/client.dart";
 import "package:nukleon/engine/engine.dart";
 import "package:nukleon/engine/utils/geom.dart";
@@ -26,8 +27,12 @@ int i = 0;
 void main() async {
   Public.textureFilter = FilterQuality.none;
   await Engine.initializeEngine();
+  await Apollo.initialize();
   await GameRoot.I.loadBuiltinItems();
   await Client.initialize();
+  GameRoot.I.soundConfig.volume = 0.7;
+  ApolloRegistry.I.load("assets/audio/tones/1.wav");
+  ApolloRegistry.I.load("assets/audio/tones/2.wav");
   Engine.bootstrap(const GameStage());
   Stage2D.I.create(0, const MainMenuStage());
   Stage2D.I.create(
@@ -42,26 +47,30 @@ void main() async {
           onPressed: () => Stage2D.I.goto(2)));
   Stage2D.I.create(
       2,
-      scenes.ClickToContinue(
-        buttonText: "Next",
-        onPressed: () => Stage2D.I.goto(3),
-        subScene: scenes.CinematicImagery(
-            top: SpriteWidget(
-              const <SpriteTextureKey>[
-                SpriteTextureKey("character", spriteName: "uniform_1"),
-                SpriteTextureKey("character", spriteName: "head_1"),
-              ],
-              transformers: <LinearTransformer>[
-                LinearTransformer.contextAware(
-                    FittingTransform.rectInRectScaledBottomCenter),
-                LinearTransformer.contextAware(
-                    FittingTransform.rectInRectScaledBottomCenter)
-              ],
-            ).animate(autoPlay: true).shakeY(
-                delay: const Duration(milliseconds: 300),
-                hz: 4.2,
-                duration: const Duration(milliseconds: 750)),
-            bottom: "Good Morning Citizen 115."),
+      scenes.Paranoid(
+        onEnter: () => HermesAsync.delayed(
+            () => Apollo.quickTTS("Good Morning"), const Duration(milliseconds: 300)),
+        child: scenes.ClickToContinue(
+          buttonText: "Next",
+          onPressed: () => Stage2D.I.goto(3),
+          subScene: scenes.CinematicImagery(
+              top: SpriteWidget(
+                const <SpriteTextureKey>[
+                  SpriteTextureKey("character", spriteName: "uniform_1"),
+                  SpriteTextureKey("character", spriteName: "head_1"),
+                ],
+                transformers: <LinearTransformer>[
+                  LinearTransformer.contextAware(
+                      FittingTransform.rectInRectScaledBottomCenter),
+                  LinearTransformer.contextAware(
+                      FittingTransform.rectInRectScaledBottomCenter)
+                ],
+              ).animate(autoPlay: true).shakeY(
+                  delay: const Duration(milliseconds: 300),
+                  hz: 4.2,
+                  duration: const Duration(milliseconds: 750)),
+              bottom: "Good Morning Citizen 115."),
+        ),
       ));
   Stage2D.I.create(
       3,

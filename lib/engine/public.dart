@@ -49,7 +49,7 @@ final class Public {
   }
 
   static String formatErrorMessage(String message, [String? internal, String? help]) {
-    StringBuffer buffer = StringBuffer("\n\n");
+    final StringBuffer buffer = StringBuffer("\n\n");
     Iterable<String> messageWrapped = _wrapperDebugWordWrap(message);
     Iterable<String>? helpWrapped =
         help == null ? null : _wrapperDebugWordWrap("Help: $help");
@@ -57,7 +57,7 @@ final class Public {
     StringBuffer? internalStrBuffer;
     if (internal != null) {
       internalStrBuffer = StringBuffer();
-      internalStrBuffer.write("\n\n");
+      internalStrBuffer.write("\n");
       for (String r in internal.split("\n")) {
         Iterable<String> wrapped = _wrapperDebugWordWrap(r);
         internalStrBuffer.write(" ${wrapped.join("\n")}");
@@ -73,9 +73,7 @@ final class Public {
     }
     buffer.write("\n ${messageWrapped.join("\n")}");
     if (internalStrBuffer != null) {
-      buffer
-        ..writeln()
-        ..writeln();
+      buffer.writeln();
       for (int i = 0; i < maxStripes * 2 - 1; i++) {
         buffer.write("▱");
       }
@@ -87,7 +85,7 @@ final class Public {
       for (int i = 0; i < maxStripes * 2 - 1; i++) {
         buffer.write("▱");
       }
-      buffer.write("\n ${helpWrapped!.join("\n")}\n");
+      buffer.write("\n ${helpWrapped!.join("\n")}");
     }
     buffer.writeln();
     for (int i = 0; i < maxStripes; i++) {

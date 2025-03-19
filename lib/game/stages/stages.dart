@@ -3,6 +3,7 @@ import 'package:nukleon/engine/components/scene2d.dart';
 import 'package:nukleon/engine/debug/debug_buttons.dart';
 import 'package:nukleon/engine/engine.dart';
 import 'package:nukleon/game/game.dart';
+import 'package:nukleon/game/stages/scenes.dart';
 import 'package:provider/provider.dart';
 
 final class Stage2D extends Scene2D with ChangeNotifier, DGraphTraverser<Widget> {
@@ -17,7 +18,13 @@ final class Stage2D extends Scene2D with ChangeNotifier, DGraphTraverser<Widget>
   @override
   void goto(int ptr, [bool panic = false]) {
     Shared.logger.fine("STAGE2D: Goto $ptr (from $pointer)");
+    if (currentNode is Paranoid) {
+      (currentNode as Paranoid).onExit?.call();
+    }
     super.goto(ptr, panic);
+    if (currentNode is Paranoid) {
+      (currentNode as Paranoid).onEnter?.call();
+    }
     notifyListeners();
   }
 

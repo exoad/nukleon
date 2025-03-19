@@ -5,7 +5,7 @@ final class ImagesUtil {
   ImagesUtil._();
 
   /// Found with the help from the image package's documentation/tutorial page
-  static Future<ui.Image> readAssetPNG(String asset) async {
+  static Future<ui.Image> readAssetImage(String asset) async {
     final ui.ImageDescriptor id = await ui.ImageDescriptor.encoded(
         await ui.ImmutableBuffer.fromUint8List(
             (await rootBundle.load(asset)).buffer.asUint8List()));

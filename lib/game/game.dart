@@ -16,6 +16,7 @@ class GameRoot {
   late ValueNotifier<ReactorEntity> _reactorEntity;
   final PointerBuffer _pointerBuffer;
   final CellLocationBuffer _cellLocationBuffer;
+  final SoundConfig soundConfig = SoundConfig();
 
   GameRoot._()
       : _pointerBuffer = PointerBuffer(),
@@ -44,7 +45,7 @@ class GameRoot {
     i = 1;
     ItemsRegistry.I.addItemDefinition(i++, Class.CHARACTER, DressesUniform1());
     BitmapRegistry.I.registerEntry(BitmapEntry("main_menu_stage_background",
-        await ImagesUtil.readAssetPNG("assets/backgrounds/main_menu_stage.png")));
+        await ImagesUtil.readAssetImage("assets/backgrounds/main_menu_stage.png")));
     Shared.logger.info("Loaded builtin items into the engine registry");
   }
 

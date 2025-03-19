@@ -19,6 +19,10 @@ export "package:nukleon/engine/graphics/ui.dart";
 export "package:nukleon/engine/graphics/nulls.dart";
 export "package:nukleon/engine/graphics/vfx.dart";
 export "package:nukleon/engine/registries/items_registry.dart";
+export "package:nukleon/engine/components/apollo/apollo.dart";
+export "package:nukleon/engine/components/hermes/hermes.dart";
+export 'sprite2d/sprite2d.dart';
+export "sprite2d/sprite_set.dart";
 
 typedef TextureAtlas = TexturePackerAtlas;
 typedef AtlasSprite = TexturePackerSprite;
@@ -26,7 +30,8 @@ typedef AtlasSprite = TexturePackerSprite;
 final class Engine {
   Engine._();
 
-  static Future<void> initializeEngine([Level loggingLevel = Level.ALL]) async {
+  static Future<void> initializeEngine(
+      {Level loggingLevel = Level.ALL, bool initializeTextureRegistry = true}) async {
     hierarchicalLoggingEnabled = true;
     logger.level = loggingLevel;
     logger.onRecord.listen((LogRecord record) {
@@ -37,13 +42,15 @@ final class Engine {
     logger.info("Initializing the engine...");
     WidgetsFlutterBinding.ensureInitialized();
     await Public.initialize();
-    await TextureRegistry.initialize();
-    if (!Public.panicOnNullTextures &&
-        (TextureRegistry.getTexture("internal.atlas") == null ||
-            TextureRegistry.getTexture("internal.atlas")!.containsKey("Null_Texture") !=
-                false)) {
-      logger.warning(
-          "Continuing with NO_PANIC and no Null_Texture can produce undefined behavior!");
+    if (initializeTextureRegistry) {
+      await TextureRegistry.initialize();
+      if (!Public.panicOnNullTextures &&
+          (TextureRegistry.getTexture("internal.atlas") == null ||
+              TextureRegistry.getTexture("internal.atlas")!.containsKey("Null_Texture") !=
+                  false)) {
+        logger.warning(
+            "Continuing with NO_PANIC and no Null_Texture can produce undefined behavior!");
+      }
     }
     logger.info("Engine initialized!");
   }
@@ -110,9 +117,9 @@ class GameEntry extends StatelessWidget {
               surfaceContainerHigh: Color(0xff2d2a1f),
               surfaceContainerHighest: Color(0xff383529),
             ),
-            tooltipTheme: TooltipThemeData(
+            tooltipTheme: const TooltipThemeData(
                 exitDuration: Duration.zero,
-                decoration: const BoxDecoration(borderRadius: BorderRadius.zero))),
+                decoration: BoxDecoration(borderRadius: BorderRadius.zero))),
         debugShowCheckedModeBanner: false,
         showPerformanceOverlay: false,
         color: Colors.black,
@@ -128,8 +135,8 @@ class GameEntry extends StatelessWidget {
                         color: C.black.withAlpha(200),
                         border: Border.all(color: Colors.white),
                         borderRadius: BorderRadius.circular(0)),
-                    padding: EdgeInsets.all(4),
-                    child: Text.rich(
+                    padding: const EdgeInsets.all(4),
+                    child: const Text.rich(
                       TextSpan(
                           text: Public.kVersionDisplayString,
                           style: TextStyle(fontSize: 12, color: Colors.white)),

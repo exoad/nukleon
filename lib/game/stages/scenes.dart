@@ -1,6 +1,22 @@
 import 'package:nukleon/engine/engine.dart';
 import 'package:nukleon/game/game.dart';
 
+/// A special marker class that is used to tell [Stage2D] that this widget wants to listen
+/// to push and pop events. Its similar to using a [StatefulWidget] and listening to its
+/// `dispose` and `initState` methods, but it is not bound to the painting routine.
+class Paranoid extends StatelessWidget {
+  final void Function()? onEnter;
+  final void Function()? onExit;
+  final Widget child;
+
+  const Paranoid({super.key, this.onEnter, this.onExit, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return child;
+  }
+}
+
 class TextButton extends StatelessWidget {
   final String text;
   final TextStyle? style;
@@ -19,8 +35,8 @@ class TextButton extends StatelessWidget {
                   bottom: BorderSide(
                       color:
                           style == null ? Thematic.fg1 : style!.color ?? Thematic.fg1))),
-          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-          child: Text(text, style: style ?? TextStyle(color: Thematic.fg1)),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+          child: Text(text, style: style ?? const TextStyle(color: Thematic.fg1)),
         ));
   }
 }
@@ -39,7 +55,7 @@ class ClickToContinue extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       child: Stack(
         children: <Widget>[
           Positioned.fill(child: subScene),
@@ -68,7 +84,7 @@ class Textual extends StatelessWidget {
           TextSpan(children: children),
           style: style != null
               ? (style!..copyWith(color: Thematic.fg1))
-              : TextStyle(color: Thematic.fg1),
+              : const TextStyle(color: Thematic.fg1),
           textAlign: textAlign,
         )));
   }
@@ -96,7 +112,7 @@ class CinematicImagery extends StatelessWidget {
                   text: bottom,
                   style: style != null
                       ? (style!..copyWith(color: Thematic.fg1))
-                      : TextStyle(color: Thematic.fg1, fontSize: 24)),
+                      : const TextStyle(color: Thematic.fg1, fontSize: 24)),
               textAlign: TextAlign.center,
             )
           ]),
