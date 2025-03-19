@@ -1,8 +1,8 @@
-import 'package:nukleon/src/engine/components/scene2d.dart';
-import 'package:nukleon/src/engine/components/graphs/graph.dart';
+import 'package:nukleon/engine/components/scene2d.dart';
+import 'package:nukleon/engine/components/graphs/graph.dart';
 
-import 'package:nukleon/src/engine/debug/debug_scene2d.dart';
-import 'package:nukleon/src/engine/engine.dart';
+import 'package:nukleon/engine/debug/debug_scene2d.dart';
+import 'package:nukleon/engine/engine.dart';
 
 void main() async {
   Public.textureFilter = FilterQuality.none;

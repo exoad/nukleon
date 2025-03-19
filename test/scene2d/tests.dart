@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:nukleon/src/engine/components/graphs/graph.dart';
+import 'package:nukleon/engine/components/graphs/graph.dart';
 
 import '../test.dart';
 

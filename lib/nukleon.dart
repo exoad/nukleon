@@ -1,4 +1,7 @@
-export "src/engine/engine.dart";
-export "src/game/game.dart";
-export "src/game/shared.dart";
-export "src/client/client.dart";
+/// A 2D management game about nuclear power.
+library;
+
+export "package:nukleon/engine/engine.dart";
+export "package:nukleon/game/game.dart";
+export "package:nukleon/game/shared.dart";
+export "package:nukleon/client/client.dart";

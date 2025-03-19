@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:nukleon/src/engine/engine.dart';
-import 'package:nukleon/src/engine/sprite2d/sprite_atlas.dart';
+import 'package:nukleon/engine/engine.dart';
+import 'package:nukleon/engine/sprite2d/sprite_atlas.dart';
 
 import '../test.dart';
 
