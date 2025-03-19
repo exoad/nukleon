@@ -1,6 +1,9 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:ui' as ui;
 
+import 'package:equatable/equatable.dart';
+import 'package:nukleon/engine/utils/images.dart';
 import "package:path/path.dart" as path;
 
 import 'package:nukleon/engine/engine.dart';
@@ -75,21 +78,118 @@ final class SpriteAtlasSpriteTexture {
   }
 }
 
-class Sprite {
-  static final Map<String, Sprite> registry = <String, Sprite>{};
-
+@immutable
+class Sprite with EquatableMixin {
+  /// Represents where this sprite is located on the texture atlas
   final Rect src;
-  final String textureIdentifier;
 
-  const Sprite(this.src, this.textureIdentifier);
+  /// A strict rule of which texture atlas this sprite should pull from
+  final String textureAtlas;
 
-  Sprite.fromComponents(this.textureIdentifier,
+  /// The identifier is used not only to identify this Sprite, but also used to identify the texture it belongs to.
+  final String identifier;
+
+  const Sprite(this.textureAtlas, this.src, this.identifier);
+
+  Sprite.fromComponents(this.identifier, this.textureAtlas,
       {required Vector2 srcPosition, required Size srcSize})
       : src = Rect.fromLTWH(srcPosition.x, srcPosition.y, srcSize.width, srcSize.height);
 
-  ui.Image get texture => BitmapRegistry.I.find(textureIdentifier);
+  ui.Image get texture => BitmapRegistry.I.find(identifier);
+
+  @override
+  String toString() {
+    return "Sprite2D '$identifier'::'$textureAtlas' [${src.topLeft} -- ${src.bottomRight}]";
+  }
+
+  @override
+  List<Object?> get props => <Object?>[src, identifier];
 }
 
+final class SpriteRegistry {
+  final Map<String, Set<Sprite>> _map;
+
+  SpriteRegistry._() : _map = <String, Set<Sprite>>{};
+
+  static final SpriteRegistry I = SpriteRegistry._();
+
+  bool hasAtlas(String atlas) {
+    return _map.containsKey(atlas);
+  }
+
+  bool doesAtlasHave(String atlas, String identifier) {
+    return _map.containsKey(atlas) &&
+        _map[atlas]!.any((Sprite sprite) => sprite.identifier == identifier);
+  }
+
+  void register(String atlas) {
+    if (_map.containsKey(atlas) && _map[atlas]!.isNotEmpty) {
+      logger.warning(
+          "The Sprite Registry will clear $atlas because it already existed with ${_map[atlas]!.length} sprites");
+      _map[atlas]!.clear();
+    } else {
+      _map[atlas] = <Sprite>{};
+    }
+  }
+
+  Sprite getFrom(String atlas, String identifier) {
+    if (!_map.containsKey(atlas)) {
+      panicNow("SpriteRegistry does not have an atlas '$atlas'",
+          help: "Maybe Register/Load the atlas first?");
+    }
+    for (Sprite r in _map[atlas]!) {
+      if (r.identifier == identifier) {
+        return r;
+      }
+    }
+    panicNow("Could not find sprite '$identifier' under $atlas.");
+    throw "";
+  }
+
+  void addTo(String atlas, Sprite sprite) {
+    if (!_map.containsKey(atlas)) {
+      panicNow("SpriteRegistry does not have an atlas '$atlas'",
+          help: "Maybe Register/Load the atlas first?");
+    }
+    _map[atlas]!.add(sprite);
+  }
+
+  void addAllTo(String atlas, Iterable<Sprite> sprite) {
+    if (!_map.containsKey(atlas)) {
+      panicNow("SpriteRegistry does not have an atlas '$atlas'",
+          help: "Maybe Register/Load the atlas first?");
+    }
+    _map[atlas]!.addAll(sprite);
+  }
+
+  Set<Sprite> getAll(String atlas) {
+    if (!_map.containsKey(atlas)) {
+      panicNow("SpriteRegistry does not have an atlas '$atlas'",
+          help: "Maybe Register/Load the atlas first?");
+    }
+    return _map[atlas]!;
+  }
+}
+
+final class SpriteAtlasRaw {
+  final SpriteAtlasTextureFile file;
+  final List<SpriteAtlasSpriteTexture> sprites;
+
+  SpriteAtlasRaw({required this.file, required this.sprites});
+}
+
+/// Any functions that are suffixed with 'N' means it will return a raw parsed data format using [SpriteAtlasRaw]
+/// which is just a glorified record.
+///
+/// The 'N' also means it is **NOT REIFIED** meaning that no type checking or proper data validity is accounted for.
+/// This means a `size` property can have a single [int] value instead of a proper `width, height` format.
+///
+/// If you need reified functions, use functions that are suffixed with 'R'.
+///
+/// However, the two above functions do not load the image into the [BitmapRegistry] which is required by the engine to
+/// actually use the textures. To make the engine auto load the images pointed to by the atlas sprites, you need to
+/// call functions prefixed with 'L' (which stands for Load). These functions will also perform reification in order to
+/// actually load the images and bitmap data.
 final class SpriteAtlas {
   SpriteAtlas._();
 
@@ -98,9 +198,7 @@ final class SpriteAtlas {
     return (k.first.trim(), k.last.trim());
   }
 
-  /// Parses the sprites as well as load the base sprite texture files into the bitmap registry.
-  static Future<void> parseAndLoadFromAssets(String assets) async {
-    final String content = await rootBundle.loadString(assets);
+  static SpriteAtlasRaw parseN(String key, String content) {
     final List<SpriteAtlasSpriteTexture> sprites = <SpriteAtlasSpriteTexture>[];
     final Iterator<String> iterator = LineSplitter.split(content).iterator;
     SpriteAtlasTextureFile? file;
@@ -118,7 +216,7 @@ final class SpriteAtlas {
           file.name = path.basename(file.fileName).split(".").first;
         } else {
           if (loopSentinel > 4) {
-            panicNow("SPRITE2D: Invalid Assets_Atlas file '$assets'.",
+            panicNow("SPRITE2D: Invalid Assets_Atlas file '$key'.",
                 details: "Loop Sentinel reached $loopSentinel on Line $i >>'$line'",
                 help:
                     "This atlas file is invalid. Must only have properties: size, format, filter, repeat");
@@ -147,7 +245,7 @@ final class SpriteAtlas {
             } else {
               if (loopSentinel2 > 6) {
                 // probably isnt as helpful for debugging lol. but we will cross that bridge if the debugging manifest isnt useful later :)
-                panicNow("SPRITE2D: Invalid Assets_Atlas Sprite '$assets'.",
+                panicNow("SPRITE2D: Invalid Assets_Atlas Sprite '$key'.",
                     details:
                         "Loop Sentinel 2 reached $loopSentinel2 on Line $i >>'$line'",
                     help:
@@ -171,25 +269,44 @@ final class SpriteAtlas {
                     final List<String> size = pageProperty.$2.split(",");
                     texture.size = Vector2(
                         double.parse(size[0].trim()), double.parse(size[1].trim()));
-                    logger.finest("SZ: $size");
                   case "xy":
                     final List<String> xy = pageProperty.$2.split(",");
                     texture.xy =
                         Vector2(double.parse(xy[0].trim()), double.parse(xy[1].trim()));
-                    logger.finest("XY: $xy");
                 }
                 loopSentinel2++;
               }
               if (loopSentinel2 == 6) {
                 sprites.add(texture);
                 texture = null;
+                loopSentinel2 = 0;
               }
             }
           }
         }
       }
     }
-    logger.finest("HI $file");
-    logger.finest("BYE $sprites");
+    if (file == null || file.isIncomplete()) {
+      panicNow("SPRITE2D: Failed to parse Asset_Atlas '$key'");
+    }
+    return SpriteAtlasRaw(
+        file: file! /*shldnt be null here :) but dart requires the bang!*/,
+        sprites: sprites);
+  }
+
+  /// Parses the sprites as well as load the base sprite texture files into the bitmap registry.
+  static Future<SpriteAtlasRaw> parseAssetsN(String assets) async {
+    return parseN(assets, await rootBundle.loadString(assets));
+  }
+
+  /// If [dontLoadIfEmpty] is `true`, this function will not load the atlas texture if there are no subsequent sprites mapped to it.
+  static Future<void> parseAssetsR(String assets, [bool dontLoadIfEmpty = true]) async {
+    SpriteAtlasRaw atlas = await parseAssetsN(assets);
+    if (!dontLoadIfEmpty) {
+      BitmapRegistry.I.registerEntry(BitmapEntry(
+          atlas.file.name,
+          await ImagesUtil.readAssetImage(
+              "${path.dirname(assets)}${Platform.pathSeparator}${atlas.file.fileName}")));
+    }
   }
 }
