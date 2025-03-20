@@ -12,10 +12,10 @@ import "package:nukleon/game/entities/entities.dart";
 import "package:nukleon/game/facets/static_facet.dart";
 import "package:nukleon/game/game.dart";
 import "package:nukleon/game/stages/routes/main_menu.dart";
-import "package:nukleon/game/stages/stages.dart";
+import "package:nukleon/engine/components/stage2d/stages.dart";
 import "package:nukleon/game/utils/surveyor.dart";
 
-import "package:nukleon/game/stages/scenes.dart" as scenes;
+import "package:nukleon/engine/components/stage2d/scene_elements.dart" as scenes;
 
 import "dart:ui" as ui;
 
@@ -30,8 +30,6 @@ void main() async {
   await GameRoot.I.loadBuiltinItems();
   await Client.initialize();
   GameRoot.I.soundConfig.volume = 0.7;
-  ApolloRegistry.I.load("assets/audio/tones/1.wav");
-  ApolloRegistry.I.load("assets/audio/tones/2.wav");
   Engine.bootstrap(const GameStage());
   Stage2D.I.create(0, const MainMenuStage());
   Stage2D.I.create(

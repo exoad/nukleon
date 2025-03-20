@@ -31,13 +31,25 @@ class Apollo {
         looping: config.loop);
   }
 
-  static Future<void> quickPlayRegistry(String identifier, SoundConfig config) async {
-    await ApolloRegistry.I.playNow(identifier, config);
+  static Future<Result<SoundHandle, dynamic>> quickPlayRegistry(
+      String identifier, SoundConfig config) async {
+    return Result<SoundHandle, dynamic>.fromNullable(
+        await ApolloRegistry.I.playNow(identifier, config), null);
+  }
+
+  static Future<void> stopPlayback(SoundHandle handle) async {
+    await SoLoud.instance.stop(handle);
   }
 
   static Future<void> quickTTS(String text) async {
     SoLoud.instance.filters.robotizeFilter.activate();
     SoLoud.instance.play((await SoLoud.instance.speechText(text)));
     SoLoud.instance.filters.robotizeFilter.deactivate();
+  }
+}
+
+extension SoundHandleExtension on SoundHandle {
+  Future<void> stop() async {
+    await Apollo.stopPlayback(this);
   }
 }

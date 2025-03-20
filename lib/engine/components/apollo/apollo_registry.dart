@@ -19,17 +19,17 @@ class ApolloRegistry {
     return _map[identifier]!;
   }
 
-  Future<void> playNow(String identifier, SoundConfig config,
+  Future<SoundHandle?> playNow(String identifier, SoundConfig config,
       [bool autodispose = true]) async {
     if (!contains(identifier)) {
       logger.severe("APOLLO: Cannot play $identifier, it does not exist.");
-      return;
+      return null;
     }
     if (!isLoaded(identifier)) {
       logger.severe("APOLLO: Cannot play $identifier, it is not loaded.");
-      return;
+      return null;
     }
-    await SoLoud.instance.play(_map[identifier]!,
+    return await SoLoud.instance.play(_map[identifier]!,
         volume: config.volume,
         pan: config.pan,
         looping: config.loop,

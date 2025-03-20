@@ -16,6 +16,9 @@ final class Result<A, E /*usually this is a string*/ > {
   /// bad job >:(
   factory Result.bad(E message) => Result<A, E>._(null, message, false);
 
+  factory Result.fromNullable(A? payload, E message) =>
+      payload == null ? Result<A, E>.bad(message) : Result<A, E>.good(payload, message);
+
   A get payload {
     if (_payload == null || !_good) {
       throw const BadResultException("payload is not available!");
@@ -33,7 +36,7 @@ final class Result<A, E /*usually this is a string*/ > {
     }
   }
 
-  void onGood(void Function(A? payload, E message) consumer) {
+  void onGood(void Function(A payload, E message) consumer) {
     if (isGood) {
       consumer(payload, message);
     }

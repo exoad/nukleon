@@ -3,7 +3,7 @@ import 'package:nukleon/engine/components/scene2d.dart';
 import 'package:nukleon/engine/debug/debug_buttons.dart';
 import 'package:nukleon/engine/engine.dart';
 import 'package:nukleon/game/game.dart';
-import 'package:nukleon/game/stages/scenes.dart';
+import 'package:nukleon/engine/components/stage2d/scene_elements.dart';
 import 'package:provider/provider.dart';
 
 final class Stage2D extends Scene2D with ChangeNotifier, DGraphTraverser<Widget> {
@@ -33,6 +33,7 @@ final class Stage2D extends Scene2D with ChangeNotifier, DGraphTraverser<Widget>
     return super.toString().replaceFirst("DirectedGraph", "Stage2D");
   }
 
+  /// Returned by default if [currentNode] is called on a nonexistent pointer node.
   Widget get emptyNodePlaceholder {
     return const CustomPaint(
         size: Size.infinite,
