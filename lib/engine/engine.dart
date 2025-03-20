@@ -3,6 +3,8 @@
 /// audio, images, and shaders.
 library;
 
+import 'dart:io';
+
 import 'package:flame/cache.dart';
 import 'package:flame_texturepacker/flame_texturepacker.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +29,9 @@ export "package:nukleon/engine/components/apollo/apollo.dart";
 export "package:nukleon/engine/components/hermes/hermes.dart";
 export 'sprite2d/sprite2d.dart';
 export "sprite2d/sprite_set.dart";
+export "dart:io";
+export 'package:meta/meta.dart';
+
 
 typedef TextureAtlas = TexturePackerAtlas;
 typedef AtlasSprite = TexturePackerSprite;
@@ -175,4 +180,10 @@ class TextureAtlasLoader {
   static Future<TextureAtlas> loadAssetsAtlas(String path,
           {Images? images, bool useOriginalSize = true}) async =>
       await TextureAtlas.load(path, images: images, useOriginalSize: useOriginalSize);
+}
+
+String get kPlatformSeparator {
+  return Platform.isWindows
+      ? "\\"
+      : "/"; // just hardcoded so if you built your own OS and kernel which doesnt use this, good luck :<
 }

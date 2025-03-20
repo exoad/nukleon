@@ -41,7 +41,14 @@ class BitmapRegistry extends Registry<String, BitmapEntry> {
   }
 
   BitmapEntry find(String identifier) {
+    if (!super.map.containsKey(identifier)) {
+      panicNow("BitMRegistry: $identifier is not a registered bitmap!");
+    }
     return super.map[identifier]!;
+  }
+
+  BitmapEntry? tryFind(String identifier) {
+    return super.map[identifier];
   }
 
   bool containsEntry(String identifier) {

@@ -37,4 +37,8 @@ repeat: none
               .sprites
               .every((SpriteAtlasSpriteTexture texture) => !texture.isIncomplete()),
       true);
+  ta("reactor_items.atlas also loaded into bitmap registry", () async {
+    await SpriteAtlas.parseAssetsL("assets/images/textures/reactor_items.atlas");
+    return BitmapRegistry.I.tryFind("reactor_items");
+  }, isNotNull);
 }

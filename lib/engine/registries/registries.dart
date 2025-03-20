@@ -2,7 +2,6 @@
 /// but also in the engine partition for managing sprites, etc..
 library;
 
-import 'package:meta/meta.dart';
 import 'package:nukleon/engine/engine.dart';
 
 export "items_registry.dart";

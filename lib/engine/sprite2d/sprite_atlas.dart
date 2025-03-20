@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 import 'dart:ui' as ui;
 
 import 'package:equatable/equatable.dart';
@@ -383,7 +382,7 @@ final class SpriteAtlas with EquatableMixin {
       BitmapRegistry.I.registerEntry(BitmapEntry(
           atlas.file.name,
           await ImagesUtil.readAssetImage(
-              "${path.dirname(assets)}${Platform.pathSeparator}${atlas.file.fileName}")));
+              "${path.dirname(assets)}$kPlatformSeparator${atlas.file.fileName}"))); // O_o might be an issue with the path separator idk, hardcoded path separator is yikes.
       SpriteRegistry.I.register(atlas.file.name);
       for (SpriteAtlasSpriteTexture texture in atlas.sprites) {
         SpriteRegistry.I
