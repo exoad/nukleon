@@ -18,10 +18,11 @@ class TextureMap {
     for (AtlasSprite sprite in atlas.sprites) {
       sprites[sprite.name] = sprite;
     }
-    throw UnimplementedError();
+    return TextureMap(identifier,
+        sprites: sprites, atlasImage: sprites.values.first.image);
   }
 
-  ui.Image get atlasImage => BitmapRegistry.I.findImage(identifier);
+  ui.Image get atlasImage => _sprites.values.first.image;
 
   /// Lookup [SpriteTextureKey.spriteName] for [spriteName]
   AtlasSprite operator [](String spriteName) {

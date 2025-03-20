@@ -1,6 +1,4 @@
 import 'package:nukleon/engine/engine.dart';
-import 'package:nukleon/game/facets/facets.dart';
-
 class ButtonFacetWidget extends StatefulFacet<ButtonSpriteStates> {
   final void Function() onPressed;
   final ButtonSpriteStates? initialState;

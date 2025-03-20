@@ -4,6 +4,7 @@ library;
 
 import 'package:equatable/equatable.dart';
 import 'package:nukleon/engine/engine.dart';
+export "package:nukleon/engine/sprite2d/facets/facets.dart";
 
 export "sprite_set.dart";
 

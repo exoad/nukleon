@@ -158,7 +158,24 @@ mixin DGraphTraverser<T> on DGraph<T> {
       logger.warning(
           "Trying to go to $ptr from $pointer, these are the same location! Is this a mistake?");
     }
-    _ptr = ptr;
+    if (!dict.containsKey(ptr)) {
+      panic
+          ? panicNow("$ptr is not defined in graph$hashCode::$runtimeType.",
+              help: "Please register it first?")
+          : logger.warning(
+              "$ptr is not defined in this graph's lookup table! This can be dangerous");
+    }
+    if (!graph.containsKey(ptr) && panic) {
+      panicNow("$ptr is not linked in this graph$hashCode.",
+          help: "Maybe you forgot to link it?");
+    }
+    if (graph[_ptr]!.contains(ptr)) {
+      _ptr = ptr;
+    } else {
+      panicNow(
+          "Could not go from $ptr to $_ptr on graph $hashCode::$runtimeType because $_ptr is not linked to $ptr",
+          help: "$_ptr is linked to ${graph[_ptr]!}");
+    }
   }
 
   int get pointer => _ptr;

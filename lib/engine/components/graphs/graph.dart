@@ -10,6 +10,7 @@ import 'package:nukleon/engine/engine.dart';
 
 export "navigator.dart";
 
+
 class DGraphLink with EquatableMixin {
   final int from;
   final int to;
@@ -21,14 +22,15 @@ class DGraphLink with EquatableMixin {
 }
 
 class DGraph<T> {
-  final Map<int, Set<int>> _graph; // adjlist and represents a directed graph
+  @protected
+  final Map<int, Set<int>> graph; // adjlist and represents a directed graph
   @protected
   final Map<int, T> dict;
   int? _max;
   int? _min;
 
   DGraph()
-      : _graph = <int, Set<int>>{},
+      : graph = <int, Set<int>>{},
         dict = <int, T>{};
 
   @protected
@@ -52,10 +54,11 @@ class DGraph<T> {
     // TODO: implement
     if (!dict.containsKey(id)) {
       logger.warning(
-          "D_GRAPH: The node $id is not defined. Removing can be dangerous without a definition.");
+          "Dgraph: The node $id is not defined. Removing can be dangerous without a definition.");
     }
     if (tryFix) {
     } else {}
+    throw UnimplementedError();
   }
 
   /// Searches for an edge node (the node in the adjacency list with the highest ID)
@@ -63,7 +66,7 @@ class DGraph<T> {
   /// This saves us time from using a splayed tree.
   int get max {
     if (_max == null) {
-      panicNow("D_GRAPH: Graph not populated, unable to fetch 'max' node handle");
+      panicNow("Dgraph: Graph not populated, unable to fetch 'max' node handle");
     }
     return _max!;
   }
@@ -71,7 +74,7 @@ class DGraph<T> {
   /// Searches for an edge node with the lowest ID
   int get min {
     if (_min == null) {
-      panicNow("D_GRAPH: Graph not populated, unable to fetch 'min' node handle");
+      panicNow("Dgraph: Graph not populated, unable to fetch 'min' node handle");
     }
     return _min!;
   }
@@ -79,7 +82,7 @@ class DGraph<T> {
   /// Looks up [i] in the dictionary. Good for finding the value of a node relative to the graph.
   T peekNode(int i) {
     if (!dict.containsKey(i)) {
-      panicNow("D_GRAPH: Node $i is not defined.");
+      panicNow("Dgraph: Node $i is not defined.");
     }
     return dict[i]!;
   }
@@ -90,9 +93,7 @@ class DGraph<T> {
 
   /// Check is a directed edge exists. this doesnt check for bidirectionality, if you want to check for that, swap the parameters and call this again
   bool containsEdge({required int from, required int to}) {
-    return _graph.containsKey(from) &&
-        _graph.containsKey(to) &&
-        _graph[from]!.contains(to);
+    return graph.containsKey(from) && graph.containsKey(to) && graph[from]!.contains(to);
   }
 
   /// Checks if a path exists nodes [from] and nodes [to]. Performs BFS.
@@ -100,19 +101,19 @@ class DGraph<T> {
     checkNodeId(from);
     checkNodeId(to);
     if (!dict.containsKey(from)) {
-      panicNow("D_GRAPH: From node $from (to $to) doesn't have a definition!");
+      panicNow("Dgraph: From node $from (to $to) doesn't have a definition!");
     }
     if (!dict.containsKey(to)) {
-      panicNow("D_GRAPH: To node $to (from $from) doesn't have a definition!");
+      panicNow("Dgraph: To node $to (from $from) doesn't have a definition!");
     }
-    if (!_graph.containsKey(from)) {
+    if (!graph.containsKey(from)) {
       panicNow(
-          "D_GRAPH: From node $from (to $to) doesn't exist in the graph. Maybe you forgot to link it?",
+          "Dgraph: From node $from (to $to) doesn't exist in the graph. Maybe you forgot to link it?",
           help: "\nThe current scene:\n${toString()}");
     }
-    if (!_graph.containsKey(to)) {
+    if (!graph.containsKey(to)) {
       panicNow(
-          "D_GRAPH: To node $to (from $from) doesn't exist in the graph. Maybe you forgot to link it?",
+          "Dgraph: To node $to (from $from) doesn't exist in the graph. Maybe you forgot to link it?",
           help: "\nThe current scene:\n${toString()}");
     }
     BoolList visited = BoolList(vertices);
@@ -122,7 +123,7 @@ class DGraph<T> {
     late Iterator<int> i;
     while (q.isNotEmpty) {
       from = q.removeFirst();
-      i = _graph[from]!.iterator;
+      i = graph[from]!.iterator;
       while (i.moveNext()) {
         if (i.current == to) {
           return true;
@@ -136,7 +137,7 @@ class DGraph<T> {
     return false;
   }
 
-  Iterable<int> neighborsOf(int id) => _graph[id]!;
+  Iterable<int> neighborsOf(int id) => graph[id]!;
 
   /// Operator wrapper for [neighborsOf]
   Iterable<int> operator [](int id) => neighborsOf(id);
@@ -161,15 +162,15 @@ class DGraph<T> {
     checkNodeId(from);
     checkNodeId(to);
     if (!dict.containsKey(from)) {
-      panicNow("D_GRAPH: Linking from node $from (to $to) doesn't have a definition!");
+      panicNow("Dgraph: Linking from node $from (to $to) doesn't have a definition!");
     }
     if (!dict.containsKey(to)) {
-      panicNow("D_GRAPH: Linking to node $to (from $from) doesn't have a definition!");
+      panicNow("Dgraph: Linking to node $to (from $from) doesn't have a definition!");
     }
-    _graph.putIfAbsent(from, () => <int>{}).add(to);
-    _graph.putIfAbsent(to, () => <int>{});
+    graph.putIfAbsent(from, () => <int>{}).add(to);
+    graph.putIfAbsent(to, () => <int>{});
     if (bidirectional) {
-      _graph[to]!.add(from);
+      graph[to]!.add(from);
     }
   }
 
@@ -178,7 +179,7 @@ class DGraph<T> {
     if (bidrectional != null) {
       if (bidrectional.length != edges.length) {
         panicNow(
-            "D_GRAPH: If supplying bidrectionality, the length of edges [${edges.length}] must equal the bidrectionality properties [${bidrectional.length}]",
+            "Dgraph: If supplying bidrectionality, the length of edges [${edges.length}] must equal the bidrectionality properties [${bidrectional.length}]",
             help: "\nThe current scene:\n${toString()}");
       }
       for (int i = 0; i < edges.length; i++) {
@@ -195,8 +196,8 @@ class DGraph<T> {
 
   int get edges {
     Set<DGraphLink> uniqueEdges = <DGraphLink>{};
-    for (int from in _graph.keys) {
-      for (int to in _graph[from]!) {
+    for (int from in graph.keys) {
+      for (int to in graph[from]!) {
         uniqueEdges.add(
             from < to ? DGraphLink(from: from, to: to) : DGraphLink(from: to, to: from));
       }
@@ -205,7 +206,7 @@ class DGraph<T> {
   }
 
   Iterable<MapEntry<int, Iterable<int>>> get nodes {
-    return _graph.entries;
+    return graph.entries;
   }
 
   Iterable<MapEntry<int, T>> get definitions {
@@ -224,7 +225,7 @@ class DGraph<T> {
       buffer.write("=");
     }
     buffer.write("\n");
-    for (MapEntry<int, Set<int>> entry in _graph.entries) {
+    for (MapEntry<int, Set<int>> entry in graph.entries) {
       buffer.write("\t${entry.key} : ");
       if (entry.value.isNotEmpty) {
         for (int i = 0; i < entry.value.length - 1; i++) {

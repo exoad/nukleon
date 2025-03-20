@@ -12,6 +12,8 @@ import 'package:nukleon/game/classes/classes.dart';
 import 'package:nukleon/game/shared.dart';
 
 export "package:nukleon/game/shared.dart";
+export "package:nukleon/game/colors.dart";
+export "package:nukleon/game/controllers/pointer.dart";
 
 class GameRoot {
   static final GameRoot I = GameRoot._();

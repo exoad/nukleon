@@ -88,25 +88,40 @@ final class SpriteWidgetPainter extends ContentRenderer {
           if (transformations!.within(i)) {
             canvas.save();
             canvas.transform(transformations![i].resolve(size, sprites[i].size).storage);
-          }
-          canvas.drawRawAtlas(
-              sprites[i].image,
-              Float32List(4)
-                ..[0] = Shared.tileInitialZoom
-                ..[1] = 0
-                ..[2] = 0
-                ..[3] = 0,
-              Float32List(4)
-                ..[0] = sprites[i].src.left
-                ..[1] = sprites[i].src.top
-                ..[2] = sprites[i].src.right
-                ..[3] = sprites[i].src.bottom,
-              null,
-              null,
-              Offset.zero & size,
-              sprites[i].paint..applyConfig(config));
-          if (canvas.getSaveCount() > 0) {
+            canvas.drawRawAtlas(
+                sprites[i].image,
+                Float32List(4)
+                  ..[0] = Shared.tileInitialZoom
+                  ..[1] = 0
+                  ..[2] = 0
+                  ..[3] = 0,
+                Float32List(4)
+                  ..[0] = sprites[i].src.left
+                  ..[1] = sprites[i].src.top
+                  ..[2] = sprites[i].src.right
+                  ..[3] = sprites[i].src.bottom,
+                null,
+                null,
+                Offset.zero & size,
+                sprites[i].paint..applyConfig(config));
             canvas.restore();
+          } else {
+            canvas.drawRawAtlas(
+                sprites[i].image,
+                Float32List(4)
+                  ..[0] = Shared.tileInitialZoom
+                  ..[1] = 0
+                  ..[2] = 0
+                  ..[3] = 0,
+                Float32List(4)
+                  ..[0] = sprites[i].src.left
+                  ..[1] = sprites[i].src.top
+                  ..[2] = sprites[i].src.right
+                  ..[3] = sprites[i].src.bottom,
+                null,
+                null,
+                Offset.zero & size,
+                sprites[i].paint..applyConfig(config));
           }
         }
       } else {
