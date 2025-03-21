@@ -19,6 +19,10 @@ Work In Progress..
 
 Just wanted to experiment with learning Flutter.
 
+## API
+
+This is not for public usage nor is it finalized, but it is here for managing public XML Schemas: https://exoad.github.io/nukleon/api
+
 ## Synoposis
 
 This section describes the general parts that power the game. For the most part, you can find them under `lib/engine`; however, some parts are not directly written in Dart and are located in `modules/`.
