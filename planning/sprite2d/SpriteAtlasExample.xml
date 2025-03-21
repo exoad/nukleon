@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Atlas xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="atlas_grammar.xsd">
+    <Identifier>some_goofy_nonexistent_sprites</Identifier>
+    <TextureLocation>/some/path/to/texture.png</TextureLocation>
+    <Size>
+        <Width>420</Width>
+        <Height>69</Height>
+    </Size>
+    <SpriteRegions>
+        <Region animated="true">
+            <Sprite></Sprite>
+        </Region>
+    </SpriteRegions>
+</Atlas>

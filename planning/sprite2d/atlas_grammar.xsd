@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+    <xs:element name="Atlas">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="Identifier">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:pattern value="[a-zA-Z0-9._ -]+"></xs:pattern>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="TextureLocation">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <!-- File must end in the file extension '.png' -->
+                            <xs:pattern value=".*\.png"></xs:pattern>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="Size">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="Width" type="xs:unsignedLong" />
+                            <xs:element name="Height" type="xs:unsignedLong" />
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="SpriteRegions">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="Region" minOccurs="1" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="Sprite" minOccurs="1" maxOccurs="unbounded">
+                                            <xs:complexType>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                    <xs:attribute name="animated" type="xs:boolean" use="required" />
+                                    <xs:attribute name="count" type="xs:long" use="optional" default="-1" />
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

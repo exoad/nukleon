@@ -8,7 +8,7 @@ export "package:nukleon/engine/sprite2d/facets/raw_facet.dart";
 abstract class StatelessFacet<T> extends StatelessWidget {
   final RenderingHints? renderingHints;
   final Facet<T> facet;
-  final AtlasSprite? sprite;
+  final Sprite? sprite;
   final Widget? widget;
 
   StatelessFacet(
@@ -28,7 +28,7 @@ abstract class StatefulFacet<T> extends StatefulWidget {
   final RenderingHints? renderingHints;
 
   final Facet<T> facet;
-  final AtlasSprite? sprite;
+  final Sprite? sprite;
   final Widget? widget;
 
   StatefulFacet(

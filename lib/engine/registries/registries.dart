@@ -5,7 +5,6 @@ library;
 import 'package:nukleon/engine/engine.dart';
 
 export "items_registry.dart";
-export "textures_registries.dart";
 export "bitmap_registry.dart";
 
 abstract class Registry<K, V> {

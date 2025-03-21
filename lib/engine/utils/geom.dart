@@ -30,3 +30,9 @@ class FittingTransform {
 extension FitSize on Size {
   double get area => width * height;
 }
+
+extension Vector2Extension on Vector2 {
+  Offset toOffset() => Offset(x, y);
+
+  Size toSize() => Size(x, y);
+}

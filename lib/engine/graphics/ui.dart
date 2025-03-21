@@ -5,7 +5,7 @@ import 'package:nukleon/game/shared.dart';
 
 /// Drawing a single sprite. Decently performant for a single one
 final class SingleSpritePainter extends ContentRenderer with RenderingMixin {
-  final AtlasSprite sprite;
+  final Sprite sprite;
   final LinearTransformer? transformer;
 
   SingleSpritePainter({super.config, required SpriteTextureKey sprite, this.transformer})
@@ -14,10 +14,10 @@ final class SingleSpritePainter extends ContentRenderer with RenderingMixin {
   @override
   void paint(Canvas canvas, Size size) {
     if (transformer != null) {
-      canvas.transform(transformer!.resolve(size, sprite.size).storage);
+      canvas.transform(transformer!.resolve(size, sprite.src.size).storage);
     }
     canvas.drawRawAtlas(
-        sprite.image,
+        sprite.texture,
         Float32List(4)
           ..[0] = Shared.tileInitialZoom
           ..[1] = 0
@@ -62,7 +62,7 @@ class SingleSpriteWidget extends StatelessWidget {
 
 @immutable
 final class SpriteWidgetPainter extends ContentRenderer {
-  final List<AtlasSprite> sprites;
+  final List<Sprite> sprites;
   final List<LinearTransformer>? transformations;
   final LinearTransformer? globalTransformer;
 
@@ -76,6 +76,7 @@ final class SpriteWidgetPainter extends ContentRenderer {
   @override
   void paint(Canvas canvas, Size size) {
     if (sprites.isNotEmpty) {
+      Paint paint = Paint();
       // ! might need to optimize this more
       // ! preferring drawImageRect is bad
       // ! we should instead prefer to use drawAtlas but we cant really do that if that is at all even
@@ -87,9 +88,10 @@ final class SpriteWidgetPainter extends ContentRenderer {
         for (int i = 0; i < sprites.length; i++) {
           if (transformations!.within(i)) {
             canvas.save();
-            canvas.transform(transformations![i].resolve(size, sprites[i].size).storage);
+            canvas.transform(
+                transformations![i].resolve(size, sprites[i].src.size).storage);
             canvas.drawRawAtlas(
-                sprites[i].image,
+                sprites[i].texture,
                 Float32List(4)
                   ..[0] = Shared.tileInitialZoom
                   ..[1] = 0
@@ -103,11 +105,11 @@ final class SpriteWidgetPainter extends ContentRenderer {
                 null,
                 null,
                 Offset.zero & size,
-                sprites[i].paint..applyConfig(config));
+                paint..applyConfig(config));
             canvas.restore();
           } else {
             canvas.drawRawAtlas(
-                sprites[i].image,
+                sprites[i].texture,
                 Float32List(4)
                   ..[0] = Shared.tileInitialZoom
                   ..[1] = 0
@@ -121,13 +123,13 @@ final class SpriteWidgetPainter extends ContentRenderer {
                 null,
                 null,
                 Offset.zero & size,
-                sprites[i].paint..applyConfig(config));
+                paint..applyConfig(config));
           }
         }
       } else {
         for (int i = 0; i < sprites.length; i++) {
           canvas.drawRawAtlas(
-              sprites[i].image,
+              sprites[i].texture,
               Float32List(4)
                 ..[0] = Shared.tileInitialZoom
                 ..[1] = 0
@@ -141,7 +143,7 @@ final class SpriteWidgetPainter extends ContentRenderer {
               null,
               null,
               Offset.zero & size,
-              sprites[i].paint..applyConfig(config));
+              paint..applyConfig(config));
         }
       }
     }
@@ -178,8 +180,8 @@ class SpriteWidget extends StatelessWidget {
 // self implemented cuz the Canvas api doesnt have one lmao and stretching images from an
 // atlas needs to be optimized ASF :D
 class NineSliceScaledPainter extends ContentRenderer with RenderingMixin {
-  final AtlasSprite sprite;
-  final AtlasSprite? child;
+  final Sprite sprite;
+  final Sprite? child;
   final EdgeInsets? border;
   final LinearTransformer? transformer;
   late final Float32List? _corners;
@@ -333,7 +335,7 @@ class NineSliceScaledPainter extends ContentRenderer with RenderingMixin {
       }
       // here the `i` value should be the same as the one int he constructor at this point, if not, its prob logical bugs
       canvas.drawRawAtlas(
-          sprite.image, cornersTransforms, _corners, null, null, frame, p);
+          sprite.texture, cornersTransforms, _corners, null, null, frame, p);
     }
     final double horiSideScale =
         geom.mag(size.width - 2 * _sliceSize, _sliceSize) / geom.mag(_sliceSize, 0);
@@ -358,7 +360,7 @@ class NineSliceScaledPainter extends ContentRenderer with RenderingMixin {
         transformsHoriSides[i++] = size.height - _sliceSize;
       }
       canvas.drawRawAtlas(
-          sprite.image, transformsHoriSides, _horiSides!, null, null, frame, p);
+          sprite.texture, transformsHoriSides, _horiSides!, null, null, frame, p);
       canvas.restore();
     }
     final double vertSideScale =
@@ -384,7 +386,7 @@ class NineSliceScaledPainter extends ContentRenderer with RenderingMixin {
         transformVertiSides[i++] = vertSideY;
       }
       canvas.drawRawAtlas(
-          sprite.image, transformVertiSides, _vertSides!, null, null, frame, p);
+          sprite.texture, transformVertiSides, _vertSides!, null, null, frame, p);
       canvas.restore();
     }
     canvas.save();
@@ -396,18 +398,19 @@ class NineSliceScaledPainter extends ContentRenderer with RenderingMixin {
       transformCenter[1] = 0;
       transformCenter[2] = horiSideX;
       transformCenter[3] = vertSideY;
-      canvas.drawRawAtlas(sprite.image, transformCenter, _center!, null, null, frame, p);
+      canvas.drawRawAtlas(
+          sprite.texture, transformCenter, _center!, null, null, frame, p);
     }
     canvas.restore();
     if (child != null) {
       if (transformer != null) {
-        canvas.transform(transformer!.resolve(size, sprite.size).storage);
+        canvas.transform(transformer!.resolve(size, sprite.src.size).storage);
       }
-      canvas.transform(Matrix4.translationValues((size.width - sprite.size.width) / 2,
-              (size.height - sprite.size.height) / 2, 0)
+      canvas.transform(Matrix4.translationValues((size.width - sprite.src.width) / 2,
+              (size.height - sprite.src.height) / 2, 0)
           .storage);
       canvas.drawRawAtlas(
-          child!.image,
+          child!.texture,
           Float32List(4)
             ..[0] = 1
             ..[1] = 0
@@ -436,8 +439,8 @@ class NineSliceScaledPainter extends ContentRenderer with RenderingMixin {
 }
 
 class NineSpriteWidget extends StatelessWidget {
-  final AtlasSprite sprite;
-  final AtlasSprite? child;
+  final Sprite sprite;
+  final Sprite? child;
   final EdgeInsets border;
   final Widget? widgetChild;
   final LinearTransformer? transformer;

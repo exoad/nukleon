@@ -1,7 +1,7 @@
 import 'dart:convert';
-import 'dart:ui' as ui;
 
 import 'package:equatable/equatable.dart';
+import 'package:nukleon/engine/utils/geom.dart';
 import 'package:nukleon/engine/utils/images.dart';
 import "package:path/path.dart" as path;
 
@@ -69,34 +69,6 @@ final class SpriteAtlasSpriteTexture {
   }
 }
 
-@immutable
-class Sprite with EquatableMixin {
-  /// Represents where this sprite is located on the texture atlas
-  final Rect src;
-
-  /// A strict rule of which texture atlas this sprite should pull from
-  final String textureAtlas;
-
-  /// The identifier is used not only to identify this Sprite, but also used to identify the texture it belongs to.
-  final String identifier;
-
-  const Sprite(this.textureAtlas, this.src, this.identifier);
-
-  Sprite.fromComponents(this.identifier, this.textureAtlas,
-      {required Vector2 srcPosition, required Size srcSize})
-      : src = Rect.fromLTWH(srcPosition.x, srcPosition.y, srcSize.width, srcSize.height);
-
-  ui.Image get texture => BitmapRegistry.I.findImage(identifier);
-
-  @override
-  String toString() {
-    return "Sprite2D '$identifier'::'$textureAtlas' [${src.topLeft} -- ${src.bottomRight}]";
-  }
-
-  @override
-  List<Object?> get props => <Object?>[src, identifier];
-}
-
 final class SpriteAtlasRegistry extends Registry<String, SpriteAtlas>
     with SimpleRegistryMixin<String, SpriteAtlas> {
   SpriteAtlasRegistry._() : super();
@@ -152,8 +124,18 @@ final class SpriteRegistry extends Registry<String, Set<Sprite>> {
         return r;
       }
     }
-    panicNow("Could not find sprite '$identifier' under $atlas.");
+    panicNow("Could not find sprite '$identifier' under $atlas.",
+        details: "$atlas has: \n${super.map[atlas]}");
     throw "";
+  }
+
+  Sprite? tryGetFrom(String atlas, String identifier) {
+    for (Sprite r in super.map[atlas]!) {
+      if (r.identifier == identifier) {
+        return r;
+      }
+    }
+    return null;
   }
 
   void addTo(String atlas, Sprite sprite) {
@@ -289,7 +271,7 @@ final class SpriteAtlas with EquatableMixin {
           file.fileName = line.trim();
           file.name = path.basename(file.fileName).split(".").first;
         } else {
-          if (loopSentinel > 4) {
+          if (loopSentinel > 5) {
             panicNow("SPRITE2D: Invalid Assets_Atlas file '$key'.",
                 details: "Loop Sentinel reached $loopSentinel on Line $i >>'$line'",
                 help:
@@ -318,14 +300,15 @@ final class SpriteAtlas with EquatableMixin {
               texture = SpriteAtlasSpriteTexture.none();
               texture.name = line.trim();
             } else {
-              if (loopSentinel2 > 6) {
-                // probably isnt as helpful for debugging lol. but we will cross that bridge if the debugging manifest isnt useful later :)
-                panicNow("SPRITE2D: Invalid Assets_Atlas Sprite '$key'.",
-                    details:
-                        "Loop Sentinel 2 reached $loopSentinel2 on Line $i >>'$line'",
-                    help:
-                        "This sprite is invalid. Must only have properties: rotate, orig, index, offset, size, xy");
-              } else if (texture.isIncomplete()) {
+              // if (loopSentinel2 > 7) {
+              //   // probably isnt as helpful for debugging lol. but we will cross that bridge if the debugging manifest isnt useful later :)
+              //   panicNow("SPRITE2D: Invalid Assets_Atlas Sprite '$key'.",
+              //       details:
+              //           "Loop Sentinel 2 reached $loopSentinel2 on Line $i >>'$line'",
+              //       help:
+              //           "This sprite is invalid. Must only have properties: rotate, orig, index, offset, size, xy");
+              // } else
+              if (texture.isIncomplete()) {
                 final (String, String) pageProperty = _breakLine(line.trim());
                 switch (pageProperty.$1) {
                   case "rotate":
@@ -351,7 +334,7 @@ final class SpriteAtlas with EquatableMixin {
                 }
                 loopSentinel2++;
               }
-              if (loopSentinel2 == 6) {
+              if (!texture.isIncomplete()) {
                 sprites.add(texture);
                 texture = null;
                 loopSentinel2 = 0;
@@ -371,6 +354,10 @@ final class SpriteAtlas with EquatableMixin {
 
   /// Parses the sprites as well as load the base sprite texture files into the bitmap registry.
   static Future<SpriteAtlasRaw> parseAssetsN(String assets) async {
+    if (!Argus.isValidAsset(assets)) {
+      panicNow("SPRITE2D: '$assets' is not a valid assets file.",
+          help: "Make sure everything is spelled correctly ;)");
+    }
     return parseN(assets, await rootBundle.loadString(assets));
   }
 
@@ -382,7 +369,7 @@ final class SpriteAtlas with EquatableMixin {
       BitmapRegistry.I.registerEntry(BitmapEntry(
           atlas.file.name,
           await ImagesUtil.readAssetImage(
-              "${path.dirname(assets)}$kPlatformSeparator${atlas.file.fileName}"))); // O_o might be an issue with the path separator idk, hardcoded path separator is yikes.
+              "${path.dirname(assets)}/${atlas.file.fileName}"))); // O_o might be an issue with the path separator idk, hardcoded path separator is yikes.
       SpriteRegistry.I.register(atlas.file.name);
       for (SpriteAtlasSpriteTexture texture in atlas.sprites) {
         SpriteRegistry.I

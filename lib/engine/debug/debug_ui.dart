@@ -1,32 +1,4 @@
-import 'package:dotted_border/dotted_border.dart';
-import 'package:nukleon/engine/debug/debug.dart';
 import 'package:nukleon/engine/engine.dart';
-
-extension DebugifyBorderWidget on Widget {
-  Widget get debuggableStatic =>
-      kShowDebugBorders ? _DebugBorderWidget(child: this) : this;
-}
-
-extension FlashingDebugifyBorderWidget on Widget {
-  Widget get debuggableFlashing =>
-      kShowDebugBorders ? _FlashingDebugWidget(child: this) : this;
-}
-
-class _DebugBorderWidget extends StatelessWidget {
-  final Widget child;
-
-  const _DebugBorderWidget({required this.child});
-
-  @override
-  Widget build(BuildContext context) {
-    return DottedBorder(
-        padding: EdgeInsets.zero,
-        strokeWidth: 2,
-        dashPattern: const <double>[4, 2],
-        color: ColorHelper.randomColor(),
-        child: child);
-  }
-}
 
 class _FlashingDebugWidget extends StatefulWidget {
   final Widget child;

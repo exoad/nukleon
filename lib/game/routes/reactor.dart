@@ -24,10 +24,10 @@ class CullingReactorGridPainter extends CustomPainter {
         Float32List((GameRoot.I.reactor.rows * GameRoot.I.reactor.columns) * 4);
     {
       // this part draws the underlying tiles
-      ui.Image atlas = TextureRegistry.getTexture("tiles_content")!.atlasImage;
+      ui.Image atlas = BitmapRegistry.I.find("tiles").image;
       for (int i = 0, k = 0; i < GameRoot.I.reactor.rows; i++) {
         for (int j = 0; j < GameRoot.I.reactor.columns; j++, k += 4) {
-          final AtlasSprite sprite = GameRoot.I.reactor
+          final Sprite sprite = GameRoot.I.reactor
               .at(i, j)
               .at(Class.TILES)
               .id
@@ -52,13 +52,12 @@ class CullingReactorGridPainter extends CustomPainter {
     }
     // this part draws the actual cells
     src = Float32List((GameRoot.I.reactor.rows * GameRoot.I.reactor.columns) * 4);
-    ui.Image atlas = TextureRegistry.getTexture("content")!.atlasImage;
+    ui.Image atlas = BitmapRegistry.I.find("reactor_items").image;
     for (int i = 0, k = 0; i < GameRoot.I.reactor.rows; i++) {
       for (int j = 0; j < GameRoot.I.reactor.columns; j++, k += 4) {
         int id = GameRoot.I.reactor.at(i, j).at(Class.ITEMS).id;
         if (id != 0) {
-          final AtlasSprite sprite =
-              id.findItemDefinition(Class.ITEMS).sprite().findTexture();
+          final Sprite sprite = id.findItemDefinition(Class.ITEMS).sprite().findTexture();
           final int k1 = k + 1;
           final int k2 = k + 2;
           final int k3 = k + 3;

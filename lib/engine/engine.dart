@@ -5,36 +5,30 @@ library;
 
 import 'dart:io';
 
-import 'package:flame/cache.dart';
-import 'package:flame_texturepacker/flame_texturepacker.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
+
 import 'package:nukleon/engine/graphics/graphics.dart';
 import 'package:nukleon/engine/public.dart';
-import 'package:nukleon/engine/registries/textures_registries.dart';
-
-export "public.dart";
-export "registries/registries.dart";
-export "utils/utils.dart";
+import 'package:nukleon/engine/utils/argus.dart';
+export "dart:io";
 export "graphics/graphics.dart";
-export "components/components.dart";
+export "package:flutter/foundation.dart";
 export "package:flutter/material.dart" hide Route, OverlayRoute;
 export "package:flutter/services.dart";
-export "package:flutter/foundation.dart";
-export "package:flame/components.dart";
-export "package:nukleon/engine/graphics/ui.dart";
-export "package:nukleon/engine/graphics/nulls.dart";
-export "package:nukleon/engine/registries/items_registry.dart";
 export "package:nukleon/engine/components/apollo/apollo.dart";
 export "package:nukleon/engine/components/hermes/hermes.dart";
-export 'sprite2d/sprite2d.dart';
+export "package:nukleon/engine/graphics/nulls.dart";
+export "package:nukleon/engine/graphics/ui.dart";
+export "package:nukleon/engine/registries/items_registry.dart";
+export "package:vector_math/vector_math.dart" hide Colors, Matrix4;
+export "public.dart";
+export "registries/registries.dart";
 export "sprite2d/sprite_set.dart";
-export "dart:io";
+export "utils/utils.dart";
 export 'package:meta/meta.dart';
-
-
-typedef TextureAtlas = TexturePackerAtlas;
-typedef AtlasSprite = TexturePackerSprite;
+export 'sprite2d/sprite2d.dart';
+export "utils/argus.dart";
 
 final class Engine {
   Engine._();
@@ -51,16 +45,16 @@ final class Engine {
     logger.info("Initializing the engine...");
     WidgetsFlutterBinding.ensureInitialized();
     await Public.initialize();
-    if (initializeTextureRegistry) {
-      await TextureRegistry.initialize();
-      if (!Public.panicOnNullTextures &&
-          (TextureRegistry.getTexture("internal.atlas") == null ||
-              TextureRegistry.getTexture("internal.atlas")!.containsKey("Null_Texture") !=
-                  false)) {
-        logger.warning(
-            "Continuing with NO_PANIC and no Null_Texture can produce undefined behavior!");
-      }
-    }
+    await Argus.initialize();
+    // if (initializeTextureRegistry) {
+    //   if (!Public.panicOnNullTextures &&
+    //       (TextureRegistry.getTexture("internal.atlas") == null ||
+    //           TextureRegistry.getTexture("internal.atlas")!.containsKey("Null_Texture") !=
+    //               false)) {
+    //     logger.warning(
+    //         "Continuing with NO_PANIC and no Null_Texture can produce undefined behavior!");
+    //   }
+    // }
     logger.info("Engine initialized!");
   }
 
@@ -168,18 +162,6 @@ void panicIf(bool condition, {required String label, String? details, String? he
   if (condition) {
     panicNow(label, details: details, help: help);
   }
-}
-
-extension MoreFuncsSprite on AtlasSprite {
-  Size get size => src.size;
-}
-
-class TextureAtlasLoader {
-  TextureAtlasLoader._();
-
-  static Future<TextureAtlas> loadAssetsAtlas(String path,
-          {Images? images, bool useOriginalSize = true}) async =>
-      await TextureAtlas.load(path, images: images, useOriginalSize: useOriginalSize);
 }
 
 String get kPlatformSeparator {
