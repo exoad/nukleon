@@ -36,7 +36,7 @@
                                                 <xs:complexContent>
                                                     <xs:extension base="SizeT">
                                                         <xs:attribute name="name" type="IdentifierT" use="required" />
-                                                        <xs:attribute name="index" type="xs:long" use="optional" default="-1" />
+                                                        <xs:attribute name="index" type="xs:long" use="required" />
                                                         <xs:attribute name="anchorX" type="xs:unsignedLong" use="required" />
                                                         <xs:attribute name="anchorY" type="xs:unsignedLong" use="required" />
                                                     </xs:extension>

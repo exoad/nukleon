@@ -6,7 +6,7 @@
     <SpriteRegions>
         <Region name="region_1" animated="true">
             <Sprite name="sprite_0" index="0" anchorX="0" anchorY="0" width="32" height="32"></Sprite>
-            <Sprite name="sprite_1" anchorX="32" anchorY="32" width="32" height="32" />
+            <Sprite name="sprite_1" index ="1" anchorX="32" anchorY="32" width="32" height="32" />
         </Region>
     </SpriteRegions>
 </Atlas>
