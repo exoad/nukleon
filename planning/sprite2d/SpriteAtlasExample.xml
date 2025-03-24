@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Atlas xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="atlas_grammar.xsd">
+<Atlas xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://exoad.github.io/nukleon/api/sprite2d/v1/atlas_grammar.xsd">
     <Identifier>some_goofy_nonexistent_sprites</Identifier>
     <TextureLocation>/some/path/to/texture.png</TextureLocation>
-    <Size>
-        <Width>420</Width>
-        <Height>69</Height>
-    </Size>
+    <Size width="420" height="69"/>
     <SpriteRegions>
-        <Region animated="true">
-            <Sprite></Sprite>
+        <Region animated="true" identifier="region_1">
+            <Sprite name="sprite_0" index="0" anchorX="0" anchorY="0" width="32" height="32"></Sprite>
+            <Sprite name="sprite_1" anchorX="32" anchorY="32" width="32" height="32" />
         </Region>
     </SpriteRegions>
 </Atlas>

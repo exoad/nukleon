@@ -47,3 +47,4 @@ app.*.map.json
 desktop.ini
 
 /content/
+.tooling_generated/
