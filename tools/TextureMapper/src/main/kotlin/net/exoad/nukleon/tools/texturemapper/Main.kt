@@ -6,6 +6,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration
 import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.tools.texturepacker.TexturePacker
+import net.exoad.nukleon.tools.Sprite2D
 import java.io.File
 import java.io.FileFilter
 import java.util.*
@@ -108,6 +109,10 @@ object Main
     @JvmStatic
     fun main(args:Array<String>)
     {
-
+        Sprite2D.packAtlas("../../content/ui_content",
+            atlasName = "ui_content",
+            textureOutputLocation = "./",
+            animated = false
+        )
     }
 }

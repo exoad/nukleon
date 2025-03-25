@@ -4,12 +4,18 @@ import net.exoad.nukleon.tools.sprite2d.*
 import java.awt.RenderingHints
 import java.awt.image.BufferedImage
 import java.io.File
+import java.util.logging.Level
+import java.util.logging.Logger
 import javax.imageio.ImageIO
 
 class Sprite2D
 {
     companion object
     {
+        val logger = Logger.getLogger("Sprite2D").apply {
+            this.level = Level.ALL
+        }
+
         fun packAtlas(
             inputFolder:String,
             atlasName:String?,
@@ -23,16 +29,19 @@ class Sprite2D
         {
             val input = File(inputFolder)
             assert(input.isDirectory)
-            assert(input.listFiles {it.extension.equals(".png",ignoreCase = true)&&it.canRead()}!=null)
+            input.listFiles {it.extension.equals("png",ignoreCase = true)}?.size?.let {assert(it>0)}
             val outAtlasName = atlasName ?: input.name
             val names:MutableList<String> = mutableListOf<String>()
             val rects:MutableList<Rect> = mutableListOf<Rect>()
             val bitmaps:MutableList<BufferedImage> = mutableListOf<BufferedImage>()
-            input.listFiles {it.extension.equals(".png",ignoreCase = true)&&it.canRead()}!!.forEach {
+            input.listFiles {it.extension.equals("png",ignoreCase = true)&&it.canRead()}!!.forEach {
                 bitmaps.add(ImageIO.read(it))
                 names.add(it.nameWithoutExtension)
                 rects.add(Rect(0,0,bitmaps.last().width,bitmaps.last().height))
+                ("Reading ${it.nameWithoutExtension}")
+                logger.fine("READ: ${it.nameWithoutExtension}")
             }
+            logger.info("FILES_LEn: ${names.size}")
             val res = Transmuter.firstFitDecreasing(rects,false,whitespaceWeight,sideLengthWeight)
             val skeletonAtlas = SkeletonTextureAtlas()
             val sprites:MutableList<Sprite> = mutableListOf<Sprite>()

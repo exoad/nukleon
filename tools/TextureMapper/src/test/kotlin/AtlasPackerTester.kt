@@ -1,9 +1,10 @@
 import com.fleeksoft.io.byteInputStream
+import net.exoad.nukleon.tools.Sprite2D
 import net.exoad.nukleon.tools.sprite2d.AtlasPacker
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
-import org.xml.sax.SAXException
+import org.junit.jupiter.api.assertDoesNotThrow
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class AtlasPackerTester
 {
@@ -21,7 +22,18 @@ class AtlasPackerTester
     @Test
     fun notValid()
     {
-        assertThrows<SAXException> {AtlasPacker.readAtlas("SUSUS SUSFDUFDFDFDSOFJSDFODIOf".byteInputStream())}
+        assertTrue {!AtlasPacker.isValidAtlas("SUSUS SUSFDUFDFDFDSOFJSDFODIOf".byteInputStream())}
     }
 
+    @Test
+    fun generateAtlases()
+    {
+        assertDoesNotThrow {
+            Sprite2D.packAtlas("../../content/ui_content",
+                atlasName = "ui_content",
+                textureOutputLocation = "./",
+                animated = false
+            )
+        }
+    }
 }

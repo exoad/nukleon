@@ -21,7 +21,7 @@ import javax.xml.xpath.XPathConstants
 import javax.xml.xpath.XPathFactory
 
 data class TextureAtlas(
-    val name:String,val texture:Texture,val spriteList:List<Sprite>,
+    val name:String,val texture:Texture?,val spriteList:List<Sprite>,
     val animated:Boolean,
     val textureLocation:String?,val width:Int,val height:Int,
 )
@@ -37,7 +37,7 @@ data class SkeletonTextureAtlas(
 )
 {
     fun assemble():TextureAtlas = TextureAtlas(name = name!!,
-        texture = texture!!,
+        texture = texture,
         spriteList = spriteList,
         textureLocation = textureLocation!!,
         width = width!!,
@@ -100,7 +100,7 @@ class AtlasPacker
             transformFactory.newTransformer().transform(DOMSource(doc),StreamResult(atlasOutput))
             if(writeTexture)
             {
-                if(!ImageIO.write(
+                if(atlas.texture!=null&&!ImageIO.write(
                         atlas.texture.image,
                         "png",
                         File(atlas.textureLocation ?: atlasOutput.split(".").last())
@@ -145,8 +145,8 @@ class AtlasPacker
 
         fun readAtlas(source:InputStream,validate:Boolean = true):TextureAtlas
         {
-            if(validate&&!isValidAtlas(source))
-                throw SAXException("$source is an invalid atlas source. Checked against $XML_SCHEMA_LOCATION")
+            if(source.available()==0)
+                throw RuntimeException("$source is empty")
             val skeleton = SkeletonTextureAtlas()
             val doc:Document = docFactory.newDocumentBuilder().parse(source)
             val xpath:XPath = XPathFactory.newInstance().newXPath()
@@ -159,10 +159,9 @@ class AtlasPacker
             skeleton.textureLocation = (xpath.compile("/Atlas/TextureLocation")
                 .evaluate(doc,XPathConstants.NODESET) as NodeList).item(0).textContent.trim()
             val sprites = (xpath.compile("/Atlas/SpriteList/*").evaluate(doc,XPathConstants.NODESET) as NodeList)
-            skeleton.animated = (xpath.compile("/Atlas/SpriteList")
+            val animatedVal = (xpath.compile("/Atlas/SpriteList")
                 .evaluate(doc,XPathConstants.NODESET) as NodeList).item(0).attributes.getNamedItem("animated")
-                .nodeValue
-                .toBoolean()
+            skeleton.animated = if(animatedVal!=null) animatedVal.nodeValue.toBoolean() else false
             for(i:Int in 0..sprites.length-1)
             {
                 val sprite = sprites.item(i)
