@@ -23,4 +23,5 @@ class AtlasPackerTester
     {
         assertThrows<SAXException> {AtlasPacker.readAtlas("SUSUS SUSFDUFDFDFDSOFJSDFODIOf".byteInputStream())}
     }
+
 }

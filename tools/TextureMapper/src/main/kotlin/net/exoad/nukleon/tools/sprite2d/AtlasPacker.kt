@@ -21,14 +21,16 @@ import javax.xml.xpath.XPathConstants
 import javax.xml.xpath.XPathFactory
 
 data class TextureAtlas(
-    val name:String,val texture:Texture,val regions:List<SpriteRegion>,
+    val name:String,val texture:Texture,val spriteList:List<Sprite>,
+    val animated:Boolean,
     val textureLocation:String?,val width:Int,val height:Int,
 )
 
 data class SkeletonTextureAtlas(
     var name:String? = null,
     var texture:Texture? = null,
-    var regions:MutableList<SpriteRegion> = mutableListOf<SpriteRegion>(),
+    var animated:Boolean? = null,
+    var spriteList:MutableList<Sprite> = mutableListOf<Sprite>(),
     var textureLocation:String? = null,
     var width:Int? = null,
     var height:Int? = null
@@ -36,22 +38,12 @@ data class SkeletonTextureAtlas(
 {
     fun assemble():TextureAtlas = TextureAtlas(name = name!!,
         texture = texture!!,
-        regions = regions,
+        spriteList = spriteList,
         textureLocation = textureLocation!!,
         width = width!!,
-        height = height!!
+        height = height!!,
+        animated = animated!!
     )
-}
-
-data class SpriteRegion(val name:String,val animated:Boolean,val sprites:List<Sprite>)
-
-data class SkeletonSpriteRegion(
-    var name:String? = null,
-    var animated:Boolean? = null,
-    var sprites:MutableList<Sprite> = mutableListOf<Sprite>()
-)
-{
-    fun assemble():SpriteRegion = SpriteRegion(name = name!!,animated = animated!!,sprites = sprites)
 }
 
 data class Sprite(val name:String,val index:Int = -1,val src:Rect)
@@ -89,23 +81,17 @@ class AtlasPacker
                     this@Size.setAttribute("height",atlas.height.toString())
                 })
                 this@Atlas.appendChild(
-                    doc.createElement("SpriteRegions").apply SpriteRegions@{
-                        for(region:SpriteRegion in atlas.regions)
+                    doc.createElement("SpriteList").apply SpriteList@{
+                        this@SpriteList.setAttribute("animated",atlas.animated.toString())
+                        for(sprite:Sprite in atlas.spriteList)
                         {
-                            this@SpriteRegions.appendChild(doc.createElement("Region").apply Region@{
-                                this@Region.setAttribute("name",region.name)
-                                this@Region.setAttribute("animated",region.animated.toString())
-                                for(sprite:Sprite in region.sprites)
-                                {
-                                    this@Region.appendChild(doc.createElement("Sprite").apply Sprite@{
-                                        this@Sprite.setAttribute("name",sprite.name)
-                                        this@Sprite.setAttribute("index",sprite.index.toString())
-                                        this@Sprite.setAttribute("anchorX",sprite.src.x.toString())
-                                        this@Sprite.setAttribute("anchorY",sprite.src.y.toString())
-                                        this@Sprite.setAttribute("width",sprite.src.width.toString())
-                                        this@Sprite.setAttribute("height",sprite.src.height.toString())
-                                    })
-                                }
+                            this@SpriteList.appendChild(doc.createElement("Sprite").apply Sprite@{
+                                this@Sprite.setAttribute("name",sprite.name)
+                                this@Sprite.setAttribute("index",sprite.index.toString())
+                                this@Sprite.setAttribute("anchorX",sprite.src.x.toString())
+                                this@Sprite.setAttribute("anchorY",sprite.src.y.toString())
+                                this@Sprite.setAttribute("width",sprite.src.width.toString())
+                                this@Sprite.setAttribute("height",sprite.src.height.toString())
                             })
                         }
                     })
@@ -160,7 +146,7 @@ class AtlasPacker
         fun readAtlas(source:InputStream,validate:Boolean = true):TextureAtlas
         {
             if(validate&&!isValidAtlas(source))
-                throw RuntimeException("$source is an invalid atlas source. Checked against $XML_SCHEMA_LOCATION")
+                throw SAXException("$source is an invalid atlas source. Checked against $XML_SCHEMA_LOCATION")
             val skeleton = SkeletonTextureAtlas()
             val doc:Document = docFactory.newDocumentBuilder().parse(source)
             val xpath:XPath = XPathFactory.newInstance().newXPath()
@@ -172,28 +158,24 @@ class AtlasPacker
             skeleton.height = sizeNode.attributes.getNamedItem("height").nodeValue.toInt()
             skeleton.textureLocation = (xpath.compile("/Atlas/TextureLocation")
                 .evaluate(doc,XPathConstants.NODESET) as NodeList).item(0).textContent.trim()
-            val regions = (xpath.compile("/Atlas/SpriteRegions/*").evaluate(doc,XPathConstants.NODESET) as NodeList)
-            for(i:Int in 0..regions.length-1)
+            val sprites = (xpath.compile("/Atlas/SpriteList/*").evaluate(doc,XPathConstants.NODESET) as NodeList)
+            skeleton.animated = (xpath.compile("/Atlas/SpriteList")
+                .evaluate(doc,XPathConstants.NODESET) as NodeList).item(0).attributes.getNamedItem("animated")
+                .nodeValue
+                .toBoolean()
+            for(i:Int in 0..sprites.length-1)
             {
-                val region = regions.item(i)
-                val spriteRegion = SkeletonSpriteRegion()
-                spriteRegion.name = region.attributes.getNamedItem("name").nodeValue
-                spriteRegion.animated = region.attributes.getNamedItem("animated").nodeValue.toBoolean()
-                for(j:Int in 0..region.childNodes.length-1)
-                {
-                    val sprite = region.childNodes.item(j)
-                    spriteRegion.sprites.add(Sprite(
-                        name = sprite.attributes.getNamedItem("name").nodeValue,
-                        index = sprite.attributes.getNamedItem("index").nodeValue.toInt(),
-                        src = Rect(x = sprite.attributes.getNamedItem("anchorX").nodeValue.toInt(),
-                            y = sprite.attributes.getNamedItem("anchorY").nodeValue.toInt(),
-                            width = sprite.attributes.getNamedItem("width").nodeValue.toInt(),
-                            height = sprite.attributes.getNamedItem("height").nodeValue.toInt()
-                        ),
+                val sprite = sprites.item(i)
+                skeleton.spriteList.add(Sprite(
+                    name = sprite.attributes.getNamedItem("name").nodeValue,
+                    index = sprite.attributes.getNamedItem("index").nodeValue.toInt(),
+                    src = Rect(x = sprite.attributes.getNamedItem("anchorX").nodeValue.toInt(),
+                        y = sprite.attributes.getNamedItem("anchorY").nodeValue.toInt(),
+                        width = sprite.attributes.getNamedItem("width").nodeValue.toInt(),
+                        height = sprite.attributes.getNamedItem("height").nodeValue.toInt()
                     )
-                    )
-                }
-                skeleton.regions.add(spriteRegion.assemble())
+                )
+                )
             }
             return skeleton.assemble()
         }

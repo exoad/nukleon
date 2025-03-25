@@ -1,9 +1,7 @@
 package net.exoad.nukleon.tools
 
-import net.exoad.nukleon.tools.sprite2d.Rect
-import net.exoad.nukleon.tools.sprite2d.SkeletonTextureAtlas
-import net.exoad.nukleon.tools.sprite2d.Sprite
-import net.exoad.nukleon.tools.sprite2d.Transmuter
+import net.exoad.nukleon.tools.sprite2d.*
+import java.awt.RenderingHints
 import java.awt.image.BufferedImage
 import java.io.File
 import javax.imageio.ImageIO
@@ -15,18 +13,18 @@ class Sprite2D
         fun packAtlas(
             inputFolder:String,
             atlasName:String?,
-            atlasOutputLocation:String,
             textureOutputLocation:String?,
             whitespaceWeight:Int = 1,
             sideLengthWeight:Int = 20,
-            regionMap:Map<String,Pair<Boolean,Set<String>>>?
-        )
+            useIndex:Boolean = false,
+            animated:Boolean,
+            filter:TextureInterpolation = TextureInterpolation.NEAREST_NEIGHBOR
+        ):TextureAtlas
         {
             val input = File(inputFolder)
             assert(input.isDirectory)
             assert(input.listFiles {it.extension.equals(".png",ignoreCase = true)&&it.canRead()}!=null)
             val outAtlasName = atlasName ?: input.name
-            val outTextureLoc = textureOutputLocation ?: atlasOutputLocation
             val names:MutableList<String> = mutableListOf<String>()
             val rects:MutableList<Rect> = mutableListOf<Rect>()
             val bitmaps:MutableList<BufferedImage> = mutableListOf<BufferedImage>()
@@ -37,13 +35,31 @@ class Sprite2D
             }
             val res = Transmuter.firstFitDecreasing(rects,false,whitespaceWeight,sideLengthWeight)
             val skeletonAtlas = SkeletonTextureAtlas()
-            if(regionMap==null||regionMap.isEmpty())
+            val sprites:MutableList<Sprite> = mutableListOf<Sprite>()
+            var i:Int = 0
+            val texture = BufferedImage(res.width,res.height,BufferedImage.TYPE_INT_ARGB)
+            val g2 = texture.createGraphics()
+            g2.setRenderingHint(RenderingHints.KEY_RENDERING,RenderingHints.VALUE_RENDER_QUALITY)
+            g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,when(filter)
             {
-                val sprites:MutableList<Sprite> = mutableListOf<Sprite>()
-                for(name in names) {
-                    sprites.add(Sprite(name, index))
-                }
+                TextureInterpolation.BICUBIC->RenderingHints.VALUE_INTERPOLATION_BICUBIC
+                TextureInterpolation.BILINEAR->RenderingHints.VALUE_INTERPOLATION_BILINEAR
+                TextureInterpolation.NEAREST_NEIGHBOR->RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR
             }
+            )
+            for(name in names)
+                sprites.add(Sprite(name,if(useIndex) i else -1,rects[i++]))
+            for(i in 0..bitmaps.size-1)
+                g2.drawImage(bitmaps[i],rects[i].x,rects[i].y,null)
+
+            return TextureAtlas(name = outAtlasName,
+                spriteList = sprites,
+                animated = animated,
+                textureLocation = textureOutputLocation,
+                width = res.width,
+                height = res.height,
+                texture = Texture(image = texture)
+            )
         }
     }
 }

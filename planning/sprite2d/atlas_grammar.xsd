@@ -41,6 +41,7 @@
                                 </xs:complexType>
                             </xs:element>
                         </xs:sequence>
+                        <xs:attribute name="animated" type="xs:boolean" use="required" />
                     </xs:complexType>
                 </xs:element>
             </xs:sequence>
