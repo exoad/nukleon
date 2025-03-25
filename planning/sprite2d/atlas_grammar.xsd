@@ -25,33 +25,19 @@
                     </xs:simpleType>
                 </xs:element>
                 <xs:element name="Size" type="SizeT" />
-                <xs:element name="SpriteRegions">
+                <xs:element name="SpriteList">
                     <xs:complexType>
                         <xs:sequence>
-                            <xs:element name="Region" minOccurs="1" maxOccurs="unbounded">
+                            <xs:element name="Sprite" maxOccurs="unbounded">
                                 <xs:complexType>
-                                    <xs:sequence>
-                                        <xs:element name="Sprite" minOccurs="1"
-                                            maxOccurs="unbounded">
-                                            <xs:complexType>
-                                                <xs:complexContent>
-                                                    <xs:extension base="SizeT">
-                                                        <xs:attribute name="name" type="IdentifierT"
-                                                            use="required" />
-                                                        <xs:attribute name="index" type="xs:long"
-                                                            use="optional" default="-1" />
-                                                        <xs:attribute name="anchorX"
-                                                            type="xs:unsignedLong" use="required" />
-                                                        <xs:attribute name="anchorY"
-                                                            type="xs:unsignedLong" use="required" />
-                                                    </xs:extension>
-                                                </xs:complexContent>
-                                            </xs:complexType>
-                                        </xs:element>
-                                    </xs:sequence>
-                                    <xs:attribute name="animated" type="xs:boolean" use="required" />
-                                    <xs:attribute name="count" type="xs:long" use="optional"
-                                        default="-1" />
+                                    <xs:complexContent>
+                                        <xs:extension base="SizeT">
+                                            <xs:attribute name="name" type="IdentifierT" use="required" />
+                                            <xs:attribute name="index" type="xs:long" use="required" />
+                                            <xs:attribute name="anchorX" type="xs:unsignedLong" use="required" />
+                                            <xs:attribute name="anchorY" type="xs:unsignedLong" use="required" />
+                                        </xs:extension>
+                                    </xs:complexContent>
                                 </xs:complexType>
                             </xs:element>
                         </xs:sequence>

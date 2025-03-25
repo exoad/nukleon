@@ -1,5 +1,6 @@
 package net.exoad.nukleon.tools.sprite2d
 
+import net.exoad.nukleon.tools.sprite2d.AtlasPacker.Companion.isValidAtlas
 import org.w3c.dom.Document
 import org.w3c.dom.NodeList
 import org.xml.sax.SAXException
@@ -44,7 +45,7 @@ data class SkeletonTextureAtlas(
 
 data class SpriteRegion(val name:String,val animated:Boolean,val sprites:List<Sprite>)
 
-private data class SkeletonSpriteRegion(
+data class SkeletonSpriteRegion(
     var name:String? = null,
     var animated:Boolean? = null,
     var sprites:MutableList<Sprite> = mutableListOf<Sprite>()
@@ -53,7 +54,7 @@ private data class SkeletonSpriteRegion(
     fun assemble():SpriteRegion = SpriteRegion(name = name!!,animated = animated!!,sprites = sprites)
 }
 
-data class Sprite(val name:String,val index:Int = -1,val anchorX:Int,val anchorY:Int,val width:Int,val height:Int)
+data class Sprite(val name:String,val index:Int = -1,val src:Rect)
 
 class AtlasPacker
 {
@@ -99,8 +100,10 @@ class AtlasPacker
                                     this@Region.appendChild(doc.createElement("Sprite").apply Sprite@{
                                         this@Sprite.setAttribute("name",sprite.name)
                                         this@Sprite.setAttribute("index",sprite.index.toString())
-                                        this@Sprite.setAttribute("anchorX",sprite.anchorX.toString())
-                                        this@Sprite.setAttribute("anchorY",sprite.anchorY.toString())
+                                        this@Sprite.setAttribute("anchorX",sprite.src.x.toString())
+                                        this@Sprite.setAttribute("anchorY",sprite.src.y.toString())
+                                        this@Sprite.setAttribute("width",sprite.src.width.toString())
+                                        this@Sprite.setAttribute("height",sprite.src.height.toString())
                                     })
                                 }
                             })
@@ -127,6 +130,11 @@ class AtlasPacker
             }
         }
 
+        /**
+         * Internally calls [isValidAtlas] by setting [location] using [inputStream]
+         *
+         * @param location where the atlas file is located.
+         */
         fun isValidAtlasFile(location:String):Boolean
         {
             val file = File(location)
@@ -174,12 +182,14 @@ class AtlasPacker
                 for(j:Int in 0..region.childNodes.length-1)
                 {
                     val sprite = region.childNodes.item(j)
-                    spriteRegion.sprites.add(Sprite(name = sprite.attributes.getNamedItem("name").nodeValue,
+                    spriteRegion.sprites.add(Sprite(
+                        name = sprite.attributes.getNamedItem("name").nodeValue,
                         index = sprite.attributes.getNamedItem("index").nodeValue.toInt(),
-                        anchorX = sprite.attributes.getNamedItem("anchorX").nodeValue.toInt(),
-                        anchorY = sprite.attributes.getNamedItem("anchorY").nodeValue.toInt(),
-                        width = sprite.attributes.getNamedItem("width").nodeValue.toInt(),
-                        height = sprite.attributes.getNamedItem("height").nodeValue.toInt()
+                        src = Rect(x = sprite.attributes.getNamedItem("anchorX").nodeValue.toInt(),
+                            y = sprite.attributes.getNamedItem("anchorY").nodeValue.toInt(),
+                            width = sprite.attributes.getNamedItem("width").nodeValue.toInt(),
+                            height = sprite.attributes.getNamedItem("height").nodeValue.toInt()
+                        ),
                     )
                     )
                 }
@@ -196,6 +206,4 @@ class AtlasPacker
             return readAtlas(f.inputStream(),validate)
         }
     }
-
-
 }
