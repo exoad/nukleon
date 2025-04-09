@@ -59,45 +59,56 @@ class AtlasPacker
         fun writeAtlas(atlas:TextureAtlas,atlasOutput:String,writeTexture:Boolean = false)
         {
             val doc:Document =
-                docFactory.newDocumentBuilder()
+                docFactory.apply {isNamespaceAware = true}.newDocumentBuilder()
                     .newDocument()
             doc.createElement("Atlas").apply Atlas@{
-                this@Atlas.setAttributeNS(
-                    "xmlns","xsi","http://www.w3.org/2001/XMLSchema-instance"
-                )
-                this@Atlas.setAttributeNS(
-                    "xsi","noNamespaceSchemaLocation",XML_SCHEMA_LOCATION
+                this@Atlas.setAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance")
+                this@Atlas.setAttribute(
+                    "xsi:noNamespaceSchemaLocation",XML_SCHEMA_LOCATION
                 )
                 this@Atlas.appendChild(
-                    doc.createElement("Identifier").apply Identifier@{
-                        this@Identifier.nodeValue = atlas.name
-                    })
-                this@Atlas.appendChild(
-                    doc.createElement("TextureLocation").apply TextureLocation@{
-                        this@TextureLocation.nodeValue = atlas.textureLocation
-                    })
+                    doc.createElement("Identifier").apply {
+                        appendChild(doc.createTextNode(atlas.name))
+                    }
+                )
+                if(atlas.textureLocation!=null)
+                {
+                    assert(atlas.textureLocation.split(".").last().equals("png",ignoreCase = true)
+                    ) {"Supplied texture location ${atlas.textureLocation} does not exist! Must be a valid file ending in '.png'"}
+                    this@Atlas.appendChild(
+                        doc.createElement("TextureLocation").apply {
+                            appendChild(doc.createTextNode(atlas.textureLocation))
+                        }
+                    )
+                }
                 this@Atlas.appendChild(doc.createElement("Size").apply Size@{
                     this@Size.setAttribute("width",atlas.width.toString())
                     this@Size.setAttribute("height",atlas.height.toString())
                 })
                 this@Atlas.appendChild(
                     doc.createElement("SpriteList").apply SpriteList@{
-                        this@SpriteList.setAttribute("animated",atlas.animated.toString())
+                        atlas.animated.let {
+                            this@SpriteList.setAttribute("animated",atlas.animated.toString())
+                        }
+                        var i = 0
                         for(sprite:Sprite in atlas.spriteList)
                         {
                             this@SpriteList.appendChild(doc.createElement("Sprite").apply Sprite@{
-                                this@Sprite.setAttribute("name",sprite.name)
-                                this@Sprite.setAttribute("index",sprite.index.toString())
-                                this@Sprite.setAttribute("anchorX",sprite.src.x.toString())
-                                this@Sprite.setAttribute("anchorY",sprite.src.y.toString())
-                                this@Sprite.setAttribute("width",sprite.src.width.toString())
-                                this@Sprite.setAttribute("height",sprite.src.height.toString())
+                                sprite.let {
+                                    setAttribute("name",sprite.name)
+                                    setAttribute("index",(if(sprite.index==-1) sprite.index else i++).toString())
+                                    setAttribute("anchorX",sprite.src.x.toString())
+                                    setAttribute("anchorY",sprite.src.y.toString())
+
+                                    setAttribute("width",sprite.src.width.toString())
+                                    setAttribute("height",sprite.src.height.toString())
+                                }
                             })
                         }
                     })
                 doc.appendChild(this@Atlas)
             }
-            transformFactory.newTransformer().transform(DOMSource(doc),StreamResult(atlasOutput))
+            transformFactory.newTransformer().transform(DOMSource(doc),StreamResult(File(atlasOutput)))
             if(writeTexture)
             {
                 if(atlas.texture!=null&&!ImageIO.write(
@@ -143,7 +154,7 @@ class AtlasPacker
             return true
         }
 
-        fun readAtlas(source:InputStream,validate:Boolean = true):TextureAtlas
+        fun readAtlas(source:InputStream):TextureAtlas
         {
             if(source.available()==0)
                 throw RuntimeException("$source is empty")
@@ -184,7 +195,7 @@ class AtlasPacker
             val f = File(location)
             if(validate&&(!f.exists()||!f.isFile||!f.canRead()))
                 throw RuntimeException("Can't read $location as a file")
-            return readAtlas(f.inputStream(),validate)
+            return readAtlas(f.inputStream())
         }
     }
 }

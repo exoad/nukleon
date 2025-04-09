@@ -3,7 +3,7 @@
     <Identifier>some_goofy_nonexistent_sprites</Identifier>
     <TextureLocation>/some/path/to/texture.png</TextureLocation>
     <Size width="420" height="69"/>
-    <SpriteList>
+    <SpriteList animated="false">
         <Sprite name="sprite_0" index="0" anchorX="0" anchorY="0" width="32" height="32"></Sprite>
         <Sprite name="sprite_1" index ="1" anchorX="32" anchorY="32" width="32" height="32" />
     </SpriteList>

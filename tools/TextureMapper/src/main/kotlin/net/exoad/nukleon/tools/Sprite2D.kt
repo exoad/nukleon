@@ -18,10 +18,10 @@ class Sprite2D
 
         fun packAtlas(
             inputFolder:String,
-            atlasName:String?,
-            textureOutputLocation:String?,
+            atlasKey:String?,
+            textureOutputLocation:String = ".",
             whitespaceWeight:Int = 1,
-            sideLengthWeight:Int = 20,
+            sideLengthWeight:Int = 10,
             useIndex:Boolean = false,
             animated:Boolean,
             filter:TextureInterpolation = TextureInterpolation.NEAREST_NEIGHBOR
@@ -29,8 +29,8 @@ class Sprite2D
         {
             val input = File(inputFolder)
             assert(input.isDirectory)
+            val outAtlasName = atlasKey ?: inputFolder.split("/").last()
             input.listFiles {it.extension.equals("png",ignoreCase = true)}?.size?.let {assert(it>0)}
-            val outAtlasName = atlasName ?: input.name
             val names:MutableList<String> = mutableListOf<String>()
             val rects:MutableList<Rect> = mutableListOf<Rect>()
             val bitmaps:MutableList<BufferedImage> = mutableListOf<BufferedImage>()
@@ -42,11 +42,14 @@ class Sprite2D
                 logger.fine("READ: ${it.nameWithoutExtension}")
             }
             logger.info("FILES_LEn: ${names.size}")
-            val res = Transmuter.firstFitDecreasing(rects,false,whitespaceWeight,sideLengthWeight)
-            val skeletonAtlas = SkeletonTextureAtlas()
+            GreedyRectPacker.kSideLengthWeight = sideLengthWeight
+            GreedyRectPacker.kWhiteSpaceWeight = whitespaceWeight
+            val res = GreedyRectPacker.pack(rects).apply {
+                this.rects.sort()
+            }
             val sprites:MutableList<Sprite> = mutableListOf<Sprite>()
-            var i:Int = 0
             val texture = BufferedImage(res.width,res.height,BufferedImage.TYPE_INT_ARGB)
+            logger.info("Buffered: ${texture.width}x${texture.height}")
             val g2 = texture.createGraphics()
             g2.setRenderingHint(RenderingHints.KEY_RENDERING,RenderingHints.VALUE_RENDER_QUALITY)
             g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,when(filter)
@@ -56,15 +59,22 @@ class Sprite2D
                 TextureInterpolation.NEAREST_NEIGHBOR->RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR
             }
             )
+            var i = 0
             for(name in names)
-                sprites.add(Sprite(name,if(useIndex) i else -1,rects[i++]))
-            for(i in 0..bitmaps.size-1)
-                g2.drawImage(bitmaps[i],rects[i].x,rects[i].y,null)
-
+                sprites.add(Sprite(name,if(useIndex) i else -1,res.rects[i++]))
+            for(j in 0..bitmaps.size-1)
+            {
+                g2.drawImage(bitmaps[j],res.rects[j].x,res.rects[j].y,null)
+                logger.info("DRAW_$j -> ${res.rects[j]}")
+            }
             return TextureAtlas(name = outAtlasName,
                 spriteList = sprites,
                 animated = animated,
-                textureLocation = textureOutputLocation,
+                textureLocation = "$textureOutputLocation${
+                    if(textureOutputLocation.run {
+                            endsWith("\\")||endsWith("/")
+                        }) "" else "/"
+                }${outAtlasName}.png",
                 width = res.width,
                 height = res.height,
                 texture = Texture(image = texture)

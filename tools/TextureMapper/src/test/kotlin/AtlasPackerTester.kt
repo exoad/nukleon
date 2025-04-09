@@ -1,8 +1,12 @@
 import com.fleeksoft.io.byteInputStream
 import net.exoad.nukleon.tools.Sprite2D
 import net.exoad.nukleon.tools.sprite2d.AtlasPacker
+import net.exoad.nukleon.tools.sprite2d.TextureAtlas
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
+import java.io.File
+import javax.imageio.ImageIO
+import kotlin.test.assertContains
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
@@ -28,12 +32,18 @@ class AtlasPackerTester
     @Test
     fun generateAtlases()
     {
+        lateinit var r:TextureAtlas
         assertDoesNotThrow {
-            Sprite2D.packAtlas("../../content/ui_content",
+            r = Sprite2D.packAtlas("../../content/ui_content",
                 atlasName = "ui_content",
                 textureOutputLocation = "./",
                 animated = false
             )
         }
+        assertContains(
+            r.spriteList.map {it.name},"Button_Facet_1_Normal"
+        )
+        AtlasPacker.writeAtlas(r,"../../test-generated/Amogus.xml",false)
+        ImageIO.write(r.texture!!.image,"png",File("../../test-generated/Amogus.png"))
     }
 }
