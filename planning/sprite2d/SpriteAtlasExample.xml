@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Atlas xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/exoad/nukleon/refs/heads/main/api/sprite2d/v1/atlas_grammar.xsd">
+<Atlas xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="./atlas_grammar.xsd">
     <Identifier>some_goofy_nonexistent_sprites</Identifier>
     <TextureLocation>/some/path/to/texture.png</TextureLocation>
     <Size width="420" height="69"/>

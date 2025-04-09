@@ -1,6 +1,6 @@
 import com.fleeksoft.io.byteInputStream
 import net.exoad.nukleon.tools.Sprite2D
-import net.exoad.nukleon.tools.sprite2d.AtlasPacker
+import net.exoad.nukleon.tools.sprite2d.AtlasAssembler
 import net.exoad.nukleon.tools.sprite2d.TextureAtlas
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
@@ -15,7 +15,7 @@ class AtlasPackerTester
     @Test
     fun basicAtlas()
     {
-        val atlas = AtlasPacker.readAtlas("../../planning/sprite2d/SpriteAtlasExample.xml")
+        val atlas = AtlasAssembler.readAtlas("../../planning/sprite2d/SpriteAtlasExample.xml")
         assertEquals(atlas.name,
             "some_goofy_nonexistent_sprites"
         )
@@ -26,7 +26,7 @@ class AtlasPackerTester
     @Test
     fun notValid()
     {
-        assertTrue {!AtlasPacker.isValidAtlas("SUSUS SUSFDUFDFDFDSOFJSDFODIOf".byteInputStream())}
+        assertTrue {!AtlasAssembler.isValidAtlas("SUSUS SUSFDUFDFDFDSOFJSDFODIOf".byteInputStream())}
     }
 
     @Test
@@ -43,7 +43,7 @@ class AtlasPackerTester
         assertContains(
             r.spriteList.map {it.name},"Button_Facet_1_Normal"
         )
-        AtlasPacker.writeAtlas(r,"../../test-generated/Amogus.xml",false)
+        AtlasAssembler.writeAtlas(r,"../../test-generated/Amogus.xml",false)
         ImageIO.write(r.texture!!.image,"png",File("../../test-generated/Amogus.png"))
     }
 }

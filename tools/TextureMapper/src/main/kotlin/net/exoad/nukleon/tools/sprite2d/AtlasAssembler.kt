@@ -1,12 +1,15 @@
 package net.exoad.nukleon.tools.sprite2d
 
-import net.exoad.nukleon.tools.sprite2d.AtlasPacker.Companion.isValidAtlas
+import net.exoad.nukleon.tools.sprite2d.AtlasAssembler.Companion.isValidAtlas
 import org.w3c.dom.Document
 import org.w3c.dom.NodeList
 import org.xml.sax.SAXException
+import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.IOException
 import java.io.InputStream
 import java.net.URL
+import java.util.*
 import javax.imageio.ImageIO
 import javax.xml.XMLConstants
 import javax.xml.parsers.DocumentBuilderFactory
@@ -20,12 +23,28 @@ import javax.xml.xpath.XPath
 import javax.xml.xpath.XPathConstants
 import javax.xml.xpath.XPathFactory
 
+
+/**
+ * Represents a singular description of a texture atlas
+ *
+ * - [name] signifies what this atlas is called and can be different from the file name, never use the file name!
+ * - [animated] a custom modifier that just tells other code that you should animate this atlas
+ * - [textureLocation] where the actual texture bitmap is located
+ * - [texture] this is a **nullable** value and represents the raw bitmap data in memory that this atlas represents
+ * - [spriteList] all the sprites in this atlas and their descriptions, see [Sprite]
+ * - [width] & [height] represent the dimensions of this atlas's bitmap content (this is the intended dimensions)
+ */
 data class TextureAtlas(
     val name:String,val texture:Texture?,val spriteList:List<Sprite>,
     val animated:Boolean,
     val textureLocation:String?,val width:Int,val height:Int,
 )
 
+/**
+ * Internal skeleton class that can be filled to become a [TextureAtlas]
+ *
+ * **Should never be instantiated by external code.**
+ */
 data class SkeletonTextureAtlas(
     var name:String? = null,
     var texture:Texture? = null,
@@ -46,25 +65,57 @@ data class SkeletonTextureAtlas(
     )
 }
 
+/**
+ * Represents a singular item in a [TextureAtlas] and contains 3 simple properties:
+ * - [name] what this sprite is called or its identifier
+ * - [index] most of the time -1, but is crucial to be indexed properly when [TextureAtlas.animated] is set to `true`
+ * - [src] the bounding box of this sprite within [TextureAtlas.texture] bitmap and thus can be used to determine generally
+ *  the width and height, but should not be used for anything else.
+ */
 data class Sprite(val name:String,val index:Int = -1,val src:Rect)
 
-class AtlasPacker
+/**
+ * Parses and writes the XML format of the sprite atlas. It also handles validation using the online schema when available.
+ *
+ * *If the atlas packer is an older version, it may be crucial to supply with the latest URL to the latest schema in functions
+ * like [AtlasAssembler.isValidAtlas] and [AtlasAssembler.writeAtlas]*
+ *
+ * By default, the versioning of this atlas packer tool is bound to the most current schema version it was written for. It is ill-advised
+ * to use a newer version or older version as this software is meant for internal usage.
+ */
+class AtlasAssembler
 {
     companion object
     {
-        const val XML_SCHEMA_LOCATION:String =
-            "https://raw.githubusercontent.com/exoad/nukleon/refs/heads/main/api/sprite2d/v1/atlas_grammar.xsd"
         val transformFactory:TransformerFactory = TransformerFactory.newInstance()
         val docFactory:DocumentBuilderFactory = DocumentBuilderFactory.newInstance()
-        fun writeAtlas(atlas:TextureAtlas,atlasOutput:String,writeTexture:Boolean = false)
+
+        /**
+         * Write an atlas file
+         * - [atlasOutput] used as both the output location of the bitmap texture file and the actual schema file
+         * - [writeTexture] writes the texture file to a physical location using either [atlas]'s [TextureAtlas.textureLocation] or [atlasOutput] directly if the former is null
+         * - [embedTexture] writes the texture data as a base64 encoded string of data within the texture atlas
+         * - [schemaLocation] - optional binding for the xsd, the default value is the recommended version to use for this packer version
+         *
+         * Both writing and embedding are allowed at the same time; however, when reading the atlas back, embedded textures
+         * are prioritized and whatever the atlas specifies as "TextureLocation" is ignored.
+         */
+        fun writeAtlas(
+            atlas:TextureAtlas,
+            atlasOutput:String,
+            writeTexture:Boolean = false,
+            embedTexture:Boolean = false,
+            schemaLocation:String = "https://raw.githubusercontent.com/exoad/nukleon/refs/heads/main/api/sprite2d/v2/atlas_grammar.xsd"
+        )
         {
             val doc:Document =
                 docFactory.apply {isNamespaceAware = true}.newDocumentBuilder()
                     .newDocument()
+            // create the first node which is the atlas node
             doc.createElement("Atlas").apply Atlas@{
                 this@Atlas.setAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance")
                 this@Atlas.setAttribute(
-                    "xsi:noNamespaceSchemaLocation",XML_SCHEMA_LOCATION
+                    "xsi:noNamespaceSchemaLocation",schemaLocation
                 )
                 this@Atlas.appendChild(
                     doc.createElement("Identifier").apply {
@@ -108,6 +159,28 @@ class AtlasPacker
                     })
                 doc.appendChild(this@Atlas)
             }
+            // =========================================================================================================================
+            // V2: Incorporation of optional base64 encoded data
+            //
+            // - Inclusion of this element means that the previously constructed "TextureLocation" element will be removed and ignored
+            // - The texture will be loaded directly into memory
+            // - Writing to external and also embedding within can be done at the same time
+            // - Reading to external and also embedding is not possible, embedding is preferred if both exists.
+            // =========================================================================================================================
+            if(embedTexture&&atlas.texture!=null)
+            {
+                val os = ByteArrayOutputStream()
+                try
+                {
+                    if(ImageIO.write(atlas.texture.image,"PNG",os))
+                        doc.createElement("EmbededBitmap").apply EmbeddedBitmap@{
+                            this@EmbeddedBitmap.textContent = Base64.getEncoder().encodeToString(os.toByteArray())
+                        }
+                } catch(ioe:IOException)
+                {
+                    throw ioe
+                }
+            }
             transformFactory.newTransformer().transform(DOMSource(doc),StreamResult(File(atlasOutput)))
             if(writeTexture)
             {
@@ -138,9 +211,12 @@ class AtlasPacker
             return if(file.exists()&&file.isFile&&file.canRead()) isValidAtlas(file.inputStream()) else false
         }
 
-        fun isValidAtlas(source:InputStream):Boolean
+        fun isValidAtlas(
+            source:InputStream,
+            schemaLocation:String = "https://raw.githubusercontent.com/exoad/nukleon/refs/heads/main/api/sprite2d/v1/atlas_grammar.xsd"
+        ):Boolean
         {
-            val schemaURL = URL(XML_SCHEMA_LOCATION)
+            val schemaURL = URL(schemaLocation)
             try
             {
                 val data:Source = StreamSource(source)

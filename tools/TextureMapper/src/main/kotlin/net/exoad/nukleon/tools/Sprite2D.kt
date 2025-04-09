@@ -12,7 +12,7 @@ class Sprite2D
 {
     companion object
     {
-        val logger = Logger.getLogger("Sprite2D").apply {
+        val logger:Logger = Logger.getLogger("Sprite2D").apply {
             this.level = Level.ALL
         }
 

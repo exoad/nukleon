@@ -7,35 +7,27 @@ object GreedyRectPacker
 
     data class TextureLayout(var width:Int,var height:Int,val rects:MutableList<Rect>)
 
-    private fun findBounds(rects:List<Rect>):Rect
-    {
-        val width = rects.maxOf {it.x+it.width}
-        val height = rects.maxOf {it.y+it.height}
-        return Rect(0,0,width = width,height = height)
-    }
-
-    private fun findPositions(rects:List<Rect>):List<Rect> =
-        rects.flatMap {rect->
-            (0 until rect.width).map {x->
-                Rect(rect.x+x,rect.y+rect.height,0,0)
-            }+(0 until rect.height).map {y->
-                Rect(rect.x+rect.width,rect.y+y,0,0)
-            }
-        }
-
     private fun findBestRect(layout:TextureLayout,size:Rect):Rect
     {
         if(layout.rects.isEmpty()) return Rect(0,0,width = size.width,height = size.height)
         var bestRect = Rect(0,0,width = size.width,height = size.height)
         var bestScore = Int.MAX_VALUE
-        findPositions(layout.rects).forEach {pos->
+        layout.rects.flatMap {rect->
+            (0 until rect.width).map {x->
+                Rect(rect.x+x,rect.y+rect.height,0,0)
+            }+(0 until rect.height).map {y->
+                Rect(rect.x+rect.width,rect.y+y,0,0)
+            }
+        }.forEach {pos->
             val rect = Rect(pos.x,pos.y,size.width,size.height)
             if(layout.rects.none {it.intersects(rect)})
             {
                 val sandbox = TextureLayout(0,0,
                     rects = (layout.rects+rect).toMutableList()
                 ).apply {
-                    findBounds(rects).let {
+                    var width = rects.maxOf {it.x+it.width}
+                    var height = rects.maxOf {it.y+it.height}
+                    Rect(0,0,width = width,height = height).let {
                         width = it.width
                         height = it.height
                     }
@@ -64,7 +56,9 @@ object GreedyRectPacker
                 it.height = size.height
             }
             layout.rects.add(rect)
-            findBounds(layout.rects).let {
+            val width = layout.rects.maxOf {it.x+it.width}
+            val height = layout.rects.maxOf {it.y+it.height}
+            Rect(0,0,width = width,height = height).let {
                 layout.width = it.width
                 layout.height = it.height
             }
