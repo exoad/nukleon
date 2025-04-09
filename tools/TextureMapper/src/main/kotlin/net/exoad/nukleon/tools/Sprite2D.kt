@@ -24,7 +24,7 @@ class Sprite2D
             sideLengthWeight:Int = 10,
             useIndex:Boolean = false,
             animated:Boolean,
-            filter:TextureInterpolation = TextureInterpolation.NEAREST_NEIGHBOR
+            filter:TextureInterpolation = TextureInterpolation.NEAREST_NEIGHBOR,
         ):TextureAtlas
         {
             val input = File(inputFolder)

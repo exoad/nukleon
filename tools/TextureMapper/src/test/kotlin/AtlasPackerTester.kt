@@ -35,7 +35,7 @@ class AtlasPackerTester
         lateinit var r:TextureAtlas
         assertDoesNotThrow {
             r = Sprite2D.packAtlas("../../content/ui_content",
-                atlasName = "ui_content",
+                atlasKey = "ui_content",
                 textureOutputLocation = "./",
                 animated = false
             )
@@ -43,7 +43,7 @@ class AtlasPackerTester
         assertContains(
             r.spriteList.map {it.name},"Button_Facet_1_Normal"
         )
-        AtlasAssembler.writeAtlas(r,"../../test-generated/Amogus.xml",false)
+        AtlasAssembler.writeAtlas(r,"../../test-generated/Amogus.xml",false,embedTexture = true)
         ImageIO.write(r.texture!!.image,"png",File("../../test-generated/Amogus.png"))
     }
 }

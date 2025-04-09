@@ -157,30 +157,33 @@ class AtlasAssembler
                             })
                         }
                     })
+                // =========================================================================================================================
+                // V2: Incorporation of optional base64 encoded data
+                //
+                // - Inclusion of this element means that the previously constructed "TextureLocation" element will be removed and ignored
+                // - The texture will be loaded directly into memory
+                // - Writing to external and also embedding within can be done at the same time
+                // - Reading to external and also embedding is not possible, embedding is preferred if both exists.
+                // =========================================================================================================================
+                if(embedTexture&&atlas.texture!=null)
+                {
+                    val os = ByteArrayOutputStream()
+                    try
+                    {
+                        if(ImageIO.write(atlas.texture.image,"PNG",os))
+                            this@Atlas.appendChild(doc.createElement("EncodedBitmap").apply EmbeddedBitmap@{
+                                this@EmbeddedBitmap.textContent =
+                                    Base64.getEncoder().encodeToString(os.toByteArray())
+                            })
+
+                    } catch(ioe:IOException)
+                    {
+                        throw ioe
+                    }
+                }
                 doc.appendChild(this@Atlas)
             }
-            // =========================================================================================================================
-            // V2: Incorporation of optional base64 encoded data
-            //
-            // - Inclusion of this element means that the previously constructed "TextureLocation" element will be removed and ignored
-            // - The texture will be loaded directly into memory
-            // - Writing to external and also embedding within can be done at the same time
-            // - Reading to external and also embedding is not possible, embedding is preferred if both exists.
-            // =========================================================================================================================
-            if(embedTexture&&atlas.texture!=null)
-            {
-                val os = ByteArrayOutputStream()
-                try
-                {
-                    if(ImageIO.write(atlas.texture.image,"PNG",os))
-                        doc.createElement("EmbededBitmap").apply EmbeddedBitmap@{
-                            this@EmbeddedBitmap.textContent = Base64.getEncoder().encodeToString(os.toByteArray())
-                        }
-                } catch(ioe:IOException)
-                {
-                    throw ioe
-                }
-            }
+
             transformFactory.newTransformer().transform(DOMSource(doc),StreamResult(File(atlasOutput)))
             if(writeTexture)
             {
