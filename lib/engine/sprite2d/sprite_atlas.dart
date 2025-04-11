@@ -60,8 +60,7 @@ final class SpriteAtlasSpriteTexture {
 
   Rect get src => Rect.fromPoints(xy.toOffset(), (xy + size).toOffset());
 
-  bool isIncomplete() =>
-      name.isEmpty || xy.isNaN || size.isNaN || offset.isNaN || index == -1;
+  bool isIncomplete() => name.isEmpty || xy.isNaN || size.isNaN || offset.isNaN || index == -1;
 
   @override
   String toString() {
@@ -240,8 +239,8 @@ final class SpriteAtlas with EquatableMixin {
       : fileName = raw.file.fileName,
         identifier = raw.file.name,
         size = raw.file.size.toSize(),
-        encoding = SpriteFileEncoding.values.firstWhere((SpriteFileEncoding encoding) =>
-            raw.file.format.equalsIgnoreCase(encoding.name)),
+        encoding = SpriteFileEncoding.values.firstWhere(
+            (SpriteFileEncoding encoding) => raw.file.format.equalsIgnoreCase(encoding.name)),
         magFilter = SpritePageFilter.values.firstWhere(
             (SpritePageFilter filter) => filter.name.equalsIgnoreCase(raw.file.filter[1]),
             orElse: () => SpritePageFilter.NEAREST),
@@ -321,16 +320,15 @@ final class SpriteAtlas with EquatableMixin {
                     texture.index = int.parse(pageProperty.$2);
                   case "offset":
                     final List<String> offset = pageProperty.$2.split(",");
-                    texture.offset = Vector2(
-                        double.parse(offset[0].trim()), double.parse(offset[1].trim()));
+                    texture.offset =
+                        Vector2(double.parse(offset[0].trim()), double.parse(offset[1].trim()));
                   case "size":
                     final List<String> size = pageProperty.$2.split(",");
-                    texture.size = Vector2(
-                        double.parse(size[0].trim()), double.parse(size[1].trim()));
+                    texture.size =
+                        Vector2(double.parse(size[0].trim()), double.parse(size[1].trim()));
                   case "xy":
                     final List<String> xy = pageProperty.$2.split(",");
-                    texture.xy =
-                        Vector2(double.parse(xy[0].trim()), double.parse(xy[1].trim()));
+                    texture.xy = Vector2(double.parse(xy[0].trim()), double.parse(xy[1].trim()));
                 }
                 loopSentinel2++;
               }
@@ -348,8 +346,7 @@ final class SpriteAtlas with EquatableMixin {
       panicNow("SPRITE2D: Failed to parse Asset_Atlas '$key'");
     }
     return SpriteAtlasRaw(
-        file: file! /*shldnt be null here :) but dart requires the bang!*/,
-        sprites: sprites);
+        file: file! /*shldnt be null here :) but dart requires the bang!*/, sprites: sprites);
   }
 
   /// Parses the sprites as well as load the base sprite texture files into the bitmap registry.
@@ -372,8 +369,7 @@ final class SpriteAtlas with EquatableMixin {
               "${path.dirname(assets)}/${atlas.file.fileName}"))); // O_o might be an issue with the path separator idk, hardcoded path separator is yikes.
       SpriteRegistry.I.register(atlas.file.name);
       for (SpriteAtlasSpriteTexture texture in atlas.sprites) {
-        SpriteRegistry.I
-            .addTo(atlas.file.name, Sprite(atlas.file.name, texture.src, texture.name));
+        SpriteRegistry.I.addTo(atlas.file.name, Sprite(atlas.file.name, texture.src, texture.name));
       }
     } else {
       logger.warning("Empty sprite atlas $assets, ignoring...");
